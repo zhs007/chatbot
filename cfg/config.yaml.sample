@@ -1,0 +1,7 @@
+appserv:
+- type: telegram
+  token: TxCL0gyMZ0Ps1oxjHAa9Go38Vfwuk3da
+  username: Ada
+- type: telegram
+  token: cQvlFJYxLdx8wQQmuaHYToYjSqIDwF3J
+  username: Ada1  
