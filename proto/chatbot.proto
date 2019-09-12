@@ -7,6 +7,23 @@ enum ChatAppType {
     CAT_COOLQQ = 1;
 };
 
+// UserAppInfo - user app info
+message UserAppInfo {
+    ChatAppType app = 1;
+    string appuid = 2;
+    string appuname = 3;
+    int32 chatnums = 4;
+}
+
+// UserInfo - user info
+message UserInfo {
+    int64 uid = 1;
+    string name = 2;
+    repeated UserAppInfo apps = 3;
+    
+    int64 money = 10;
+}
+
 // RegisterAppService - register app service
 message RegisterAppService {
     string token = 1;
