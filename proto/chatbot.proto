@@ -1,0 +1,46 @@
+syntax = "proto3";
+package chatbotpb;
+
+// ChatAppType - chat app type
+enum ChatAppType {
+    CAT_TELEGRAM = 0;
+    CAT_COOLQQ = 1;
+};
+
+// RegisterAppService - register app service
+message RegisterAppService {
+    string token = 1;
+    ChatAppType appType = 2;
+}
+
+// ReplyRegisterAppService - reply RegisterAppService
+message ReplyRegisterAppService {
+    ChatAppType appType = 1;
+    string error = 2;
+}
+
+// // ReplyChat - reply crawler
+// message ReplyCrawlerStream {
+//     // totalLength - If the message is too long, it will send data in multiple msg, this is the total length.
+//     int32 totalLength = 1;
+//     // curStart - The starting point of the current data (in bytes).
+//     int32 curStart = 2;
+//     // curLength - The length of the current data (in bytes).
+//     int32 curLength = 3;
+//     // hashData - This is the hash of each paragraph.
+//     string hashData = 4;
+//     // totalHashData - If multiple messages return data, this is the hash value of all data, only sent in the last message.
+//     string totalHashData = 5;
+//     // data
+//     bytes data = 6;
+
+//     string error = 100;
+
+//     ReplyCrawler replyCrawler = 200;
+// }
+
+// ChatBotService - ChatBot service
+service ChatBotService {
+    // registerAppService - register app service
+    rpc registerAppService(RegisterAppService) returns (stream ReplyRegisterAppService) {}
+}
