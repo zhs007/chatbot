@@ -10,6 +10,9 @@ var (
 	// ErrNoAppServUserName - no app serv username
 	ErrNoAppServUserName = errors.New("no app serv username")
 
+	// ErrNoServAddr - no servaddr
+	ErrNoServAddr = errors.New("no servaddr")
+
 	// ErrInvalidAppServType - invalid appservtype
 	ErrInvalidAppServType = errors.New("invalid appservtype")
 

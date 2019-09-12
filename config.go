@@ -7,21 +7,29 @@ import (
 	"gopkg.in/yaml.v2"
 
 	chatbotbase "github.com/zhs007/chatbot/base"
+	chatbotpb "github.com/zhs007/chatbot/proto"
 )
 
 // AppServConfig - app serv
 type AppServConfig struct {
-	Type     string
-	Token    string
-	UserName string
+	Type        string
+	Token       string
+	UserName    string
+	typeAppServ chatbotpb.ChatAppType
 }
 
 // Config - config
 type Config struct {
+
 	//------------------------------------------------------------------
 	// appserv
 
 	AppServ []AppServConfig
+
+	//------------------------------------------------------------------
+	// Config
+
+	ServAddr string
 }
 
 func checkAppServConfig(cfg *AppServConfig) error {
@@ -37,10 +45,12 @@ func checkAppServConfig(cfg *AppServConfig) error {
 		return chatbotbase.ErrNoAppServUserName
 	}
 
-	_, err := chatbotbase.GetAppServType(cfg.Type)
+	t, err := chatbotbase.GetAppServType(cfg.Type)
 	if err != nil {
 		return err
 	}
+
+	cfg.typeAppServ = t
 
 	return nil
 }
@@ -51,6 +61,10 @@ func checkConfig(cfg *Config) error {
 		if err != nil {
 			return err
 		}
+	}
+
+	if cfg.ServAddr == "" {
+		return chatbotbase.ErrNoServAddr
 	}
 
 	return nil
