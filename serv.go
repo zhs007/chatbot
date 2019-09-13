@@ -89,3 +89,15 @@ func (serv *Serv) RegisterAppService(ctx context.Context, ras *chatbotpb.Registe
 		AppType: ras.AppType,
 	}, nil
 }
+
+// sendChat - send chat
+func (serv *Serv) SendChat(scs chatbotpb.ChatBotService_SendChatServer) error {
+	return nil
+}
+
+// requestChat - request chat
+func (serv *Serv) RequestChat(req *chatbotpb.RequestChatData,
+	ecs chatbotpb.ChatBotService_RequestChatServer) error {
+
+	return nil
+}
