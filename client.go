@@ -1,4 +1,4 @@
-package adacore
+package chatbot
 
 import (
 	"context"

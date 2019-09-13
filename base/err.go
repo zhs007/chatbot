@@ -28,6 +28,11 @@ var (
 	// ErrNoTokenInClient - no token in client
 	ErrNoTokenInClient = errors.New("no token in client")
 
+	// ErrDuplicatePlugin - duplicate plugin
+	ErrDuplicatePlugin = errors.New("duplicate plugin")
+	// ErrNoPlugin - no plugin
+	ErrNoPlugin = errors.New("no plugin")
+
 	// ErrUnkonow - unknow error
 	ErrUnkonow = errors.New("unknow error")
 )
