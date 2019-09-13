@@ -44,7 +44,7 @@ func (x ChatAppType) String() string {
 	return proto.EnumName(ChatAppType_name, int32(x))
 }
 func (ChatAppType) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_chatbot_bcb94d0b7321ef21, []int{0}
+	return fileDescriptor_chatbot_d83d5a4163677af0, []int{0}
 }
 
 // UserAppInfo - user app info
@@ -53,6 +53,7 @@ type UserAppInfo struct {
 	Appuid               string      `protobuf:"bytes,2,opt,name=appuid,proto3" json:"appuid,omitempty"`
 	Appuname             string      `protobuf:"bytes,3,opt,name=appuname,proto3" json:"appuname,omitempty"`
 	Chatnums             int32       `protobuf:"varint,4,opt,name=chatnums,proto3" json:"chatnums,omitempty"`
+	UsernameAppServ      string      `protobuf:"bytes,5,opt,name=usernameAppServ,proto3" json:"usernameAppServ,omitempty"`
 	XXX_NoUnkeyedLiteral struct{}    `json:"-"`
 	XXX_unrecognized     []byte      `json:"-"`
 	XXX_sizecache        int32       `json:"-"`
@@ -62,7 +63,7 @@ func (m *UserAppInfo) Reset()         { *m = UserAppInfo{} }
 func (m *UserAppInfo) String() string { return proto.CompactTextString(m) }
 func (*UserAppInfo) ProtoMessage()    {}
 func (*UserAppInfo) Descriptor() ([]byte, []int) {
-	return fileDescriptor_chatbot_bcb94d0b7321ef21, []int{0}
+	return fileDescriptor_chatbot_d83d5a4163677af0, []int{0}
 }
 func (m *UserAppInfo) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_UserAppInfo.Unmarshal(m, b)
@@ -110,6 +111,13 @@ func (m *UserAppInfo) GetChatnums() int32 {
 	return 0
 }
 
+func (m *UserAppInfo) GetUsernameAppServ() string {
+	if m != nil {
+		return m.UsernameAppServ
+	}
+	return ""
+}
+
 // UserInfo - user info
 type UserInfo struct {
 	Uid                  int64          `protobuf:"varint,1,opt,name=uid,proto3" json:"uid,omitempty"`
@@ -125,7 +133,7 @@ func (m *UserInfo) Reset()         { *m = UserInfo{} }
 func (m *UserInfo) String() string { return proto.CompactTextString(m) }
 func (*UserInfo) ProtoMessage()    {}
 func (*UserInfo) Descriptor() ([]byte, []int) {
-	return fileDescriptor_chatbot_bcb94d0b7321ef21, []int{1}
+	return fileDescriptor_chatbot_d83d5a4163677af0, []int{1}
 }
 func (m *UserInfo) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_UserInfo.Unmarshal(m, b)
@@ -173,6 +181,69 @@ func (m *UserInfo) GetMoney() int64 {
 	return 0
 }
 
+// AppGroupInfo - app group info
+type AppGroupInfo struct {
+	App                  ChatAppType `protobuf:"varint,1,opt,name=app,proto3,enum=chatbotpb.ChatAppType" json:"app,omitempty"`
+	UsernameAppServ      string      `protobuf:"bytes,2,opt,name=usernameAppServ,proto3" json:"usernameAppServ,omitempty"`
+	Groupid              string      `protobuf:"bytes,3,opt,name=groupid,proto3" json:"groupid,omitempty"`
+	Groupname            string      `protobuf:"bytes,4,opt,name=groupname,proto3" json:"groupname,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}    `json:"-"`
+	XXX_unrecognized     []byte      `json:"-"`
+	XXX_sizecache        int32       `json:"-"`
+}
+
+func (m *AppGroupInfo) Reset()         { *m = AppGroupInfo{} }
+func (m *AppGroupInfo) String() string { return proto.CompactTextString(m) }
+func (*AppGroupInfo) ProtoMessage()    {}
+func (*AppGroupInfo) Descriptor() ([]byte, []int) {
+	return fileDescriptor_chatbot_d83d5a4163677af0, []int{2}
+}
+func (m *AppGroupInfo) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_AppGroupInfo.Unmarshal(m, b)
+}
+func (m *AppGroupInfo) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_AppGroupInfo.Marshal(b, m, deterministic)
+}
+func (dst *AppGroupInfo) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_AppGroupInfo.Merge(dst, src)
+}
+func (m *AppGroupInfo) XXX_Size() int {
+	return xxx_messageInfo_AppGroupInfo.Size(m)
+}
+func (m *AppGroupInfo) XXX_DiscardUnknown() {
+	xxx_messageInfo_AppGroupInfo.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_AppGroupInfo proto.InternalMessageInfo
+
+func (m *AppGroupInfo) GetApp() ChatAppType {
+	if m != nil {
+		return m.App
+	}
+	return ChatAppType_CAT_TELEGRAM
+}
+
+func (m *AppGroupInfo) GetUsernameAppServ() string {
+	if m != nil {
+		return m.UsernameAppServ
+	}
+	return ""
+}
+
+func (m *AppGroupInfo) GetGroupid() string {
+	if m != nil {
+		return m.Groupid
+	}
+	return ""
+}
+
+func (m *AppGroupInfo) GetGroupname() string {
+	if m != nil {
+		return m.Groupname
+	}
+	return ""
+}
+
 // RegisterAppService - register app service
 type RegisterAppService struct {
 	Token                string      `protobuf:"bytes,1,opt,name=token,proto3" json:"token,omitempty"`
@@ -187,7 +258,7 @@ func (m *RegisterAppService) Reset()         { *m = RegisterAppService{} }
 func (m *RegisterAppService) String() string { return proto.CompactTextString(m) }
 func (*RegisterAppService) ProtoMessage()    {}
 func (*RegisterAppService) Descriptor() ([]byte, []int) {
-	return fileDescriptor_chatbot_bcb94d0b7321ef21, []int{2}
+	return fileDescriptor_chatbot_d83d5a4163677af0, []int{3}
 }
 func (m *RegisterAppService) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_RegisterAppService.Unmarshal(m, b)
@@ -241,7 +312,7 @@ func (m *ReplyRegisterAppService) Reset()         { *m = ReplyRegisterAppService
 func (m *ReplyRegisterAppService) String() string { return proto.CompactTextString(m) }
 func (*ReplyRegisterAppService) ProtoMessage()    {}
 func (*ReplyRegisterAppService) Descriptor() ([]byte, []int) {
-	return fileDescriptor_chatbot_bcb94d0b7321ef21, []int{3}
+	return fileDescriptor_chatbot_d83d5a4163677af0, []int{4}
 }
 func (m *ReplyRegisterAppService) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ReplyRegisterAppService.Unmarshal(m, b)
@@ -275,11 +346,252 @@ func (m *ReplyRegisterAppService) GetError() string {
 	return ""
 }
 
+// ChatMsg - chat message
+type ChatMsg struct {
+	Msg                  string        `protobuf:"bytes,1,opt,name=msg,proto3" json:"msg,omitempty"`
+	Uai                  *UserAppInfo  `protobuf:"bytes,2,opt,name=uai,proto3" json:"uai,omitempty"`
+	Agi                  *AppGroupInfo `protobuf:"bytes,3,opt,name=agi,proto3" json:"agi,omitempty"`
+	Filename             string        `protobuf:"bytes,4,opt,name=filename,proto3" json:"filename,omitempty"`
+	FileData             []byte        `protobuf:"bytes,5,opt,name=fileData,proto3" json:"fileData,omitempty"`
+	Error                string        `protobuf:"bytes,6,opt,name=error,proto3" json:"error,omitempty"`
+	Token                string        `protobuf:"bytes,7,opt,name=token,proto3" json:"token,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}      `json:"-"`
+	XXX_unrecognized     []byte        `json:"-"`
+	XXX_sizecache        int32         `json:"-"`
+}
+
+func (m *ChatMsg) Reset()         { *m = ChatMsg{} }
+func (m *ChatMsg) String() string { return proto.CompactTextString(m) }
+func (*ChatMsg) ProtoMessage()    {}
+func (*ChatMsg) Descriptor() ([]byte, []int) {
+	return fileDescriptor_chatbot_d83d5a4163677af0, []int{5}
+}
+func (m *ChatMsg) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_ChatMsg.Unmarshal(m, b)
+}
+func (m *ChatMsg) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_ChatMsg.Marshal(b, m, deterministic)
+}
+func (dst *ChatMsg) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ChatMsg.Merge(dst, src)
+}
+func (m *ChatMsg) XXX_Size() int {
+	return xxx_messageInfo_ChatMsg.Size(m)
+}
+func (m *ChatMsg) XXX_DiscardUnknown() {
+	xxx_messageInfo_ChatMsg.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ChatMsg proto.InternalMessageInfo
+
+func (m *ChatMsg) GetMsg() string {
+	if m != nil {
+		return m.Msg
+	}
+	return ""
+}
+
+func (m *ChatMsg) GetUai() *UserAppInfo {
+	if m != nil {
+		return m.Uai
+	}
+	return nil
+}
+
+func (m *ChatMsg) GetAgi() *AppGroupInfo {
+	if m != nil {
+		return m.Agi
+	}
+	return nil
+}
+
+func (m *ChatMsg) GetFilename() string {
+	if m != nil {
+		return m.Filename
+	}
+	return ""
+}
+
+func (m *ChatMsg) GetFileData() []byte {
+	if m != nil {
+		return m.FileData
+	}
+	return nil
+}
+
+func (m *ChatMsg) GetError() string {
+	if m != nil {
+		return m.Error
+	}
+	return ""
+}
+
+func (m *ChatMsg) GetToken() string {
+	if m != nil {
+		return m.Token
+	}
+	return ""
+}
+
+// ChatMsgStream - chat message stream
+type ChatMsgStream struct {
+	// totalLength - If the message is too long, it will send data in multiple msg, this is the total length.
+	TotalLength int32 `protobuf:"varint,1,opt,name=totalLength,proto3" json:"totalLength,omitempty"`
+	// curStart - The starting point of the current data (in bytes).
+	CurStart int32 `protobuf:"varint,2,opt,name=curStart,proto3" json:"curStart,omitempty"`
+	// curLength - The length of the current data (in bytes).
+	CurLength int32 `protobuf:"varint,3,opt,name=curLength,proto3" json:"curLength,omitempty"`
+	// hashData - This is the hash of each paragraph.
+	HashData string `protobuf:"bytes,4,opt,name=hashData,proto3" json:"hashData,omitempty"`
+	// totalHashData - If multiple messages return data, this is the hash value of all data, only sent in the last message.
+	TotalHashData string `protobuf:"bytes,5,opt,name=totalHashData,proto3" json:"totalHashData,omitempty"`
+	// data
+	Data []byte `protobuf:"bytes,6,opt,name=data,proto3" json:"data,omitempty"`
+	// error
+	Error string `protobuf:"bytes,7,opt,name=error,proto3" json:"error,omitempty"`
+	// token
+	Token                string   `protobuf:"bytes,8,opt,name=token,proto3" json:"token,omitempty"`
+	Chat                 *ChatMsg `protobuf:"bytes,10,opt,name=chat,proto3" json:"chat,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *ChatMsgStream) Reset()         { *m = ChatMsgStream{} }
+func (m *ChatMsgStream) String() string { return proto.CompactTextString(m) }
+func (*ChatMsgStream) ProtoMessage()    {}
+func (*ChatMsgStream) Descriptor() ([]byte, []int) {
+	return fileDescriptor_chatbot_d83d5a4163677af0, []int{6}
+}
+func (m *ChatMsgStream) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_ChatMsgStream.Unmarshal(m, b)
+}
+func (m *ChatMsgStream) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_ChatMsgStream.Marshal(b, m, deterministic)
+}
+func (dst *ChatMsgStream) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ChatMsgStream.Merge(dst, src)
+}
+func (m *ChatMsgStream) XXX_Size() int {
+	return xxx_messageInfo_ChatMsgStream.Size(m)
+}
+func (m *ChatMsgStream) XXX_DiscardUnknown() {
+	xxx_messageInfo_ChatMsgStream.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ChatMsgStream proto.InternalMessageInfo
+
+func (m *ChatMsgStream) GetTotalLength() int32 {
+	if m != nil {
+		return m.TotalLength
+	}
+	return 0
+}
+
+func (m *ChatMsgStream) GetCurStart() int32 {
+	if m != nil {
+		return m.CurStart
+	}
+	return 0
+}
+
+func (m *ChatMsgStream) GetCurLength() int32 {
+	if m != nil {
+		return m.CurLength
+	}
+	return 0
+}
+
+func (m *ChatMsgStream) GetHashData() string {
+	if m != nil {
+		return m.HashData
+	}
+	return ""
+}
+
+func (m *ChatMsgStream) GetTotalHashData() string {
+	if m != nil {
+		return m.TotalHashData
+	}
+	return ""
+}
+
+func (m *ChatMsgStream) GetData() []byte {
+	if m != nil {
+		return m.Data
+	}
+	return nil
+}
+
+func (m *ChatMsgStream) GetError() string {
+	if m != nil {
+		return m.Error
+	}
+	return ""
+}
+
+func (m *ChatMsgStream) GetToken() string {
+	if m != nil {
+		return m.Token
+	}
+	return ""
+}
+
+func (m *ChatMsgStream) GetChat() *ChatMsg {
+	if m != nil {
+		return m.Chat
+	}
+	return nil
+}
+
+// RequestChatData - request chat data
+type RequestChatData struct {
+	Token                string   `protobuf:"bytes,1,opt,name=token,proto3" json:"token,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *RequestChatData) Reset()         { *m = RequestChatData{} }
+func (m *RequestChatData) String() string { return proto.CompactTextString(m) }
+func (*RequestChatData) ProtoMessage()    {}
+func (*RequestChatData) Descriptor() ([]byte, []int) {
+	return fileDescriptor_chatbot_d83d5a4163677af0, []int{7}
+}
+func (m *RequestChatData) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_RequestChatData.Unmarshal(m, b)
+}
+func (m *RequestChatData) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_RequestChatData.Marshal(b, m, deterministic)
+}
+func (dst *RequestChatData) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_RequestChatData.Merge(dst, src)
+}
+func (m *RequestChatData) XXX_Size() int {
+	return xxx_messageInfo_RequestChatData.Size(m)
+}
+func (m *RequestChatData) XXX_DiscardUnknown() {
+	xxx_messageInfo_RequestChatData.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_RequestChatData proto.InternalMessageInfo
+
+func (m *RequestChatData) GetToken() string {
+	if m != nil {
+		return m.Token
+	}
+	return ""
+}
+
 func init() {
 	proto.RegisterType((*UserAppInfo)(nil), "chatbotpb.UserAppInfo")
 	proto.RegisterType((*UserInfo)(nil), "chatbotpb.UserInfo")
+	proto.RegisterType((*AppGroupInfo)(nil), "chatbotpb.AppGroupInfo")
 	proto.RegisterType((*RegisterAppService)(nil), "chatbotpb.RegisterAppService")
 	proto.RegisterType((*ReplyRegisterAppService)(nil), "chatbotpb.ReplyRegisterAppService")
+	proto.RegisterType((*ChatMsg)(nil), "chatbotpb.ChatMsg")
+	proto.RegisterType((*ChatMsgStream)(nil), "chatbotpb.ChatMsgStream")
+	proto.RegisterType((*RequestChatData)(nil), "chatbotpb.RequestChatData")
 	proto.RegisterEnum("chatbotpb.ChatAppType", ChatAppType_name, ChatAppType_value)
 }
 
@@ -297,6 +609,10 @@ const _ = grpc.SupportPackageIsVersion4
 type ChatBotServiceClient interface {
 	// registerAppService - register app service
 	RegisterAppService(ctx context.Context, in *RegisterAppService, opts ...grpc.CallOption) (*ReplyRegisterAppService, error)
+	// sendChat - send chat
+	SendChat(ctx context.Context, opts ...grpc.CallOption) (ChatBotService_SendChatClient, error)
+	// requestChat - request chat
+	RequestChat(ctx context.Context, in *RequestChatData, opts ...grpc.CallOption) (ChatBotService_RequestChatClient, error)
 }
 
 type chatBotServiceClient struct {
@@ -316,10 +632,77 @@ func (c *chatBotServiceClient) RegisterAppService(ctx context.Context, in *Regis
 	return out, nil
 }
 
+func (c *chatBotServiceClient) SendChat(ctx context.Context, opts ...grpc.CallOption) (ChatBotService_SendChatClient, error) {
+	stream, err := c.cc.NewStream(ctx, &_ChatBotService_serviceDesc.Streams[0], "/chatbotpb.ChatBotService/sendChat", opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &chatBotServiceSendChatClient{stream}
+	return x, nil
+}
+
+type ChatBotService_SendChatClient interface {
+	Send(*ChatMsgStream) error
+	Recv() (*ChatMsgStream, error)
+	grpc.ClientStream
+}
+
+type chatBotServiceSendChatClient struct {
+	grpc.ClientStream
+}
+
+func (x *chatBotServiceSendChatClient) Send(m *ChatMsgStream) error {
+	return x.ClientStream.SendMsg(m)
+}
+
+func (x *chatBotServiceSendChatClient) Recv() (*ChatMsgStream, error) {
+	m := new(ChatMsgStream)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
+func (c *chatBotServiceClient) RequestChat(ctx context.Context, in *RequestChatData, opts ...grpc.CallOption) (ChatBotService_RequestChatClient, error) {
+	stream, err := c.cc.NewStream(ctx, &_ChatBotService_serviceDesc.Streams[1], "/chatbotpb.ChatBotService/requestChat", opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &chatBotServiceRequestChatClient{stream}
+	if err := x.ClientStream.SendMsg(in); err != nil {
+		return nil, err
+	}
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	return x, nil
+}
+
+type ChatBotService_RequestChatClient interface {
+	Recv() (*ChatMsgStream, error)
+	grpc.ClientStream
+}
+
+type chatBotServiceRequestChatClient struct {
+	grpc.ClientStream
+}
+
+func (x *chatBotServiceRequestChatClient) Recv() (*ChatMsgStream, error) {
+	m := new(ChatMsgStream)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
 // ChatBotServiceServer is the server API for ChatBotService service.
 type ChatBotServiceServer interface {
 	// registerAppService - register app service
 	RegisterAppService(context.Context, *RegisterAppService) (*ReplyRegisterAppService, error)
+	// sendChat - send chat
+	SendChat(ChatBotService_SendChatServer) error
+	// requestChat - request chat
+	RequestChat(*RequestChatData, ChatBotService_RequestChatServer) error
 }
 
 func RegisterChatBotServiceServer(s *grpc.Server, srv ChatBotServiceServer) {
@@ -344,6 +727,53 @@ func _ChatBotService_RegisterAppService_Handler(srv interface{}, ctx context.Con
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ChatBotService_SendChat_Handler(srv interface{}, stream grpc.ServerStream) error {
+	return srv.(ChatBotServiceServer).SendChat(&chatBotServiceSendChatServer{stream})
+}
+
+type ChatBotService_SendChatServer interface {
+	Send(*ChatMsgStream) error
+	Recv() (*ChatMsgStream, error)
+	grpc.ServerStream
+}
+
+type chatBotServiceSendChatServer struct {
+	grpc.ServerStream
+}
+
+func (x *chatBotServiceSendChatServer) Send(m *ChatMsgStream) error {
+	return x.ServerStream.SendMsg(m)
+}
+
+func (x *chatBotServiceSendChatServer) Recv() (*ChatMsgStream, error) {
+	m := new(ChatMsgStream)
+	if err := x.ServerStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
+func _ChatBotService_RequestChat_Handler(srv interface{}, stream grpc.ServerStream) error {
+	m := new(RequestChatData)
+	if err := stream.RecvMsg(m); err != nil {
+		return err
+	}
+	return srv.(ChatBotServiceServer).RequestChat(m, &chatBotServiceRequestChatServer{stream})
+}
+
+type ChatBotService_RequestChatServer interface {
+	Send(*ChatMsgStream) error
+	grpc.ServerStream
+}
+
+type chatBotServiceRequestChatServer struct {
+	grpc.ServerStream
+}
+
+func (x *chatBotServiceRequestChatServer) Send(m *ChatMsgStream) error {
+	return x.ServerStream.SendMsg(m)
+}
+
 var _ChatBotService_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "chatbotpb.ChatBotService",
 	HandlerType: (*ChatBotServiceServer)(nil),
@@ -353,34 +783,65 @@ var _ChatBotService_serviceDesc = grpc.ServiceDesc{
 			Handler:    _ChatBotService_RegisterAppService_Handler,
 		},
 	},
-	Streams:  []grpc.StreamDesc{},
+	Streams: []grpc.StreamDesc{
+		{
+			StreamName:    "sendChat",
+			Handler:       _ChatBotService_SendChat_Handler,
+			ServerStreams: true,
+			ClientStreams: true,
+		},
+		{
+			StreamName:    "requestChat",
+			Handler:       _ChatBotService_RequestChat_Handler,
+			ServerStreams: true,
+		},
+	},
 	Metadata: "chatbot.proto",
 }
 
-func init() { proto.RegisterFile("chatbot.proto", fileDescriptor_chatbot_bcb94d0b7321ef21) }
+func init() { proto.RegisterFile("chatbot.proto", fileDescriptor_chatbot_d83d5a4163677af0) }
 
-var fileDescriptor_chatbot_bcb94d0b7321ef21 = []byte{
-	// 352 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x8c, 0x92, 0xd1, 0x6a, 0xea, 0x40,
-	0x10, 0x86, 0xdd, 0x13, 0xf5, 0xe8, 0x78, 0x8e, 0x84, 0x41, 0x3c, 0x41, 0x38, 0x10, 0x72, 0x15,
-	0xbc, 0xb0, 0xc5, 0x3e, 0x41, 0x2a, 0x52, 0x0a, 0x16, 0x71, 0x6b, 0x2f, 0x7a, 0x55, 0x56, 0xbb,
-	0xad, 0x62, 0xcd, 0x0e, 0x9b, 0xb5, 0xd4, 0x27, 0xe8, 0x6b, 0x97, 0xdd, 0xa8, 0x44, 0xb4, 0xd0,
-	0xbb, 0xf9, 0x33, 0x7f, 0xe6, 0xff, 0x66, 0x58, 0xf8, 0x3b, 0x5f, 0x08, 0x33, 0x53, 0xa6, 0x47,
-	0x5a, 0x19, 0x85, 0xf5, 0x9d, 0xa4, 0x59, 0xf4, 0xc9, 0xa0, 0xf1, 0x90, 0x49, 0x9d, 0x10, 0xdd,
-	0xa6, 0x2f, 0x0a, 0x63, 0xf0, 0x04, 0x51, 0xc0, 0x42, 0x16, 0x37, 0xfb, 0xed, 0xde, 0xc1, 0xd8,
-	0x1b, 0x2c, 0x84, 0x49, 0x88, 0xa6, 0x5b, 0x92, 0xdc, 0x5a, 0xb0, 0x0d, 0x55, 0x41, 0xb4, 0x59,
-	0x3e, 0x07, 0xbf, 0x42, 0x16, 0xd7, 0xf9, 0x4e, 0x61, 0x07, 0x6a, 0xb6, 0x4a, 0xc5, 0x5a, 0x06,
-	0x9e, 0xeb, 0x1c, 0xb4, 0xed, 0xd9, 0x89, 0xe9, 0x66, 0x9d, 0x05, 0xe5, 0x90, 0xc5, 0x15, 0x7e,
-	0xd0, 0x91, 0x86, 0x9a, 0x05, 0x71, 0x14, 0x3e, 0x78, 0x76, 0xb0, 0xa5, 0xf0, 0xb8, 0x2d, 0x11,
-	0xa1, 0xec, 0x26, 0xe6, 0x59, 0xae, 0xc6, 0x2e, 0x94, 0x05, 0x51, 0x16, 0x78, 0xa1, 0x17, 0x37,
-	0x8e, 0x60, 0x0b, 0x1b, 0x71, 0xe7, 0xc1, 0x16, 0x54, 0xd6, 0x2a, 0x95, 0xdb, 0x00, 0xdc, 0xcc,
-	0x5c, 0x44, 0x1f, 0x80, 0x5c, 0xbe, 0x2e, 0x33, 0xe3, 0xec, 0xf7, 0x52, 0xbf, 0x2f, 0xe7, 0xd2,
-	0x7a, 0x8d, 0x5a, 0xc9, 0xd4, 0xe5, 0xd7, 0x79, 0x2e, 0xf0, 0x12, 0x7e, 0x8b, 0x7c, 0x7f, 0x07,
-	0xf1, 0xfd, 0x75, 0xf6, 0x36, 0xbb, 0xed, 0x26, 0x93, 0xba, 0x78, 0x89, 0xbd, 0x8e, 0x04, 0xfc,
-	0xe3, 0x92, 0xde, 0xb6, 0x67, 0xe2, 0x0b, 0x41, 0xec, 0x67, 0x41, 0x2d, 0xa8, 0x48, 0xad, 0x95,
-	0xde, 0x5d, 0x27, 0x17, 0xdd, 0x0b, 0x68, 0x14, 0xdc, 0xe8, 0xc3, 0x9f, 0x41, 0x32, 0x7d, 0x9a,
-	0x0e, 0x47, 0xc3, 0x1b, 0x9e, 0xdc, 0xf9, 0x25, 0x6c, 0x02, 0xd8, 0x2f, 0x83, 0xf1, 0x78, 0x34,
-	0x99, 0xf8, 0xac, 0xbf, 0x82, 0xa6, 0xfd, 0xe1, 0x5a, 0x99, 0x3d, 0xca, 0x23, 0xa0, 0x3e, 0x05,
-	0xfc, 0x5f, 0xe0, 0x39, 0xe5, 0xef, 0x44, 0x47, 0xed, 0xb3, 0x3b, 0x46, 0xa5, 0x59, 0xd5, 0x3d,
-	0xc5, 0xab, 0xaf, 0x00, 0x00, 0x00, 0xff, 0xff, 0xfa, 0xc2, 0x1b, 0xb9, 0x9b, 0x02, 0x00, 0x00,
+var fileDescriptor_chatbot_d83d5a4163677af0 = []byte{
+	// 648 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x94, 0x54, 0xdb, 0x4e, 0xdb, 0x4c,
+	0x10, 0x66, 0x71, 0x8e, 0x63, 0x0e, 0xd1, 0x0a, 0x81, 0x15, 0xfd, 0xbf, 0x14, 0x59, 0x55, 0xeb,
+	0x72, 0x41, 0x51, 0xfa, 0x04, 0x2e, 0x20, 0x5a, 0x09, 0x84, 0x58, 0xe8, 0x45, 0xaf, 0xaa, 0x85,
+	0x2c, 0x8e, 0x55, 0x62, 0x6f, 0xd7, 0xeb, 0xaa, 0x3c, 0x48, 0x6f, 0xfa, 0x16, 0x7d, 0x97, 0x3e,
+	0x4d, 0xaf, 0xaa, 0x19, 0xdb, 0xb1, 0x43, 0x42, 0xd5, 0xde, 0xcd, 0x37, 0x33, 0xeb, 0xf9, 0xbe,
+	0x39, 0x18, 0x36, 0x6f, 0xa7, 0xd2, 0xde, 0xa4, 0xf6, 0x40, 0x9b, 0xd4, 0xa6, 0xbc, 0x5f, 0x42,
+	0x7d, 0xe3, 0xff, 0x60, 0xe0, 0xbe, 0xcf, 0x94, 0x09, 0xb5, 0x7e, 0x97, 0xdc, 0xa5, 0x3c, 0x00,
+	0x47, 0x6a, 0xed, 0xb1, 0x11, 0x0b, 0xb6, 0xc6, 0xbb, 0x07, 0xf3, 0xc4, 0x83, 0xa3, 0xa9, 0xb4,
+	0xa1, 0xd6, 0xd7, 0x0f, 0x5a, 0x09, 0x4c, 0xe1, 0xbb, 0xd0, 0x91, 0x5a, 0xe7, 0xf1, 0xc4, 0x5b,
+	0x1f, 0xb1, 0xa0, 0x2f, 0x4a, 0xc4, 0x87, 0xd0, 0x43, 0x2b, 0x91, 0x33, 0xe5, 0x39, 0x14, 0x99,
+	0x63, 0x8c, 0xe1, 0x17, 0x93, 0x7c, 0x96, 0x79, 0xad, 0x11, 0x0b, 0xda, 0x62, 0x8e, 0x79, 0x00,
+	0xdb, 0x79, 0xa6, 0x0c, 0xe6, 0x85, 0x5a, 0x5f, 0x29, 0xf3, 0xc5, 0x6b, 0xd3, 0xf3, 0xc7, 0x6e,
+	0xdf, 0x40, 0x0f, 0x29, 0x13, 0xdf, 0x01, 0x38, 0x48, 0x01, 0xf9, 0x3a, 0x02, 0x4d, 0xce, 0xa1,
+	0x45, 0xb5, 0x0b, 0x56, 0x64, 0xf3, 0x7d, 0x68, 0x49, 0xad, 0x33, 0xcf, 0x19, 0x39, 0x81, 0xbb,
+	0x20, 0xab, 0xa1, 0x5d, 0x50, 0x0e, 0xdf, 0x81, 0xf6, 0x2c, 0x4d, 0xd4, 0x83, 0x07, 0xf4, 0xcd,
+	0x02, 0xf8, 0xdf, 0x19, 0x6c, 0x84, 0x5a, 0x9f, 0x9a, 0x34, 0xff, 0xd7, 0x46, 0xad, 0x10, 0xb6,
+	0xbe, 0x52, 0x18, 0xf7, 0xa0, 0x1b, 0x61, 0x81, 0x78, 0x52, 0x76, 0xae, 0x82, 0xfc, 0x3f, 0xe8,
+	0x93, 0x49, 0xca, 0x5a, 0x14, 0xab, 0x1d, 0xfe, 0x57, 0xe0, 0x42, 0x45, 0x71, 0x66, 0x49, 0x0b,
+	0x7e, 0x2a, 0xbe, 0x55, 0x28, 0xc4, 0xa6, 0x9f, 0x54, 0x42, 0x1c, 0xfb, 0xa2, 0x00, 0xfc, 0x10,
+	0xba, 0xb2, 0x60, 0x47, 0x2c, 0x9e, 0xe6, 0x5e, 0xa5, 0xe1, 0xd0, 0x2a, 0xa2, 0xd5, 0x40, 0x2b,
+	0xec, 0x4b, 0xd8, 0x13, 0x4a, 0xdf, 0x3f, 0xac, 0x28, 0xdf, 0x28, 0xc4, 0xfe, 0xae, 0xd0, 0x0e,
+	0xb4, 0x95, 0x31, 0xa9, 0x29, 0xdb, 0x53, 0x00, 0xff, 0x27, 0x83, 0x2e, 0xa6, 0x9f, 0x67, 0x11,
+	0x4e, 0x7b, 0x96, 0x45, 0xa5, 0x20, 0x34, 0x71, 0x0c, 0xb9, 0x8c, 0xe9, 0xc5, 0xd3, 0x83, 0xc5,
+	0x14, 0xfe, 0x12, 0x1c, 0x19, 0xc5, 0xa4, 0xc0, 0x1d, 0xef, 0x35, 0x32, 0x9b, 0x63, 0x15, 0x98,
+	0x83, 0x8a, 0xef, 0xe2, 0x7b, 0xd5, 0x68, 0xf6, 0x1c, 0x57, 0xb1, 0x63, 0x69, 0x25, 0xed, 0xe7,
+	0x86, 0x98, 0xe3, 0x5a, 0x40, 0xa7, 0x21, 0xa0, 0x9e, 0x43, 0xb7, 0x31, 0x07, 0xff, 0xdb, 0x3a,
+	0x6c, 0x96, 0xb2, 0xae, 0xac, 0x51, 0x72, 0xc6, 0x47, 0xe0, 0xda, 0xd4, 0xca, 0xfb, 0x33, 0x95,
+	0x44, 0x76, 0x4a, 0x22, 0xdb, 0xa2, 0xe9, 0xa2, 0xf3, 0xc9, 0xcd, 0x95, 0x95, 0xc6, 0x92, 0x62,
+	0x3c, 0x9f, 0x12, 0xe3, 0x86, 0xdc, 0xe6, 0xa6, 0x7c, 0xeb, 0x50, 0xb0, 0x76, 0xe0, 0xcb, 0xa9,
+	0xcc, 0xa6, 0xc4, 0xba, 0x54, 0x54, 0x61, 0xfe, 0x0c, 0x36, 0xa9, 0xc8, 0xdb, 0x2a, 0xa1, 0x38,
+	0xbb, 0x45, 0x27, 0x9e, 0xd5, 0x04, 0x83, 0x1d, 0xd2, 0x4c, 0x76, 0xad, 0xb7, 0xbb, 0x52, 0x6f,
+	0xaf, 0xb9, 0x77, 0xcf, 0xa1, 0x85, 0x2d, 0xa7, 0xab, 0x72, 0xc7, 0xfc, 0xd1, 0x2e, 0x9c, 0x67,
+	0x91, 0xa0, 0xb8, 0xff, 0x02, 0xb6, 0x85, 0xfa, 0x9c, 0xab, 0xcc, 0xa2, 0xbf, 0x6a, 0xeb, 0xf2,
+	0x22, 0xef, 0xbf, 0x02, 0xb7, 0xb1, 0x45, 0x7c, 0x00, 0x1b, 0x47, 0xe1, 0xf5, 0xc7, 0xeb, 0x93,
+	0xb3, 0x93, 0x53, 0x11, 0x9e, 0x0f, 0xd6, 0xf8, 0x16, 0x00, 0x7a, 0x8e, 0x2e, 0x2e, 0xce, 0x2e,
+	0x2f, 0x07, 0x6c, 0xfc, 0x8b, 0xc1, 0x16, 0xbe, 0x78, 0x93, 0xda, 0x6a, 0x47, 0x3f, 0x00, 0x37,
+	0xcb, 0x9b, 0xfb, 0x7f, 0x83, 0xdc, 0xf2, 0x62, 0x0f, 0xfd, 0x85, 0xf0, 0xca, 0xe5, 0xf7, 0xd7,
+	0xf8, 0x31, 0xf4, 0x32, 0x95, 0x4c, 0xb0, 0x20, 0xf7, 0x96, 0xd5, 0x16, 0x33, 0x1f, 0x3e, 0x19,
+	0xf1, 0xd7, 0x02, 0x76, 0xc8, 0xf8, 0x29, 0xb8, 0xa6, 0xee, 0x06, 0x1f, 0x2e, 0x94, 0x5e, 0xe8,
+	0xd2, 0x9f, 0x3e, 0x75, 0xc8, 0x6e, 0x3a, 0xf4, 0xe7, 0x7f, 0xfd, 0x3b, 0x00, 0x00, 0xff, 0xff,
+	0xbe, 0x1d, 0xfc, 0xff, 0x0a, 0x06, 0x00, 0x00,
 }

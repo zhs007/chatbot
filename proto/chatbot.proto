@@ -13,6 +13,7 @@ message UserAppInfo {
     string appuid = 2;
     string appuname = 3;
     int32 chatnums = 4;
+    string usernameAppServ = 5;
 }
 
 // UserInfo - user info
@@ -22,6 +23,14 @@ message UserInfo {
     repeated UserAppInfo apps = 3;
     
     int64 money = 10;
+}
+
+// AppGroupInfo - app group info
+message AppGroupInfo {
+    ChatAppType app = 1;
+    string usernameAppServ = 2;
+    string groupid = 3;
+    string groupname = 4;
 }
 
 // RegisterAppService - register app service
@@ -37,28 +46,51 @@ message ReplyRegisterAppService {
     string error = 2;
 }
 
-// // ReplyChat - reply crawler
-// message ReplyCrawlerStream {
-//     // totalLength - If the message is too long, it will send data in multiple msg, this is the total length.
-//     int32 totalLength = 1;
-//     // curStart - The starting point of the current data (in bytes).
-//     int32 curStart = 2;
-//     // curLength - The length of the current data (in bytes).
-//     int32 curLength = 3;
-//     // hashData - This is the hash of each paragraph.
-//     string hashData = 4;
-//     // totalHashData - If multiple messages return data, this is the hash value of all data, only sent in the last message.
-//     string totalHashData = 5;
-//     // data
-//     bytes data = 6;
+// ChatMsg - chat message
+message ChatMsg {
+    string msg = 1;
+    UserAppInfo uai = 2;
+    AppGroupInfo agi = 3;
+    string filename = 4;
+    bytes fileData = 5;
+    string error = 6;
+    string token = 7;
+}
 
-//     string error = 100;
+// ChatMsgStream - chat message stream
+message ChatMsgStream {
+    // totalLength - If the message is too long, it will send data in multiple msg, this is the total length.
+    int32 totalLength = 1;
+    // curStart - The starting point of the current data (in bytes).
+    int32 curStart = 2;
+    // curLength - The length of the current data (in bytes).
+    int32 curLength = 3;
+    // hashData - This is the hash of each paragraph.
+    string hashData = 4;
+    // totalHashData - If multiple messages return data, this is the hash value of all data, only sent in the last message.
+    string totalHashData = 5;
+    // data
+    bytes data = 6;
+    // error
+    string error = 7;
+    // token
+    string token = 8;
 
-//     ReplyCrawler replyCrawler = 200;
-// }
+    ChatMsg chat = 10;
+}
+
+// RequestChatData - request chat data
+message RequestChatData {
+    string token = 1;
+}
 
 // ChatBotService - ChatBot service
 service ChatBotService {
     // registerAppService - register app service
     rpc registerAppService(RegisterAppService) returns (ReplyRegisterAppService) {}
+
+    // sendChat - send chat
+    rpc sendChat(stream ChatMsgStream) returns (stream ChatMsgStream) {}
+    // requestChat - request chat
+    rpc requestChat(RequestChatData) returns (stream ChatMsgStream) {}    
 }
