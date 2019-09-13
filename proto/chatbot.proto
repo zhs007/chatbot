@@ -28,6 +28,7 @@ message UserInfo {
 message RegisterAppService {
     string token = 1;
     ChatAppType appType = 2;
+    string username = 3;
 }
 
 // ReplyRegisterAppService - reply RegisterAppService
@@ -59,5 +60,5 @@ message ReplyRegisterAppService {
 // ChatBotService - ChatBot service
 service ChatBotService {
     // registerAppService - register app service
-    rpc registerAppService(RegisterAppService) returns (stream ReplyRegisterAppService) {}
+    rpc registerAppService(RegisterAppService) returns (ReplyRegisterAppService) {}
 }

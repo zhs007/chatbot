@@ -29,7 +29,7 @@ type Config struct {
 	//------------------------------------------------------------------
 	// Config
 
-	ServAddr string
+	BindAddr string
 }
 
 func checkAppServConfig(cfg *AppServConfig) error {
@@ -63,8 +63,8 @@ func checkConfig(cfg *Config) error {
 		}
 	}
 
-	if cfg.ServAddr == "" {
-		return chatbotbase.ErrNoServAddr
+	if cfg.BindAddr == "" {
+		return chatbotbase.ErrNoBindAddr
 	}
 
 	return nil
