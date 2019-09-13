@@ -23,6 +23,11 @@ var (
 	// ErrInvalidAppServUserName - invalid appservusername
 	ErrInvalidAppServUserName = errors.New("invalid appservusername")
 
+	// ErrNoServAddrInClient - no servaddr in client
+	ErrNoServAddrInClient = errors.New("no servaddr in client")
+	// ErrNoTokenInClient - no token in client
+	ErrNoTokenInClient = errors.New("no token in client")
+
 	// ErrUnkonow - unknow error
 	ErrUnkonow = errors.New("unknow error")
 )

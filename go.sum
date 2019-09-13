@@ -38,6 +38,7 @@ github.com/stretchr/testify v1.4.0/go.mod h1:j7eGeouHqKxXV5pUuKE4zz7dFj8WfuZ+81P
 github.com/syndtr/goleveldb v0.0.0-20190203031304-2f17a3356c66/go.mod h1:ZVVdQEZoIme9iO1Ch2Jdy24qqXrMMOU6lpPAyBWyWuQ=
 github.com/syndtr/goleveldb v1.0.0/go.mod h1:ZVVdQEZoIme9iO1Ch2Jdy24qqXrMMOU6lpPAyBWyWuQ=
 github.com/tecbot/gorocksdb v0.0.0-20190705090504-162552197222/go.mod h1:ahpPrc7HpcfEWDQRZEmnXMzHY03mLDYMCxeDzy46i+8=
+github.com/zhs007/adacore v0.1.56 h1:tg4IF3OZO2qOUJvR/7tUaXWN4j+9E6/R0DJiYTiW6S4=
 github.com/zhs007/adacore v0.1.56/go.mod h1:6bITOZEC5OdPAXQ9VpNwDi8afCucqL+Bch1c+nFexLM=
 github.com/zhs007/anka v0.0.0-20180701110635-4fa730b5b368/go.mod h1:E4SJE09/V3y/yZm+fpccYMSTNC0eY2GrJ4JBQoE4qe0=
 github.com/zhs007/ankadb v0.3.31/go.mod h1:IsfaA6sTij3tK+2knD9UMdMfN1xGOmwjRJOsEfg7NKk=
