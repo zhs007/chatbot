@@ -11,3 +11,6 @@ const AppServDBKeyPrefix = "as:"
 func makeAppServKey(token string) string {
 	return chatbotbase.AppendString(AppServDBKeyPrefix, token)
 }
+
+// UserIDDBKey - This is UserIDDBKey
+const UserIDDBKey = "uid"

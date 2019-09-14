@@ -21,6 +21,7 @@ message UserInfo {
     int64 uid = 1;
     string name = 2;
     repeated UserAppInfo apps = 3;
+    repeated string tags = 4;
     
     int64 money = 10;
 }

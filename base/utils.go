@@ -2,6 +2,7 @@ package chatbotbase
 
 import (
 	"bytes"
+	"encoding/binary"
 	"encoding/json"
 	"fmt"
 	"time"
@@ -64,4 +65,16 @@ func IndexOfArrayString(arr []string, str string) int {
 func Timestamp2Str(ts int64) string {
 	tm := time.Unix(ts, 0)
 	return tm.Format("2006-01-02 15:04:05")
+}
+
+// Int64ToBytes - int64 -> bytes
+func Int64ToBytes(i int64) []byte {
+	var buf = make([]byte, 8)
+	binary.BigEndian.PutUint64(buf, uint64(i))
+	return buf
+}
+
+// BytesToInt64 - bytes -> int64
+func BytesToInt64(buf []byte) int64 {
+	return int64(binary.BigEndian.Uint64(buf))
 }
