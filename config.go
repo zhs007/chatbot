@@ -7,16 +7,7 @@ import (
 	"gopkg.in/yaml.v2"
 
 	chatbotbase "github.com/zhs007/chatbot/base"
-	chatbotpb "github.com/zhs007/chatbot/proto"
 )
-
-// AppServConfig - app serv
-type AppServConfig struct {
-	Type        string
-	Token       string
-	UserName    string
-	typeAppServ chatbotpb.ChatAppType
-}
 
 // Config - config
 type Config struct {
@@ -24,40 +15,19 @@ type Config struct {
 	//------------------------------------------------------------------
 	// appserv
 
-	AppServ []AppServConfig
+	AppServ []chatbotbase.AppServConfig
 
 	//------------------------------------------------------------------
 	// Config
 
 	BindAddr string
-}
-
-func checkAppServConfig(cfg *AppServConfig) error {
-	if cfg.Type == "" {
-		return chatbotbase.ErrNoAppServType
-	}
-
-	if cfg.Token == "" {
-		return chatbotbase.ErrNoAppServToken
-	}
-
-	if cfg.UserName == "" {
-		return chatbotbase.ErrNoAppServUserName
-	}
-
-	t, err := chatbotbase.GetAppServType(cfg.Type)
-	if err != nil {
-		return err
-	}
-
-	cfg.typeAppServ = t
-
-	return nil
+	DBPath   string
+	DBEngine string
 }
 
 func checkConfig(cfg *Config) error {
 	for _, v := range cfg.AppServ {
-		err := checkAppServConfig(&v)
+		err := chatbotbase.CheckAppServConfig(&v)
 		if err != nil {
 			return err
 		}
@@ -65,6 +35,14 @@ func checkConfig(cfg *Config) error {
 
 	if cfg.BindAddr == "" {
 		return chatbotbase.ErrNoBindAddr
+	}
+
+	if cfg.DBPath == "" {
+		return chatbotbase.ErrNoDBPath
+	}
+
+	if cfg.DBEngine == "" {
+		return chatbotbase.ErrNoDBEngine
 	}
 
 	return nil

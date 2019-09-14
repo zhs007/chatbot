@@ -33,17 +33,24 @@ message AppGroupInfo {
     string groupname = 4;
 }
 
-// RegisterAppService - register app service
-message RegisterAppService {
+// AppServInfo - app server info
+message AppServInfo {
     string token = 1;
     ChatAppType appType = 2;
     string username = 3;
+    string sessionid = 4;
+}
+
+// RegisterAppService - register app service
+message RegisterAppService {
+    AppServInfo appServ = 1;
 }
 
 // ReplyRegisterAppService - reply RegisterAppService
 message ReplyRegisterAppService {
     ChatAppType appType = 1;
     string error = 2;
+    string sessionID = 3;
 }
 
 // ChatMsg - chat message
@@ -55,6 +62,7 @@ message ChatMsg {
     bytes fileData = 5;
     string error = 6;
     string token = 7;
+    string sessionID = 8;
 }
 
 // ChatMsgStream - chat message stream
@@ -82,6 +90,7 @@ message ChatMsgStream {
 // RequestChatData - request chat data
 message RequestChatData {
     string token = 1;
+    string sessionID = 2;
 }
 
 // ChatBotService - ChatBot service

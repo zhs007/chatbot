@@ -67,9 +67,11 @@ func (client *Client) RegisterAppService(ctx context.Context, apptype chatbotpb.
 	}
 
 	reply, err := client.client.RegisterAppService(ctx, &chatbotpb.RegisterAppService{
-		AppType:  apptype,
-		Token:    token,
-		Username: username,
+		AppServ: &chatbotpb.AppServInfo{
+			AppType:  apptype,
+			Token:    token,
+			Username: username,
+		},
 	})
 	if err != nil {
 		// if error, reset

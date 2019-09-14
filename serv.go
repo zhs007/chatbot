@@ -5,6 +5,7 @@ import (
 	"net"
 
 	chatbotbase "github.com/zhs007/chatbot/base"
+	chatbotdb "github.com/zhs007/chatbot/db"
 	chatbotpb "github.com/zhs007/chatbot/proto"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
@@ -12,16 +13,21 @@ import (
 
 // Serv - service
 type Serv struct {
-	cfg        *Config
-	lis        net.Listener
-	grpcServ   *grpc.Server
-	mgrAppServ AppServMgr
+	cfg       *Config
+	lis       net.Listener
+	grpcServ  *grpc.Server
+	dbAppServ *chatbotdb.AppServDB
 }
 
 // NewChatBotServ -
 func NewChatBotServ(cfg *Config) (*Serv, error) {
 	if cfg == nil {
 		return nil, chatbotbase.ErrNoConfig
+	}
+
+	db, err := chatbotdb.NewAppServDB(cfg.DBPath, "", cfg.DBEngine)
+	if err != nil {
+		return nil, err
 	}
 
 	lis, err := net.Listen("tcp", cfg.BindAddr)
@@ -43,11 +49,16 @@ func NewChatBotServ(cfg *Config) (*Serv, error) {
 
 	chatbotpb.RegisterChatBotServiceServer(grpcServ, serv)
 
-	serv.mgrAppServ.Init(cfg)
+	serv.dbAppServ = db
 
 	chatbotbase.Info("NewChatBotServ OK.")
 
 	return serv, nil
+}
+
+// Init - initial service
+func (serv *Serv) Init(ctx context.Context) error {
+	return serv.dbAppServ.Init(ctx, serv.cfg.AppServ)
 }
 
 // Start - start a service
@@ -66,36 +77,44 @@ func (serv *Serv) Stop() {
 func (serv *Serv) RegisterAppService(ctx context.Context, ras *chatbotpb.RegisterAppService) (
 	*chatbotpb.ReplyRegisterAppService, error) {
 
-	cfgAppServ := serv.mgrAppServ.getAppServ(ras.Token)
-	if cfgAppServ == nil {
+	asi, err := serv.dbAppServ.GetAppServ(ctx, ras.AppServ.Token)
+	if err != nil {
 		return &chatbotpb.ReplyRegisterAppService{
-			Error: chatbotbase.ErrInvalidAppServToken.Error(),
+			Error: err.Error(),
 		}, nil
 	}
 
-	if cfgAppServ.typeAppServ != ras.AppType {
+	if asi.AppType != ras.AppServ.AppType {
 		return &chatbotpb.ReplyRegisterAppService{
 			Error: chatbotbase.ErrInvalidAppServType.Error(),
 		}, nil
 	}
 
-	if cfgAppServ.UserName != ras.Username {
+	if asi.Username != ras.AppServ.Username {
 		return &chatbotpb.ReplyRegisterAppService{
 			Error: chatbotbase.ErrInvalidAppServUserName.Error(),
 		}, nil
 	}
 
+	asi, err = serv.dbAppServ.GenerateSessionID(ctx, asi)
+	if err != nil {
+		return &chatbotpb.ReplyRegisterAppService{
+			Error: err.Error(),
+		}, nil
+	}
+
 	return &chatbotpb.ReplyRegisterAppService{
-		AppType: ras.AppType,
+		AppType:   ras.AppServ.AppType,
+		SessionID: asi.Sessionid,
 	}, nil
 }
 
-// sendChat - send chat
+// SendChat - send chat
 func (serv *Serv) SendChat(scs chatbotpb.ChatBotService_SendChatServer) error {
 	return nil
 }
 
-// requestChat - request chat
+// RequestChat - request chat
 func (serv *Serv) RequestChat(req *chatbotpb.RequestChatData,
 	ecs chatbotpb.ChatBotService_RequestChatServer) error {
 

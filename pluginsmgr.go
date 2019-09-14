@@ -5,14 +5,14 @@ import (
 )
 
 // pluginsMgr - plugins manager
-type PluginsMgr struct {
+type pluginsMgr struct {
 	mapPlugin map[string]Plugin
 }
 
-var mgrPlugins *PluginsMgr
+var mgrPlugins *pluginsMgr
 
 func init() {
-	mgrPlugins = &PluginsMgr{
+	mgrPlugins = &pluginsMgr{
 		mapPlugin: make(map[string]Plugin),
 	}
 }

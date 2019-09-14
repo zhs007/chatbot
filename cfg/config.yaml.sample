@@ -5,4 +5,8 @@ appserv:
 - type: telegram
   token: cQvlFJYxLdx8wQQmuaHYToYjSqIDwF3J
   username: Ada1
+
 bindaddr: 127.0.0.1:123
+
+dbpath: ./data
+dbengine: leveldb

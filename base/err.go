@@ -12,6 +12,10 @@ var (
 
 	// ErrNoBindAddr - no bindaddr
 	ErrNoBindAddr = errors.New("no bindaddr")
+	// ErrNoDBPath - no dbpath
+	ErrNoDBPath = errors.New("no dbpath")
+	// ErrNoDBEngine - no dbengine
+	ErrNoDBEngine = errors.New("no dbengine")
 
 	// ErrNoConfig - no config
 	ErrNoConfig = errors.New("no config")
@@ -32,6 +36,9 @@ var (
 	ErrDuplicatePlugin = errors.New("duplicate plugin")
 	// ErrNoPlugin - no plugin
 	ErrNoPlugin = errors.New("no plugin")
+
+	// ErrNoAppServDB - no appserv database
+	ErrNoAppServDB = errors.New("no appserv database")
 
 	// ErrUnkonow - unknow error
 	ErrUnkonow = errors.New("unknow error")
