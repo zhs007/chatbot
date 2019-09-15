@@ -12,3 +12,6 @@
 *.out
 .vscode
 samples/corenode/data
+samples/corenode/config.yaml
+samples/telegrambot/data
+samples/telegrambot/config.yaml
