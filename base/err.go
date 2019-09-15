@@ -49,6 +49,19 @@ var (
 	// ErrNoTelegramToken - no telegramtoken
 	ErrNoTelegramToken = errors.New("no telegramtoken")
 
+	// ErrStreamNoMsg - no chat in stream
+	ErrStreamNoMsg = errors.New("no chat in stream")
+	// ErrInvalidStartInStream - invalid start in stream
+	ErrInvalidStartInStream = errors.New("invalid start in stream")
+	// ErrInvalidLengthInStream - invalid length in stream
+	ErrInvalidLengthInStream = errors.New("invalid length in stream")
+	// ErrInvalidHashInStream - invalid hash in stream
+	ErrInvalidHashInStream = errors.New("invalid hash in stream")
+	// ErrInvalidTotalLengthInStream - invalid totalLength in stream
+	ErrInvalidTotalLengthInStream = errors.New("invalid totalLength in stream")
+	// ErrInvalidTotalHashInStream - invalid totalHash in stream
+	ErrInvalidTotalHashInStream = errors.New("invalid totalHash in stream")
+
 	// ErrUnkonow - unknow error
 	ErrUnkonow = errors.New("unknow error")
 )

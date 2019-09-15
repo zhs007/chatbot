@@ -84,6 +84,8 @@ message ChatMsgStream {
     string error = 7;
     // token
     string token = 8;
+    // sessionID
+    string sessionID = 9;
 
     ChatMsg chat = 10;
 }

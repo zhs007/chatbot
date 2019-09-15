@@ -3,6 +3,7 @@ package chatbot
 import (
 	"context"
 	"errors"
+	"io"
 
 	chatbotbase "github.com/zhs007/chatbot/base"
 	chatbotpb "github.com/zhs007/chatbot/proto"
@@ -53,9 +54,8 @@ func (client *Client) reset() {
 	client.client = nil
 }
 
-// RegisterAppService - RegisterAppService
-func (client *Client) RegisterAppService(ctx context.Context) error {
-
+// onSendMsg - on send message to service
+func (client *Client) onSendMsg() error {
 	err := client.isValid()
 	if err != nil {
 		return err
@@ -69,6 +69,20 @@ func (client *Client) RegisterAppService(ctx context.Context) error {
 
 		client.conn = conn
 		client.client = chatbotpb.NewChatBotServiceClient(conn)
+	}
+
+	return nil
+}
+
+// RegisterAppService - RegisterAppService
+func (client *Client) RegisterAppService(ctx context.Context) error {
+
+	err := client.onSendMsg()
+	if err != nil {
+		// if error, reset
+		client.reset()
+
+		return err
 	}
 
 	reply, err := client.client.RegisterAppService(ctx, &chatbotpb.RegisterAppService{
@@ -92,4 +106,91 @@ func (client *Client) RegisterAppService(ctx context.Context) error {
 	client.sessionID = reply.SessionID
 
 	return nil
+}
+
+// SendChat - SendChat
+func (client *Client) SendChat(ctx context.Context, chatMsg *chatbotpb.ChatMsg) (*chatbotpb.ChatMsg, error) {
+
+	err := client.onSendMsg()
+	if err != nil {
+		// if error, reset
+		client.reset()
+
+		return nil, err
+	}
+
+	lst, err := BuildChatMsgStream(chatMsg)
+	if err != nil {
+		// if error, reset
+		client.reset()
+
+		return nil, err
+	}
+
+	stream, err := client.client.SendChat(ctx)
+	if err != nil {
+		// if error, reset
+		client.reset()
+
+		return nil, err
+	}
+
+	var recverr error
+	var lstrecv []*chatbotpb.ChatMsgStream
+	waitc := make(chan struct{})
+
+	go func() {
+		for {
+			in, err := stream.Recv()
+			if err == io.EOF {
+				// read done.
+				close(waitc)
+
+				return
+			}
+
+			if err != nil {
+				recverr = err
+
+				close(waitc)
+
+				return
+			}
+
+			lstrecv = append(lstrecv, in)
+		}
+	}()
+
+	for _, cn := range lst {
+		curerr := stream.Send(cn)
+		if curerr != nil {
+			// if error, close
+			stream.CloseSend()
+
+			// if error, reset
+			client.reset()
+
+			return nil, curerr
+		}
+	}
+
+	stream.CloseSend()
+	<-waitc
+
+	if recverr != nil {
+		// if error, reset
+		client.reset()
+
+		return nil, recverr
+	}
+
+	retmsg, err := BuildChatMsg(lstrecv)
+	if err != nil {
+		// if error, reset
+		client.reset()
+
+		return nil, err
+	}
+
+	return retmsg, nil
 }

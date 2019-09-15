@@ -2,6 +2,8 @@ package chatbotbase
 
 import (
 	"bytes"
+	"crypto/md5"
+	"encoding/base64"
 	"encoding/binary"
 	"encoding/json"
 	"fmt"
@@ -77,4 +79,11 @@ func Int64ToBytes(i int64) []byte {
 // BytesToInt64 - bytes -> int64
 func BytesToInt64(buf []byte) int64 {
 	return int64(binary.BigEndian.Uint64(buf))
+}
+
+// MD5Buffer - hash buffer
+func MD5Buffer(buf []byte) string {
+	h := md5.New()
+	h.Write(buf)
+	return base64.StdEncoding.EncodeToString(h.Sum(nil))
 }
