@@ -14,7 +14,7 @@ import (
 type Client struct {
 	servAddr  string
 	token     string
-	sessionID string
+	SessionID string
 	appType   chatbotpb.ChatAppType
 	username  string
 	conn      *grpc.ClientConn
@@ -103,7 +103,7 @@ func (client *Client) RegisterAppService(ctx context.Context) error {
 		return errors.New(reply.Error)
 	}
 
-	client.sessionID = reply.SessionID
+	client.SessionID = reply.SessionID
 
 	return nil
 }

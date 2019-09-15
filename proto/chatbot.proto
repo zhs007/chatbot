@@ -106,3 +106,28 @@ service ChatBotService {
     // requestChat - request chat
     rpc requestChat(RequestChatData) returns (stream ChatMsgStream) {}    
 }
+
+// ChatBotServInfo - ChatBot service infomation
+message ChatBotServInfo {
+    string token = 1;
+    string sessionID = 2;
+    string servName = 3;
+}
+
+// RegisterChatBotServ - register chatbot service
+message RegisterChatBotServ {
+    ChatBotServInfo servInfo = 1;
+}
+
+// ReplyRegisterChatBotServ - reply RegisterChatBotServ
+message ReplyRegisterChatBotServ {
+    string token = 1;
+    string sessionID = 2;
+    string error = 3;
+}
+
+// ChatBotUserService - ChatBot user service
+service ChatBotUserService {
+    // getUserInfo - register app service
+    rpc registerChatBotServ(RegisterChatBotServ) returns (ReplyRegisterChatBotServ) {}
+}

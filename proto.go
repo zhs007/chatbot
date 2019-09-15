@@ -32,6 +32,18 @@ func BuildTextChatMsg(msg string, uai *chatbotpb.UserAppInfo, token string,
 	}
 }
 
+// BuildErrorChatMsg - build ChatMsg
+func BuildErrorChatMsg(err error, uai *chatbotpb.UserAppInfo, token string,
+	sessionid string) *chatbotpb.ChatMsg {
+
+	return &chatbotpb.ChatMsg{
+		Error:     err.Error(),
+		Uai:       uai,
+		Token:     token,
+		SessionID: sessionid,
+	}
+}
+
 // BuildChatMsgStream - ChatMsg -> ChatMsgStream
 func BuildChatMsgStream(msg *chatbotpb.ChatMsg) ([]*chatbotpb.ChatMsgStream, error) {
 	buf, err := proto.Marshal(msg)
