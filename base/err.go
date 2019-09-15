@@ -40,6 +40,15 @@ var (
 	// ErrNoAppServDB - no appserv database
 	ErrNoAppServDB = errors.New("no appserv database")
 
+	// ErrNoServAddr - no servaddr
+	ErrNoServAddr = errors.New("no servaddr")
+	// ErrNoToken - no token
+	ErrNoToken = errors.New("no token")
+	// ErrNoUsername - no username
+	ErrNoUsername = errors.New("no username")
+	// ErrNoTelegramToken - no telegramtoken
+	ErrNoTelegramToken = errors.New("no telegramtoken")
+
 	// ErrUnkonow - unknow error
 	ErrUnkonow = errors.New("unknow error")
 )

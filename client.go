@@ -2,6 +2,7 @@ package chatbot
 
 import (
 	"context"
+	"errors"
 
 	chatbotbase "github.com/zhs007/chatbot/base"
 	chatbotpb "github.com/zhs007/chatbot/proto"
@@ -10,17 +11,22 @@ import (
 
 // Client - ChatBotServiceClient
 type Client struct {
-	servAddr string
-	token    string
-	conn     *grpc.ClientConn
-	client   chatbotpb.ChatBotServiceClient
+	servAddr  string
+	token     string
+	sessionID string
+	appType   chatbotpb.ChatAppType
+	username  string
+	conn      *grpc.ClientConn
+	client    chatbotpb.ChatBotServiceClient
 }
 
 // NewClient - new ChatBotServiceClient
-func NewClient(servAddr string, token string) *Client {
+func NewClient(servAddr string, apptype chatbotpb.ChatAppType, token string, username string) *Client {
 	return &Client{
 		servAddr: servAddr,
 		token:    token,
+		appType:  apptype,
+		username: username,
 	}
 }
 
@@ -48,18 +54,17 @@ func (client *Client) reset() {
 }
 
 // RegisterAppService - RegisterAppService
-func (client *Client) RegisterAppService(ctx context.Context, apptype chatbotpb.ChatAppType,
-	token string, username string) (*chatbotpb.ReplyRegisterAppService, error) {
+func (client *Client) RegisterAppService(ctx context.Context) error {
 
 	err := client.isValid()
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	if client.conn == nil || client.client == nil {
 		conn, err := grpc.Dial(client.servAddr, grpc.WithInsecure())
 		if err != nil {
-			return nil, err
+			return err
 		}
 
 		client.conn = conn
@@ -68,17 +73,23 @@ func (client *Client) RegisterAppService(ctx context.Context, apptype chatbotpb.
 
 	reply, err := client.client.RegisterAppService(ctx, &chatbotpb.RegisterAppService{
 		AppServ: &chatbotpb.AppServInfo{
-			AppType:  apptype,
-			Token:    token,
-			Username: username,
+			AppType:  client.appType,
+			Token:    client.token,
+			Username: client.username,
 		},
 	})
 	if err != nil {
 		// if error, reset
 		client.reset()
 
-		return nil, err
+		return err
 	}
 
-	return reply, nil
+	if reply.Error != "" {
+		return errors.New(reply.Error)
+	}
+
+	client.sessionID = reply.SessionID
+
+	return nil
 }
