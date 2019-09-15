@@ -38,6 +38,11 @@ func NewServ(cfg *Config) (*Serv, error) {
 
 // Start - start telegram bot
 func (serv *Serv) Start(ctx context.Context) error {
+	err := serv.client.RegisterAppService(ctx)
+	if err != nil {
+		return err
+	}
+
 	u := tgbotapi.NewUpdate(0)
 	u.Timeout = 60
 
