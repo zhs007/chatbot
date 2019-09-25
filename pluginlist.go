@@ -1,7 +1,10 @@
 package chatbot
 
 import (
+	"context"
+
 	chatbotbase "github.com/zhs007/chatbot/base"
+	chatbotpb "github.com/zhs007/chatbot/proto"
 )
 
 // PluginsList - plugins list
@@ -31,6 +34,34 @@ func (lst *PluginsList) FindPlugin(name string) Plugin {
 	for _, v := range lst.plugins {
 		if v.GetPluginName() == name {
 			return v
+		}
+	}
+
+	return nil
+}
+
+// OnMessage - get message
+func (lst *PluginsList) OnMessage(ctx context.Context, msg *chatbotpb.ChatMsg) ([]*chatbotpb.ChatMsg, error) {
+	for _, v := range lst.plugins {
+		lst, err := v.OnMessage(ctx, msg)
+		if err != nil {
+			return nil, err
+		}
+
+		if lst != nil {
+			return lst, nil
+		}
+	}
+
+	return nil, nil
+}
+
+// OnStart - on start
+func (lst *PluginsList) OnStart(ctx context.Context) error {
+	for _, v := range lst.plugins {
+		err := v.OnStart(ctx)
+		if err != nil {
+			return err
 		}
 	}
 

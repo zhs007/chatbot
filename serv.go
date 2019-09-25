@@ -14,10 +14,11 @@ import (
 
 // Serv - service
 type Serv struct {
-	cfg       *Config
-	lis       net.Listener
-	grpcServ  *grpc.Server
-	dbAppServ *chatbotdb.AppServDB
+	cfg        *Config
+	lis        net.Listener
+	grpcServ   *grpc.Server
+	dbAppServ  *chatbotdb.AppServDB
+	lstPlugins *PluginsList
 }
 
 // NewChatBotServ -
@@ -43,9 +44,10 @@ func NewChatBotServ(cfg *Config) (*Serv, error) {
 	grpcServ := grpc.NewServer()
 
 	serv := &Serv{
-		cfg:      cfg,
-		lis:      lis,
-		grpcServ: grpcServ,
+		cfg:        cfg,
+		lis:        lis,
+		grpcServ:   grpcServ,
+		lstPlugins: NewPluginsList(),
 	}
 
 	chatbotpb.RegisterChatBotServiceServer(grpcServ, serv)
@@ -153,6 +155,31 @@ func (serv *Serv) SendChat(scs chatbotpb.ChatBotService_SendChatServer) error {
 		serv.replySendChatErr(scs, chatbotbase.ErrInvalidStream)
 
 		return chatbotbase.ErrInvalidStream
+	}
+
+	lstret, err := serv.lstPlugins.OnMessage(scs.Context(), cd)
+	if err != nil {
+		serv.replySendChatErr(scs, err)
+
+		return err
+	}
+
+	for _, v := range lstret {
+		lststream, err := BuildChatMsgStream(v)
+		if err != nil {
+			serv.replySendChatErr(scs, err)
+
+			return err
+		}
+
+		for _, sv := range lststream {
+			err = scs.Send(sv)
+			if err != nil {
+				serv.replySendChatErr(scs, err)
+
+				return err
+			}
+		}
 	}
 
 	return nil
