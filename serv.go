@@ -2,6 +2,7 @@ package chatbot
 
 import (
 	"context"
+	"io"
 	"net"
 
 	chatbotbase "github.com/zhs007/chatbot/base"
@@ -111,7 +112,63 @@ func (serv *Serv) RegisterAppService(ctx context.Context, ras *chatbotpb.Registe
 
 // SendChat - send chat
 func (serv *Serv) SendChat(scs chatbotpb.ChatBotService_SendChatServer) error {
+	var lst []*chatbotpb.ChatMsgStream
+
+	for {
+		in, err := scs.Recv()
+		if err == io.EOF {
+			break
+		}
+
+		if err != nil {
+			serv.replySendChatErr(scs, err)
+
+			return err
+		}
+
+		isvalidtoken, err := serv.dbAppServ.CheckTokenSessionID(scs.Context(), in.Token, in.SessionID)
+		if err != nil {
+			serv.replySendChatErr(scs, err)
+
+			return err
+		}
+
+		if !isvalidtoken {
+			serv.replySendChatErr(scs, chatbotbase.ErrServInvalidToken)
+
+			return chatbotbase.ErrServInvalidToken
+		}
+
+		lst = append(lst, in)
+	}
+
+	cd, err := BuildChatMsg(lst)
+	if err != nil {
+		serv.replySendChatErr(scs, err)
+
+		return err
+	}
+
+	if cd == nil {
+		serv.replySendChatErr(scs, chatbotbase.ErrInvalidStream)
+
+		return chatbotbase.ErrInvalidStream
+	}
+
 	return nil
+}
+
+// replySendChatErr - reply a error for SendChat
+func (serv *Serv) replySendChatErr(scs chatbotpb.ChatBotService_SendChatServer, err error) error {
+	if err == nil {
+		return serv.replySendChatErr(scs, chatbotbase.ErrServInvalidErr)
+	}
+
+	reply := &chatbotpb.ChatMsgStream{
+		Error: err.Error(),
+	}
+
+	return scs.Send(reply)
 }
 
 // RequestChat - request chat

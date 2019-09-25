@@ -39,6 +39,8 @@ var (
 
 	// ErrNoAppServDB - no appserv database
 	ErrNoAppServDB = errors.New("no appserv database")
+	// ErrInvalidTokenInAppServDB - invalid token in appserv database
+	ErrInvalidTokenInAppServDB = errors.New("invalid token in appserv database")
 
 	// ErrNoServAddr - no servaddr
 	ErrNoServAddr = errors.New("no servaddr")
@@ -61,6 +63,13 @@ var (
 	ErrInvalidTotalLengthInStream = errors.New("invalid totalLength in stream")
 	// ErrInvalidTotalHashInStream - invalid totalHash in stream
 	ErrInvalidTotalHashInStream = errors.New("invalid totalHash in stream")
+	// ErrInvalidStream - invalid chatstream
+	ErrInvalidStream = errors.New("invalid chatstream")
+
+	// ErrServInvalidErr - invalid error in serv
+	ErrServInvalidErr = errors.New("invalid error in serv")
+	// ErrServInvalidToken - invalid token in serv
+	ErrServInvalidToken = errors.New("invalid token in serv")
 
 	// ErrUnkonow - unknow error
 	ErrUnkonow = errors.New("unknow error")

@@ -175,3 +175,17 @@ func (db *AppServDB) UpdAppServEx(ctx context.Context, asi *chatbotpb.AppServInf
 
 	return asi, nil
 }
+
+// CheckTokenSessionID - check token & sessionID
+func (db *AppServDB) CheckTokenSessionID(ctx context.Context, token string, sessionid string) (bool, error) {
+	asi, err := db.GetAppServ(ctx, token)
+	if err != nil {
+		return false, err
+	}
+
+	if asi != nil {
+		return asi.Sessionid == sessionid, nil
+	}
+
+	return false, chatbotbase.ErrInvalidTokenInAppServDB
+}
