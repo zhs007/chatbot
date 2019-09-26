@@ -15,6 +15,8 @@ func init() {
 	mgrPlugins = &pluginsMgr{
 		mapPlugin: make(map[string]Plugin),
 	}
+
+	RegPlugin(&cmdPlugin{})
 }
 
 // RegPlugin - register plugin

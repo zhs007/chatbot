@@ -71,6 +71,11 @@ var (
 	// ErrServInvalidToken - invalid token in serv
 	ErrServInvalidToken = errors.New("invalid token in serv")
 
+	// ErrCmdNoCmd - no command
+	ErrCmdNoCmd = errors.New("no command")
+	// ErrCmdEmptyCmd - empty command
+	ErrCmdEmptyCmd = errors.New("empty command")
+
 	// ErrUnkonow - unknow error
 	ErrUnkonow = errors.New("unknow error")
 )
