@@ -22,6 +22,7 @@ message UserInfo {
     string name = 2;
     repeated UserAppInfo apps = 3;
     repeated string tags = 4;
+    string language = 5;
     
     int64 money = 10;
 }

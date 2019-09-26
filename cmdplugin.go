@@ -23,7 +23,7 @@ func (cp *cmdPlugin) OnMessage(ctx context.Context, msg *chatbotpb.ChatMsg, ui *
 		return nil, nil
 	}
 
-	if cmd != "" && params != nil {
+	if cmd != "" {
 		lst, err := mgrCommand.RunInChat(ctx, cmd, params, msg)
 		if err != nil {
 			if err != chatbotbase.ErrCmdNoCmd {

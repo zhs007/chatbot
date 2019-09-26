@@ -37,6 +37,7 @@ func (m *CommandMgr) ParseInChat(chat *chatbotpb.ChatMsg) (string, proto.Message
 	c, ok := m.mapCmd[cmd]
 	if ok {
 		params, err := c.ParseCommandLine(lst, chat)
+
 		return cmd, params, err
 	}
 
@@ -44,7 +45,9 @@ func (m *CommandMgr) ParseInChat(chat *chatbotpb.ChatMsg) (string, proto.Message
 }
 
 // RunInChat - run func with cmd
-func (m *CommandMgr) RunInChat(ctx context.Context, cmd string, params proto.Message, chat *chatbotpb.ChatMsg) ([]*chatbotpb.ChatMsg, error) {
+func (m *CommandMgr) RunInChat(ctx context.Context, cmd string, params proto.Message,
+	chat *chatbotpb.ChatMsg) ([]*chatbotpb.ChatMsg, error) {
+
 	c, ok := m.mapCmd[cmd]
 	if ok {
 		return c.RunCommand(ctx, params, chat)

@@ -18,7 +18,7 @@ type Config struct {
 	AppServ []chatbotbase.AppServConfig
 
 	//------------------------------------------------------------------
-	// Config
+	// Database Config
 
 	BindAddr string
 	DBPath   string
@@ -28,6 +28,11 @@ type Config struct {
 	// plugins
 
 	Plugins []string
+
+	//------------------------------------------------------------------
+	// config
+
+	Language string
 }
 
 func checkConfig(cfg *Config) error {
@@ -48,6 +53,10 @@ func checkConfig(cfg *Config) error {
 
 	if cfg.DBEngine == "" {
 		return chatbotbase.ErrNoDBEngine
+	}
+
+	if cfg.Language == "" {
+		cfg.Language = "en-US"
 	}
 
 	return nil
