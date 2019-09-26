@@ -1,0 +1,1 @@
+goi18n extract -outdir=. -format=yaml i18n.go

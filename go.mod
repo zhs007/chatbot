@@ -5,7 +5,7 @@ go 1.12
 require (
 	github.com/go-telegram-bot-api/telegram-bot-api v4.6.4+incompatible
 	github.com/golang/protobuf v1.3.2
-	github.com/nicksnyder/go-i18n/v2 v2.0.2 // indirect
+	github.com/nicksnyder/go-i18n/v2 v2.0.2
 	github.com/stretchr/testify v1.4.0 // indirect
 	github.com/technoweenie/multipartstreamer v1.0.1 // indirect
 	github.com/zhs007/adacore v0.1.56
