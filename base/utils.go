@@ -87,3 +87,13 @@ func MD5Buffer(buf []byte) string {
 	h.Write(buf)
 	return base64.StdEncoding.EncodeToString(h.Sum(nil))
 }
+
+// JSONFormat - json format string
+func JSONFormat(obj interface{}) (string, error) {
+	s, err := json.MarshalIndent(obj, "", "  ")
+	if err != nil {
+		return "", err
+	}
+
+	return string(s), nil
+}

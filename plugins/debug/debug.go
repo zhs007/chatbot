@@ -4,7 +4,9 @@ import (
 	"context"
 
 	chatbot "github.com/zhs007/chatbot"
+	chatbotbase "github.com/zhs007/chatbot/base"
 	chatbotpb "github.com/zhs007/chatbot/proto"
+	"go.uber.org/zap"
 )
 
 type debugPlugin struct {
@@ -22,6 +24,19 @@ func (dbp *debugPlugin) OnMessage(ctx context.Context, msg *chatbotpb.ChatMsg, u
 	}
 
 	lst = append(lst, msggetit)
+
+	strui, err := chatbotbase.JSONFormat(ui)
+	if err != nil {
+		chatbotbase.Warn("debugPlugin.OnMessage:UI",
+			zap.Error(err))
+	} else {
+		msgui := &chatbotpb.ChatMsg{
+			Msg: strui,
+			Uai: msg.Uai,
+		}
+
+		lst = append(lst, msgui)
+	}
 
 	return lst, nil
 }
