@@ -92,14 +92,16 @@ func (serv *Serv) onMsg(ctx context.Context, upd *tgbotapi.Update) error {
 			msg := chatbot.BuildTextChatMsg(upd.Message.Text,
 				uai, serv.cfg.Token, serv.client.SessionID)
 
-			ret, err := serv.client.SendChat(ctx, msg)
+			lstret, err := serv.client.SendChat(ctx, msg)
 			if err != nil {
 				return err
 			}
 
-			err = serv.SendChatMsg(ctx, ret)
-			if err != nil {
-				return err
+			for _, v := range lstret {
+				err = serv.SendChatMsg(ctx, v)
+				if err != nil {
+					return err
+				}
 			}
 		}
 	}

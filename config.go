@@ -23,6 +23,11 @@ type Config struct {
 	BindAddr string
 	DBPath   string
 	DBEngine string
+
+	//------------------------------------------------------------------
+	// plugins
+
+	Plugins []string
 }
 
 func checkConfig(cfg *Config) error {

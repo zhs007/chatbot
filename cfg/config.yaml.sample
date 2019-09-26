@@ -1,12 +1,16 @@
 appserv:
-- type: telegram
-  token: 123456
-  username: a123
-- type: telegram
-  token: 234567
-  username: a234
+  - type: telegram
+    token: 123456
+    username: a123
+  - type: telegram
+    token: 234567
+    username: a234
 
 bindaddr: 127.0.0.1:7010
 
 dbpath: ./data
 dbengine: leveldb
+
+plugins:
+  - debug
+  - command

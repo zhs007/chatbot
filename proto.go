@@ -153,3 +153,39 @@ func BuildChatMsg(lst []*chatbotpb.ChatMsgStream) (*chatbotpb.ChatMsg, error) {
 
 	return chatmsg, nil
 }
+
+// BuildChatMsgList - []ChatMsgStream => []ChatMsg
+func BuildChatMsgList(lst []*chatbotpb.ChatMsgStream) ([]*chatbotpb.ChatMsg, error) {
+	var lstret []*chatbotpb.ChatMsg
+	var curlst []*chatbotpb.ChatMsgStream
+
+	for _, v := range lst {
+		if v.Chat != nil {
+			cr, err := BuildChatMsg([]*chatbotpb.ChatMsgStream{v})
+			if err != nil {
+				return nil, err
+			}
+
+			if cr != nil {
+				lstret = append(lstret, cr)
+			}
+		} else {
+			curlst = append(curlst, v)
+
+			if v.TotalHashData != "" {
+				cr, err := BuildChatMsg([]*chatbotpb.ChatMsgStream{v})
+				if err != nil {
+					return nil, err
+				}
+
+				if cr != nil {
+					lstret = append(lstret, cr)
+				}
+
+				curlst = nil
+			}
+		}
+	}
+
+	return lstret, nil
+}

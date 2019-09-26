@@ -52,6 +52,10 @@ func NewChatBotServ(cfg *Config, mgr UserMgr) (*Serv, error) {
 		mgrUser:    mgr,
 	}
 
+	for _, v := range cfg.Plugins {
+		serv.lstPlugins.AddPlugin(v)
+	}
+
 	chatbotpb.RegisterChatBotServiceServer(grpcServ, serv)
 
 	serv.dbAppServ = db

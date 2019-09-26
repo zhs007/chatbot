@@ -109,7 +109,7 @@ func (client *Client) RegisterAppService(ctx context.Context) error {
 }
 
 // SendChat - SendChat
-func (client *Client) SendChat(ctx context.Context, chatMsg *chatbotpb.ChatMsg) (*chatbotpb.ChatMsg, error) {
+func (client *Client) SendChat(ctx context.Context, chatMsg *chatbotpb.ChatMsg) ([]*chatbotpb.ChatMsg, error) {
 
 	err := client.onSendMsg()
 	if err != nil {
@@ -184,7 +184,7 @@ func (client *Client) SendChat(ctx context.Context, chatMsg *chatbotpb.ChatMsg) 
 		return nil, recverr
 	}
 
-	retmsg, err := BuildChatMsg(lstrecv)
+	lstret, err := BuildChatMsgList(lstrecv)
 	if err != nil {
 		// if error, reset
 		client.reset()
@@ -192,5 +192,5 @@ func (client *Client) SendChat(ctx context.Context, chatMsg *chatbotpb.ChatMsg) 
 		return nil, err
 	}
 
-	return retmsg, nil
+	return lstret, nil
 }
