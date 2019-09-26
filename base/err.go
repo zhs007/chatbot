@@ -70,6 +70,8 @@ var (
 	ErrServInvalidErr = errors.New("invalid error in serv")
 	// ErrServInvalidToken - invalid token in serv
 	ErrServInvalidToken = errors.New("invalid token in serv")
+	// ErrServInvalidUserInfo - invalid userinfo
+	ErrServInvalidUserInfo = errors.New("invalid userinfo")
 
 	// ErrCmdNoCmd - no command
 	ErrCmdNoCmd = errors.New("no command")

@@ -19,10 +19,11 @@ type Serv struct {
 	grpcServ   *grpc.Server
 	dbAppServ  *chatbotdb.AppServDB
 	lstPlugins *PluginsList
+	mgrUser    UserMgr
 }
 
 // NewChatBotServ -
-func NewChatBotServ(cfg *Config) (*Serv, error) {
+func NewChatBotServ(cfg *Config, mgr UserMgr) (*Serv, error) {
 	if cfg == nil {
 		return nil, chatbotbase.ErrNoConfig
 	}
@@ -48,6 +49,7 @@ func NewChatBotServ(cfg *Config) (*Serv, error) {
 		lis:        lis,
 		grpcServ:   grpcServ,
 		lstPlugins: NewPluginsList(),
+		mgrUser:    mgr,
 	}
 
 	chatbotpb.RegisterChatBotServiceServer(grpcServ, serv)
@@ -157,7 +159,14 @@ func (serv *Serv) SendChat(scs chatbotpb.ChatBotService_SendChatServer) error {
 		return chatbotbase.ErrInvalidStream
 	}
 
-	lstret, err := serv.lstPlugins.OnMessage(scs.Context(), cd)
+	ui, err := serv.mgrUser.GetAppUserInfo(scs.Context(), cd.Token, cd.Uai)
+	if err != nil || ui == nil {
+		serv.replySendChatErr(scs, chatbotbase.ErrServInvalidUserInfo)
+
+		return chatbotbase.ErrServInvalidUserInfo
+	}
+
+	lstret, err := serv.lstPlugins.OnMessage(scs.Context(), cd, ui)
 	if err != nil {
 		serv.replySendChatErr(scs, err)
 
