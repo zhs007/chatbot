@@ -125,3 +125,40 @@ func (db *UserDB) GetUserIDFromApp(ctx context.Context, appToken string, appUID 
 
 	return uid, nil
 }
+
+// GetUserInfo - get user infomation
+func (db *UserDB) GetUserInfo(ctx context.Context, uid int64) (*chatbotpb.UserInfo, error) {
+	k := makeUserKey(uid)
+
+	buf, err := db.ankaDB.Get(ctx, UserDBName, k)
+	if err != nil {
+		if err == ankadb.ErrNotFoundKey {
+			return nil, nil
+		}
+
+		return nil, err
+	}
+
+	ui := &chatbotpb.UserInfo{}
+
+	err = proto.Unmarshal(buf, ui)
+	if err != nil {
+		return nil, err
+	}
+
+	return ui, nil
+}
+
+// GetUserInfoEx - get user infomation
+func (db *UserDB) GetUserInfoEx(ctx context.Context, appToken string, appUID string) (*chatbotpb.UserInfo, error) {
+	uid, err := db.GetUserIDFromApp(ctx, appToken, appUID)
+	if err != nil {
+		return nil, err
+	}
+
+	if uid > 0 {
+		return db.GetUserInfo(ctx, uid)
+	}
+
+	return nil, nil
+}
