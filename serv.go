@@ -163,14 +163,14 @@ func (serv *Serv) SendChat(scs chatbotpb.ChatBotService_SendChatServer) error {
 		return chatbotbase.ErrInvalidStream
 	}
 
-	ui, err := serv.mgrUser.GetAppUserInfo(scs.Context(), cd.Token, cd.Uai)
+	ui, ud, err := serv.mgrUser.GetAppUserInfo(scs.Context(), cd.Token, cd.Uai)
 	if err != nil || ui == nil {
 		serv.replySendChatErr(scs, chatbotbase.ErrServInvalidUserInfo)
 
 		return chatbotbase.ErrServInvalidUserInfo
 	}
 
-	lstret, err := serv.lstPlugins.OnMessage(scs.Context(), cd, ui)
+	lstret, err := serv.lstPlugins.OnMessage(scs.Context(), cd, ui, ud)
 	if err != nil {
 		serv.replySendChatErr(scs, err)
 

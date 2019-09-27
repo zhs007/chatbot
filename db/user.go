@@ -12,11 +12,12 @@ import (
 
 // UserDB - user database
 type UserDB struct {
-	ankaDB ankadb.AnkaDB
+	ankaDB      ankadb.AnkaDB
+	MgrUserData UserDataMgr
 }
 
 // NewUserDB - new UserDB
-func NewUserDB(dbpath string, httpAddr string, engine string) (*UserDB, error) {
+func NewUserDB(dbpath string, httpAddr string, engine string, mgrUserData UserDataMgr) (*UserDB, error) {
 	cfg := ankadb.NewConfig()
 
 	cfg.AddrHTTP = httpAddr
@@ -38,7 +39,8 @@ func NewUserDB(dbpath string, httpAddr string, engine string) (*UserDB, error) {
 		zap.String("httpAddr", httpAddr), zap.String("engine", engine))
 
 	db := &UserDB{
-		ankaDB: ankaDB,
+		ankaDB:      ankaDB,
+		MgrUserData: mgrUserData,
 	}
 
 	return db, err
@@ -161,4 +163,39 @@ func (db *UserDB) GetUserInfoEx(ctx context.Context, appToken string, appUID str
 	}
 
 	return nil, nil
+}
+
+// UpdUserData - update user
+func (db *UserDB) UpdUserData(ctx context.Context, uid int64, ud proto.Message) error {
+	buf, err := proto.Marshal(ud)
+	if err != nil {
+		return err
+	}
+
+	err = db.ankaDB.Set(ctx, UserDBName, makeUserDataKey(uid), buf)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// GetUserData - get user data
+func (db *UserDB) GetUserData(ctx context.Context, uid int64) (proto.Message, error) {
+	if db.MgrUserData == nil {
+		return nil, nil
+	}
+
+	k := makeUserDataKey(uid)
+
+	buf, err := db.ankaDB.Get(ctx, UserDBName, k)
+	if err != nil {
+		if err == ankadb.ErrNotFoundKey {
+			return nil, nil
+		}
+
+		return nil, err
+	}
+
+	return db.MgrUserData.Unmarshal(buf)
 }

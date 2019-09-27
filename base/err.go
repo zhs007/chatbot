@@ -78,6 +78,9 @@ var (
 	// ErrCmdEmptyCmd - empty command
 	ErrCmdEmptyCmd = errors.New("empty command")
 
+	// ErrUserMgrNoUserData - no userdata
+	ErrUserMgrNoUserData = errors.New("no userdata")
+
 	// ErrUnkonow - unknow error
 	ErrUnkonow = errors.New("unknow error")
 )

@@ -22,7 +22,15 @@ const UserDBKeyPrefix = "ui:"
 
 // makeUserKey - Generate a database key via uid
 func makeUserKey(uid int64) string {
-	return chatbotbase.AppendString(AppServDBKeyPrefix, strconv.FormatInt(uid, 10))
+	return chatbotbase.AppendString(UserDBKeyPrefix, strconv.FormatInt(uid, 10))
+}
+
+// UserDataDBKeyPrefix - This is the prefix of UserDataDBKey
+const UserDataDBKeyPrefix = "ud:"
+
+// makeUserDataKey - Generate a database key via uid
+func makeUserDataKey(uid int64) string {
+	return chatbotbase.AppendString(UserDataDBKeyPrefix, strconv.FormatInt(uid, 10))
 }
 
 // AppUIDDBKeyPrefix - This is the prefix of AppUIDDBKey

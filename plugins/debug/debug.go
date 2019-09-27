@@ -3,6 +3,7 @@ package chatbotdebugplugin
 import (
 	"context"
 
+	"github.com/golang/protobuf/proto"
 	chatbot "github.com/zhs007/chatbot"
 	chatbotbase "github.com/zhs007/chatbot/base"
 	chatbotpb "github.com/zhs007/chatbot/proto"
@@ -13,8 +14,8 @@ type debugPlugin struct {
 }
 
 // OnMessage - get message
-func (dbp *debugPlugin) OnMessage(ctx context.Context, msg *chatbotpb.ChatMsg, ui *chatbotpb.UserInfo) (
-	[]*chatbotpb.ChatMsg, error) {
+func (dbp *debugPlugin) OnMessage(ctx context.Context, msg *chatbotpb.ChatMsg, ui *chatbotpb.UserInfo,
+	ud proto.Message) ([]*chatbotpb.ChatMsg, error) {
 
 	var lst []*chatbotpb.ChatMsg
 
