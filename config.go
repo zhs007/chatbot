@@ -30,9 +30,15 @@ type Config struct {
 	Plugins []string
 
 	//------------------------------------------------------------------
+	// connands
+
+	Commands []string
+
+	//------------------------------------------------------------------
 	// config
 
 	Language string
+	LangPath string
 }
 
 func checkConfig(cfg *Config) error {
@@ -57,6 +63,10 @@ func checkConfig(cfg *Config) error {
 
 	if cfg.Language == "" {
 		cfg.Language = "en-US"
+	}
+
+	if cfg.LangPath == "" {
+		cfg.LangPath = "./lang"
 	}
 
 	return nil

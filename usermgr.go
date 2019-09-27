@@ -10,5 +10,6 @@ import (
 // UserMgr - user maqnager
 type UserMgr interface {
 	// GetAppUserInfo - get user infomation
-	GetAppUserInfo(ctx context.Context, appToken string, uai *chatbotpb.UserAppInfo) (*chatbotpb.UserInfo, proto.Message, error)
+	GetAppUserInfo(ctx context.Context, appToken string, uai *chatbotpb.UserAppInfo) (
+		*chatbotpb.UserInfo, proto.Message, error)
 }

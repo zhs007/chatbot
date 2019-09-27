@@ -1,0 +1,9 @@
+help001:
+  description: help 001
+  other: 我是Ada，很高兴认识你。
+help002:
+  description: help 002
+  other: 我可以帮你生成漂亮的报表。
+help003:
+  description: help 003
+  other: 你可以试试发给我一个Markdown文件或一个Excel文件。

@@ -20,6 +20,8 @@ type Serv struct {
 	dbAppServ  *chatbotdb.AppServDB
 	lstPlugins *PluginsList
 	mgrUser    UserMgr
+	mgrText    *TextMgr
+	cmds       *CommondsList
 }
 
 // NewChatBotServ -
@@ -29,6 +31,11 @@ func NewChatBotServ(cfg *Config, mgr UserMgr) (*Serv, error) {
 	}
 
 	db, err := chatbotdb.NewAppServDB(cfg.DBPath, "", cfg.DBEngine)
+	if err != nil {
+		return nil, err
+	}
+
+	mgrText, err := NewTextMgr(cfg)
 	if err != nil {
 		return nil, err
 	}
@@ -50,10 +57,22 @@ func NewChatBotServ(cfg *Config, mgr UserMgr) (*Serv, error) {
 		grpcServ:   grpcServ,
 		lstPlugins: NewPluginsList(),
 		mgrUser:    mgr,
+		mgrText:    mgrText,
+		cmds:       NewCommondsList(),
 	}
 
 	for _, v := range cfg.Plugins {
-		serv.lstPlugins.AddPlugin(v)
+		err = serv.lstPlugins.AddPlugin(v)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	for _, v := range cfg.Commands {
+		err = serv.cmds.AddCommand(v)
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	chatbotpb.RegisterChatBotServiceServer(grpcServ, serv)
@@ -170,7 +189,7 @@ func (serv *Serv) SendChat(scs chatbotpb.ChatBotService_SendChatServer) error {
 		return chatbotbase.ErrServInvalidUserInfo
 	}
 
-	lstret, err := serv.lstPlugins.OnMessage(scs.Context(), cd, ui, ud)
+	lstret, err := serv.lstPlugins.OnMessage(scs.Context(), serv, cd, ui, ud)
 	if err != nil {
 		serv.replySendChatErr(scs, err)
 

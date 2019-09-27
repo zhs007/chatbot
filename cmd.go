@@ -10,7 +10,8 @@ import (
 // Command - command
 type Command interface {
 	// RunCommand - run command
-	RunCommand(ctx context.Context, params proto.Message, chat *chatbotpb.ChatMsg) ([]*chatbotpb.ChatMsg, error)
+	RunCommand(ctx context.Context, serv *Serv, params proto.Message,
+		chat *chatbotpb.ChatMsg) ([]*chatbotpb.ChatMsg, error)
 	// ParseCommandLine - parse command line
 	ParseCommandLine(cmdline []string, chat *chatbotpb.ChatMsg) (proto.Message, error)
 }

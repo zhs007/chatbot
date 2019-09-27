@@ -42,9 +42,11 @@ func (lst *PluginsList) FindPlugin(name string) Plugin {
 }
 
 // OnMessage - get message
-func (lst *PluginsList) OnMessage(ctx context.Context, msg *chatbotpb.ChatMsg, ui *chatbotpb.UserInfo, ud proto.Message) ([]*chatbotpb.ChatMsg, error) {
+func (lst *PluginsList) OnMessage(ctx context.Context, serv *Serv, msg *chatbotpb.ChatMsg,
+	ui *chatbotpb.UserInfo, ud proto.Message) ([]*chatbotpb.ChatMsg, error) {
+
 	for _, v := range lst.plugins {
-		lst, err := v.OnMessage(ctx, msg, ui, ud)
+		lst, err := v.OnMessage(ctx, serv, msg, ui, ud)
 		if err != nil {
 			return nil, err
 		}

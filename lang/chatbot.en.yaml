@@ -1,0 +1,9 @@
+help001:
+  description: help 001
+  other: I am Ada, nice to meet you.
+help002:
+  description: help 002
+  other: I can make a fancy report for you.
+help003:
+  description: help 003
+  other: You can send me a markdown or excel file.

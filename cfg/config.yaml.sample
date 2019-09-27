@@ -15,4 +15,10 @@ plugins:
   - debug
   - command
 
+commands:
+  - help
+  - start
+
 language: en-US
+
+langpath: ./lang

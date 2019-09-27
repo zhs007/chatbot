@@ -29,7 +29,9 @@ func NewUserMgr(dbpath string, httpAddr string, engine string, mgrUserData chatb
 }
 
 // GetAppUserInfo - get user infomation
-func (mgr *UserMgr) GetAppUserInfo(ctx context.Context, appToken string, uai *chatbotpb.UserAppInfo) (*chatbotpb.UserInfo, proto.Message, error) {
+func (mgr *UserMgr) GetAppUserInfo(ctx context.Context, appToken string, uai *chatbotpb.UserAppInfo) (
+	*chatbotpb.UserInfo, proto.Message, error) {
+
 	ui, err := mgr.db.GetUserInfoEx(ctx, appToken, uai.Appuid)
 	if err != nil {
 		return nil, nil, err

@@ -5,6 +5,8 @@ import (
 	"fmt"
 
 	chatbot "github.com/zhs007/chatbot"
+	chatbotcmdhelp "github.com/zhs007/chatbot/commands/help"
+	chatbotcmdstart "github.com/zhs007/chatbot/commands/start"
 	chatbotdebugplugin "github.com/zhs007/chatbot/plugins/debug"
 	chatbotusermgr "github.com/zhs007/chatbot/usermgr"
 )
@@ -17,6 +19,9 @@ func main() {
 		return
 	}
 
+	chatbotcmdhelp.RegisterCommand()
+	chatbotcmdstart.RegisterCommand()
+
 	cfg, err := chatbot.LoadConfig("./config.yaml")
 	if err != nil {
 		fmt.Printf("LoadConfig %v", err)
@@ -24,7 +29,7 @@ func main() {
 		return
 	}
 
-	mgr, err := chatbotusermgr.NewUserMgr(cfg.DBPath, "", cfg.DBEngine)
+	mgr, err := chatbotusermgr.NewUserMgr(cfg.DBPath, "", cfg.DBEngine, nil)
 	if err != nil {
 		fmt.Printf("NewUserMgr %v", err)
 

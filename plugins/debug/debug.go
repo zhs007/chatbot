@@ -14,8 +14,8 @@ type debugPlugin struct {
 }
 
 // OnMessage - get message
-func (dbp *debugPlugin) OnMessage(ctx context.Context, msg *chatbotpb.ChatMsg, ui *chatbotpb.UserInfo,
-	ud proto.Message) ([]*chatbotpb.ChatMsg, error) {
+func (dbp *debugPlugin) OnMessage(ctx context.Context, serv *chatbot.Serv, msg *chatbotpb.ChatMsg,
+	ui *chatbotpb.UserInfo, ud proto.Message) ([]*chatbotpb.ChatMsg, error) {
 
 	var lst []*chatbotpb.ChatMsg
 
