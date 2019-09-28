@@ -65,6 +65,7 @@ message ChatMsg {
     string error = 6;
     string token = 7;
     string sessionID = 8;
+    string lang = 9;
 }
 
 // ChatMsgStream - chat message stream

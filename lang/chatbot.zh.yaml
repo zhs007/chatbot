@@ -1,9 +1,21 @@
+chatbotname:
+  description: chatbot name
+  other: 艾达
 help001:
   description: help 001
-  other: 我是Ada，很高兴认识你。
+  other: 我是 {{.ChatBotName}}，很高兴认识你。
 help002:
   description: help 002
   other: 我可以帮你生成漂亮的报表。
 help003:
   description: help 003
+  other: 你可以试试发给我一个Markdown文件或一个Excel文件。
+start001:
+  description: start 001
+  other: 你好，{{.Name}}，我是 {{.ChatBotName}}，很高兴认识你。
+start002:
+  description: start 002
+  other: 我可以帮你生成漂亮的报表。
+start003:
+  description: start 003
   other: 你可以试试发给我一个Markdown文件或一个Excel文件。

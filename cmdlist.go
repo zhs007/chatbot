@@ -53,11 +53,11 @@ func (cmds *CommondsList) ParseInChat(chat *chatbotpb.ChatMsg) (string, proto.Me
 
 // RunInChat - run func with cmd
 func (cmds *CommondsList) RunInChat(ctx context.Context, cmd string, serv *Serv, params proto.Message,
-	chat *chatbotpb.ChatMsg) ([]*chatbotpb.ChatMsg, error) {
+	chat *chatbotpb.ChatMsg, ui *chatbotpb.UserInfo, ud proto.Message) ([]*chatbotpb.ChatMsg, error) {
 
 	c, ok := cmds.cmds[cmd]
 	if ok {
-		return c.RunCommand(ctx, serv, params, chat)
+		return c.RunCommand(ctx, serv, params, chat, ui, ud)
 	}
 
 	return nil, chatbotbase.ErrCmdNoCmd

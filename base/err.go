@@ -77,6 +77,10 @@ var (
 	ErrCmdNoCmd = errors.New("no command")
 	// ErrCmdEmptyCmd - empty command
 	ErrCmdEmptyCmd = errors.New("empty command")
+	// ErrCmdInvalidServ - invalid serv in command
+	ErrCmdInvalidServ = errors.New("invalid serv in command")
+	// ErrCmdInvalidServMgrText - invalid serv.MgrText in command
+	ErrCmdInvalidServMgrText = errors.New("invalid serv.MgrText in command")
 
 	// ErrUserMgrNoUserData - no userdata
 	ErrUserMgrNoUserData = errors.New("no userdata")

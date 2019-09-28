@@ -5,6 +5,7 @@ import (
 	"io"
 	"net"
 
+	"github.com/nicksnyder/go-i18n/v2/i18n"
 	chatbotbase "github.com/zhs007/chatbot/base"
 	chatbotdb "github.com/zhs007/chatbot/db"
 	chatbotpb "github.com/zhs007/chatbot/proto"
@@ -14,14 +15,14 @@ import (
 
 // Serv - service
 type Serv struct {
-	cfg         *Config
+	Cfg         *Config
 	lis         net.Listener
 	grpcServ    *grpc.Server
 	dbAppServ   *chatbotdb.AppServDB
 	lstPlugins  *PluginsList
 	lstPlugins2 *PluginsList
-	mgrUser     UserMgr
-	mgrText     *TextMgr
+	MgrUser     UserMgr
+	MgrText     *TextMgr
 	cmds        *CommondsList
 }
 
@@ -53,13 +54,13 @@ func NewChatBotServ(cfg *Config, mgr UserMgr) (*Serv, error) {
 	grpcServ := grpc.NewServer()
 
 	serv := &Serv{
-		cfg:         cfg,
+		Cfg:         cfg,
 		lis:         lis,
 		grpcServ:    grpcServ,
 		lstPlugins:  NewPluginsList(),
 		lstPlugins2: NewPluginsList(),
-		mgrUser:     mgr,
-		mgrText:     mgrText,
+		MgrUser:     mgr,
+		MgrText:     mgrText,
 		cmds:        NewCommondsList(),
 	}
 
@@ -95,7 +96,7 @@ func NewChatBotServ(cfg *Config, mgr UserMgr) (*Serv, error) {
 
 // Init - initial service
 func (serv *Serv) Init(ctx context.Context) error {
-	return serv.dbAppServ.Init(ctx, serv.cfg.AppServ)
+	return serv.dbAppServ.Init(ctx, serv.Cfg.AppServ)
 }
 
 // Start - start a service
@@ -191,7 +192,7 @@ func (serv *Serv) SendChat(scs chatbotpb.ChatBotService_SendChatServer) error {
 		return chatbotbase.ErrInvalidStream
 	}
 
-	ui, ud, err := serv.mgrUser.GetAppUserInfo(scs.Context(), cd.Token, cd.Uai)
+	ui, ud, err := serv.MgrUser.GetAppUserInfo(scs.Context(), cd.Token, cd.Uai)
 	if err != nil || ui == nil {
 		serv.replySendChatErr(scs, chatbotbase.ErrServInvalidUserInfo)
 
@@ -255,4 +256,36 @@ func (serv *Serv) RequestChat(req *chatbotpb.RequestChatData,
 	ecs chatbotpb.ChatBotService_RequestChatServer) error {
 
 	return nil
+}
+
+// BuildBasicParamsMap - build basic params map
+func (serv *Serv) BuildBasicParamsMap(ui *chatbotpb.UserInfo, lang string) (
+	map[string]interface{}, error) {
+
+	locale, err := serv.MgrText.GetLocalizer(lang)
+	if err != nil {
+		return nil, err
+	}
+
+	chatbotname, err := locale.Localize(&i18n.LocalizeConfig{
+		MessageID: serv.Cfg.ChatBotNameText,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	return map[string]interface{}{
+		"ChatBotName": chatbotname,
+		"Name":        ui.Name,
+		"UID":         ui.Uid,
+	}, nil
+}
+
+// GetChatMsgLang - get chat message language
+func (serv *Serv) GetChatMsgLang(msg *chatbotpb.ChatMsg) string {
+	if msg.Lang != "" {
+		return msg.Lang
+	}
+
+	return serv.Cfg.Language
 }

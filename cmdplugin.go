@@ -25,7 +25,7 @@ func (cp *cmdPlugin) OnMessage(ctx context.Context, serv *Serv, msg *chatbotpb.C
 	}
 
 	if cmd != "" {
-		lst, err := serv.cmds.RunInChat(ctx, cmd, serv, params, msg)
+		lst, err := serv.cmds.RunInChat(ctx, cmd, serv, params, msg, ui, ud)
 		if err != nil {
 			if err != chatbotbase.ErrCmdNoCmd {
 				return nil, err

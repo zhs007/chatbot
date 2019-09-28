@@ -38,8 +38,11 @@ type Config struct {
 	//------------------------------------------------------------------
 	// config
 
-	Language string
-	LangPath string
+	Language        string
+	LangPath        string
+	StartText       []string
+	HelpText        []string
+	ChatBotNameText string
 }
 
 func checkConfig(cfg *Config) error {
