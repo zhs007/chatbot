@@ -283,8 +283,8 @@ func (serv *Serv) BuildBasicParamsMap(ui *chatbotpb.UserInfo, lang string) (
 
 // GetChatMsgLang - get chat message language
 func (serv *Serv) GetChatMsgLang(msg *chatbotpb.ChatMsg) string {
-	if msg.Lang != "" {
-		return msg.Lang
+	if msg.Uai.Lang != "" {
+		return msg.Uai.Lang
 	}
 
 	return serv.Cfg.Language

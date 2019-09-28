@@ -10,13 +10,14 @@ import (
 
 // BuildUserAppInfo - build UserAppInfo
 func BuildUserAppInfo(appType chatbotpb.ChatAppType, usernameAppServ string,
-	appuid string, appuname string) *chatbotpb.UserAppInfo {
+	appuid string, appuname string, lang string) *chatbotpb.UserAppInfo {
 
 	return &chatbotpb.UserAppInfo{
 		App:             appType,
 		UsernameAppServ: usernameAppServ,
 		Appuid:          appuid,
 		Appuname:        appuname,
+		Lang:            lang,
 	}
 }
 

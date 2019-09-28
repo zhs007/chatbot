@@ -86,7 +86,7 @@ func (serv *Serv) onMsg(ctx context.Context, upd *tgbotapi.Update) error {
 	if upd.Message != nil {
 		from := upd.Message.From
 		uai := chatbot.BuildUserAppInfo(chatbotpb.ChatAppType_CAT_TELEGRAM,
-			serv.cfg.Username, ID2Str(from.ID), from.UserName)
+			serv.cfg.Username, ID2Str(from.ID), from.UserName, from.LanguageCode)
 
 		if upd.Message.Text != "" {
 			msg := chatbot.BuildTextChatMsg(upd.Message.Text,
