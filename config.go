@@ -27,7 +27,8 @@ type Config struct {
 	//------------------------------------------------------------------
 	// plugins
 
-	Plugins []string
+	Plugins           []string
+	PluginsSecondLine []string
 
 	//------------------------------------------------------------------
 	// connands

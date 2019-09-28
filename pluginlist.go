@@ -59,6 +59,25 @@ func (lst *PluginsList) OnMessage(ctx context.Context, serv *Serv, msg *chatbotp
 	return nil, nil
 }
 
+// OnMessageEx - get message
+func (lst *PluginsList) OnMessageEx(ctx context.Context, serv *Serv, msg *chatbotpb.ChatMsg,
+	ui *chatbotpb.UserInfo, ud proto.Message) ([]*chatbotpb.ChatMsg, error) {
+
+	var msgs []*chatbotpb.ChatMsg
+	for _, v := range lst.plugins {
+		curmsgs, err := v.OnMessage(ctx, serv, msg, ui, ud)
+		if err != nil {
+			return nil, err
+		}
+
+		if curmsgs != nil {
+			msgs = append(msgs, curmsgs...)
+		}
+	}
+
+	return msgs, nil
+}
+
 // OnStart - on start
 func (lst *PluginsList) OnStart(ctx context.Context) error {
 	for _, v := range lst.plugins {

@@ -14,14 +14,15 @@ import (
 
 // Serv - service
 type Serv struct {
-	cfg        *Config
-	lis        net.Listener
-	grpcServ   *grpc.Server
-	dbAppServ  *chatbotdb.AppServDB
-	lstPlugins *PluginsList
-	mgrUser    UserMgr
-	mgrText    *TextMgr
-	cmds       *CommondsList
+	cfg         *Config
+	lis         net.Listener
+	grpcServ    *grpc.Server
+	dbAppServ   *chatbotdb.AppServDB
+	lstPlugins  *PluginsList
+	lstPlugins2 *PluginsList
+	mgrUser     UserMgr
+	mgrText     *TextMgr
+	cmds        *CommondsList
 }
 
 // NewChatBotServ -
@@ -52,17 +53,25 @@ func NewChatBotServ(cfg *Config, mgr UserMgr) (*Serv, error) {
 	grpcServ := grpc.NewServer()
 
 	serv := &Serv{
-		cfg:        cfg,
-		lis:        lis,
-		grpcServ:   grpcServ,
-		lstPlugins: NewPluginsList(),
-		mgrUser:    mgr,
-		mgrText:    mgrText,
-		cmds:       NewCommondsList(),
+		cfg:         cfg,
+		lis:         lis,
+		grpcServ:    grpcServ,
+		lstPlugins:  NewPluginsList(),
+		lstPlugins2: NewPluginsList(),
+		mgrUser:     mgr,
+		mgrText:     mgrText,
+		cmds:        NewCommondsList(),
 	}
 
 	for _, v := range cfg.Plugins {
 		err = serv.lstPlugins.AddPlugin(v)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	for _, v := range cfg.PluginsSecondLine {
+		err = serv.lstPlugins2.AddPlugin(v)
 		if err != nil {
 			return nil, err
 		}
@@ -194,6 +203,17 @@ func (serv *Serv) SendChat(scs chatbotpb.ChatBotService_SendChatServer) error {
 		serv.replySendChatErr(scs, err)
 
 		return err
+	}
+
+	lstret2, err := serv.lstPlugins2.OnMessageEx(scs.Context(), serv, cd, ui, ud)
+	if err != nil {
+		serv.replySendChatErr(scs, err)
+
+		return err
+	}
+
+	if lstret2 != nil {
+		lstret = append(lstret, lstret2...)
 	}
 
 	for _, v := range lstret {

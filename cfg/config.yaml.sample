@@ -12,12 +12,24 @@ dbpath: ./data
 dbengine: leveldb
 
 plugins:
-  - debug
   - command
+
+pluginssecondline:
+  - debug
 
 commands:
   - help
   - start
+
+starttext:
+  - start001
+  - start002
+  - start003
+
+helptext:
+  - help001
+  - help002
+  - help003
 
 language: en-US
 
