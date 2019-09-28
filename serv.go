@@ -244,6 +244,8 @@ func (serv *Serv) replySendChatErr(scs chatbotpb.ChatBotService_SendChatServer, 
 		return serv.replySendChatErr(scs, chatbotbase.ErrServInvalidErr)
 	}
 
+	chatbotbase.Warn("replySendChatErr", zap.Error(err))
+
 	reply := &chatbotpb.ChatMsgStream{
 		Error: err.Error(),
 	}
@@ -259,7 +261,7 @@ func (serv *Serv) RequestChat(req *chatbotpb.RequestChatData,
 }
 
 // BuildBasicParamsMap - build basic params map
-func (serv *Serv) BuildBasicParamsMap(ui *chatbotpb.UserInfo, lang string) (
+func (serv *Serv) BuildBasicParamsMap(msg *chatbotpb.ChatMsg, ui *chatbotpb.UserInfo, lang string) (
 	map[string]interface{}, error) {
 
 	locale, err := serv.MgrText.GetLocalizer(lang)
@@ -278,6 +280,7 @@ func (serv *Serv) BuildBasicParamsMap(ui *chatbotpb.UserInfo, lang string) (
 		"ChatBotName": chatbotname,
 		"Name":        ui.Name,
 		"UID":         ui.Uid,
+		"TextChat":    msg.Msg,
 	}, nil
 }
 

@@ -33,7 +33,7 @@ func (cmd *cmdHelp) RunCommand(ctx context.Context, serv *chatbot.Serv, params p
 
 	lang := serv.GetChatMsgLang(chat)
 
-	mParams, err := serv.BuildBasicParamsMap(ui, lang)
+	mParams, err := serv.BuildBasicParamsMap(chat, ui, lang)
 	if err != nil {
 		return nil, err
 	}

@@ -4,6 +4,7 @@ import (
 	"bytes"
 
 	"github.com/golang/protobuf/proto"
+	"github.com/nicksnyder/go-i18n/v2/i18n"
 	chatbotbase "github.com/zhs007/chatbot/base"
 	chatbotpb "github.com/zhs007/chatbot/proto"
 )
@@ -189,4 +190,22 @@ func BuildChatMsgList(lst []*chatbotpb.ChatMsgStream) ([]*chatbotpb.ChatMsg, err
 	}
 
 	return lstret, nil
+}
+
+// NewChatMsgWithText - new ChatMsg with TextMgr
+func NewChatMsgWithText(l *i18n.Localizer, msgid string, tempParams map[string]interface{}, uai *chatbotpb.UserAppInfo) (
+	*chatbotpb.ChatMsg, error) {
+
+	txt, err := l.Localize(&i18n.LocalizeConfig{
+		MessageID:    msgid,
+		TemplateData: tempParams,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	return &chatbotpb.ChatMsg{
+		Msg: txt,
+		Uai: uai,
+	}, nil
 }

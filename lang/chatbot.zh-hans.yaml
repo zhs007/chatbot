@@ -19,3 +19,9 @@ start002:
 start003:
   description: start 003
   other: 你可以试试发给我一个Markdown文件或一个Excel文件。
+igetit:
+  description: in debug
+  other: 我知道了。
+yousaid:
+  description: in debug
+  other: 你说 “{{.TextChat}}”。

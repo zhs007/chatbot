@@ -19,3 +19,9 @@ start002:
 start003:
   description: help 003
   other: You can send me a markdown or excel file.  
+igetit:
+  description: in debug
+  other: I get it.
+yousaid:
+  description: in debug
+  other: You said "{{.TextChat}}".

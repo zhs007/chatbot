@@ -36,6 +36,10 @@ var (
 	ErrDuplicatePlugin = errors.New("duplicate plugin")
 	// ErrNoPlugin - no plugin
 	ErrNoPlugin = errors.New("no plugin")
+	// ErrPluginInvalidServ - invalid serv in plugin
+	ErrPluginInvalidServ = errors.New("invalid serv in plugin")
+	// ErrPluginInvalidServMgrText - invalid serv.MgrText in plugin
+	ErrPluginInvalidServMgrText = errors.New("invalid serv.MgrText in plugin")
 
 	// ErrNoAppServDB - no appserv database
 	ErrNoAppServDB = errors.New("no appserv database")

@@ -17,14 +17,41 @@ type debugPlugin struct {
 func (dbp *debugPlugin) OnMessage(ctx context.Context, serv *chatbot.Serv, msg *chatbotpb.ChatMsg,
 	ui *chatbotpb.UserInfo, ud proto.Message) ([]*chatbotpb.ChatMsg, error) {
 
-	var lst []*chatbotpb.ChatMsg
-
-	msggetit := &chatbotpb.ChatMsg{
-		Msg: "I get it.",
-		Uai: msg.Uai,
+	if serv == nil {
+		return nil, chatbotbase.ErrPluginInvalidServ
 	}
 
-	lst = append(lst, msggetit)
+	if serv.MgrText == nil {
+		return nil, chatbotbase.ErrPluginInvalidServMgrText
+	}
+
+	lang := serv.GetChatMsgLang(msg)
+
+	mParams, err := serv.BuildBasicParamsMap(msg, ui, lang)
+	if err != nil {
+		return nil, err
+	}
+
+	locale, err := serv.MgrText.GetLocalizer(lang)
+	if err != nil {
+		return nil, err
+	}
+
+	var lst []*chatbotpb.ChatMsg
+
+	msgigetit, err := chatbot.NewChatMsgWithText(locale, "igetit", mParams, msg.Uai)
+	if err != nil {
+		return nil, err
+	}
+
+	lst = append(lst, msgigetit)
+
+	msgyousaid, err := chatbot.NewChatMsgWithText(locale, "yousaid", mParams, msg.Uai)
+	if err != nil {
+		return nil, err
+	}
+
+	lst = append(lst, msgyousaid)
 
 	strui, err := chatbotbase.JSONFormat(ui)
 	if err != nil {
