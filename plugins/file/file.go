@@ -16,6 +16,10 @@ type filePlugin struct {
 func (dbp *filePlugin) OnMessage(ctx context.Context, serv *chatbot.Serv, chat *chatbotpb.ChatMsg,
 	ui *chatbotpb.UserInfo, ud proto.Message) ([]*chatbotpb.ChatMsg, error) {
 
+	if chat.File == nil {
+		return nil, nil
+	}
+
 	if serv == nil {
 		return nil, chatbotbase.ErrPluginInvalidServ
 	}

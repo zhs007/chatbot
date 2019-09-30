@@ -46,6 +46,15 @@ func (dbp *debugPlugin) OnMessage(ctx context.Context, serv *chatbot.Serv, chat 
 
 	lst = append(lst, msgigetit)
 
+	if chat.File != nil {
+		msgigetfile, err := chatbot.NewChatMsgWithText(locale, "igetfile", mParams, chat.Uai)
+		if err != nil {
+			return nil, err
+		}
+
+		lst = append(lst, msgigetfile)
+	}
+
 	msgyousaid, err := chatbot.NewChatMsgWithText(locale, "yousaid", mParams, chat.Uai)
 	if err != nil {
 		return nil, err

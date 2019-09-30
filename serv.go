@@ -281,11 +281,21 @@ func (serv *Serv) BuildBasicParamsMap(chat *chatbotpb.ChatMsg, ui *chatbotpb.Use
 		return nil, err
 	}
 
+	fn := ""
+	ft := ""
+
+	if chat.File != nil {
+		fn = chat.File.Filename
+		ft = chat.File.FileType
+	}
+
 	return map[string]interface{}{
 		"ChatBotName": chatbotname,
 		"Name":        ui.Name,
 		"UID":         ui.Uid,
 		"TextChat":    chat.Msg,
+		"FileName":    fn,
+		"FileType":    ft,
 	}, nil
 }
 
