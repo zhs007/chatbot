@@ -60,8 +60,8 @@ func BuildErrorChatMsg(err error, uai *chatbotpb.UserAppInfo, token string,
 }
 
 // BuildChatMsgStream - ChatMsg -> ChatMsgStream
-func BuildChatMsgStream(msg *chatbotpb.ChatMsg) ([]*chatbotpb.ChatMsgStream, error) {
-	buf, err := proto.Marshal(msg)
+func BuildChatMsgStream(chat *chatbotpb.ChatMsg) ([]*chatbotpb.ChatMsgStream, error) {
+	buf, err := proto.Marshal(chat)
 	if err != nil {
 		return nil, err
 	}
@@ -69,9 +69,9 @@ func BuildChatMsgStream(msg *chatbotpb.ChatMsg) ([]*chatbotpb.ChatMsgStream, err
 	bl := len(buf)
 	if bl <= chatbotbase.BigMsgLength {
 		stream := &chatbotpb.ChatMsgStream{
-			Chat:      msg,
-			Token:     msg.Token,
-			SessionID: msg.SessionID,
+			Chat:      chat,
+			Token:     chat.Token,
+			SessionID: chat.SessionID,
 		}
 
 		return []*chatbotpb.ChatMsgStream{stream}, nil
@@ -96,8 +96,8 @@ func BuildChatMsgStream(msg *chatbotpb.ChatMsg) ([]*chatbotpb.ChatMsgStream, err
 			CurLength:   int32(cl),
 			HashData:    chatbotbase.MD5Buffer(cb),
 			Data:        cb,
-			Token:       msg.Token,
-			SessionID:   msg.SessionID,
+			Token:       chat.Token,
+			SessionID:   chat.SessionID,
 		}
 
 		st += cl

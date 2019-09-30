@@ -42,11 +42,11 @@ func (lst *PluginsList) FindPlugin(name string) Plugin {
 }
 
 // OnMessage - get message
-func (lst *PluginsList) OnMessage(ctx context.Context, serv *Serv, msg *chatbotpb.ChatMsg,
+func (lst *PluginsList) OnMessage(ctx context.Context, serv *Serv, chat *chatbotpb.ChatMsg,
 	ui *chatbotpb.UserInfo, ud proto.Message) ([]*chatbotpb.ChatMsg, error) {
 
 	for _, v := range lst.plugins {
-		lst, err := v.OnMessage(ctx, serv, msg, ui, ud)
+		lst, err := v.OnMessage(ctx, serv, chat, ui, ud)
 		if err != nil {
 			return nil, err
 		}
@@ -60,12 +60,12 @@ func (lst *PluginsList) OnMessage(ctx context.Context, serv *Serv, msg *chatbotp
 }
 
 // OnMessageEx - get message
-func (lst *PluginsList) OnMessageEx(ctx context.Context, serv *Serv, msg *chatbotpb.ChatMsg,
+func (lst *PluginsList) OnMessageEx(ctx context.Context, serv *Serv, chat *chatbotpb.ChatMsg,
 	ui *chatbotpb.UserInfo, ud proto.Message) ([]*chatbotpb.ChatMsg, error) {
 
 	var msgs []*chatbotpb.ChatMsg
 	for _, v := range lst.plugins {
-		curmsgs, err := v.OnMessage(ctx, serv, msg, ui, ud)
+		curmsgs, err := v.OnMessage(ctx, serv, chat, ui, ud)
 		if err != nil {
 			return nil, err
 		}

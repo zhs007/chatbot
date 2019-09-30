@@ -115,13 +115,13 @@ func (serv *Serv) onMsg(ctx context.Context, upd *tgbotapi.Update) error {
 }
 
 // SendChatMsg - send a chat message
-func (serv *Serv) SendChatMsg(ctx context.Context, msg *chatbotpb.ChatMsg) error {
-	i64, err := Str2ID(msg.Uai.Appuid)
+func (serv *Serv) SendChatMsg(ctx context.Context, chat *chatbotpb.ChatMsg) error {
+	i64, err := Str2ID(chat.Uai.Appuid)
 	if err != nil {
 		return err
 	}
 
-	telemsg := tgbotapi.NewMessage(i64, msg.Msg)
+	telemsg := tgbotapi.NewMessage(i64, chat.Msg)
 
 	telemsg.DisableWebPagePreview = true
 

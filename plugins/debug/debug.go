@@ -14,7 +14,7 @@ type debugPlugin struct {
 }
 
 // OnMessage - get message
-func (dbp *debugPlugin) OnMessage(ctx context.Context, serv *chatbot.Serv, msg *chatbotpb.ChatMsg,
+func (dbp *debugPlugin) OnMessage(ctx context.Context, serv *chatbot.Serv, chat *chatbotpb.ChatMsg,
 	ui *chatbotpb.UserInfo, ud proto.Message) ([]*chatbotpb.ChatMsg, error) {
 
 	if serv == nil {
@@ -25,9 +25,9 @@ func (dbp *debugPlugin) OnMessage(ctx context.Context, serv *chatbot.Serv, msg *
 		return nil, chatbotbase.ErrPluginInvalidServMgrText
 	}
 
-	lang := serv.GetChatMsgLang(msg)
+	lang := serv.GetChatMsgLang(chat)
 
-	mParams, err := serv.BuildBasicParamsMap(msg, ui, lang)
+	mParams, err := serv.BuildBasicParamsMap(chat, ui, lang)
 	if err != nil {
 		return nil, err
 	}
@@ -39,14 +39,14 @@ func (dbp *debugPlugin) OnMessage(ctx context.Context, serv *chatbot.Serv, msg *
 
 	var lst []*chatbotpb.ChatMsg
 
-	msgigetit, err := chatbot.NewChatMsgWithText(locale, "igetit", mParams, msg.Uai)
+	msgigetit, err := chatbot.NewChatMsgWithText(locale, "igetit", mParams, chat.Uai)
 	if err != nil {
 		return nil, err
 	}
 
 	lst = append(lst, msgigetit)
 
-	msgyousaid, err := chatbot.NewChatMsgWithText(locale, "yousaid", mParams, msg.Uai)
+	msgyousaid, err := chatbot.NewChatMsgWithText(locale, "yousaid", mParams, chat.Uai)
 	if err != nil {
 		return nil, err
 	}
@@ -60,7 +60,7 @@ func (dbp *debugPlugin) OnMessage(ctx context.Context, serv *chatbot.Serv, msg *
 	} else {
 		msgui := &chatbotpb.ChatMsg{
 			Msg: strui,
-			Uai: msg.Uai,
+			Uai: chat.Uai,
 		}
 
 		lst = append(lst, msgui)
