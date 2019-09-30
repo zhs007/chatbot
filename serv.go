@@ -23,7 +23,7 @@ type Serv struct {
 	lstPlugins2 *PluginsList
 	MgrUser     UserMgr
 	MgrText     *TextMgr
-	cmds        *CommondsList
+	Cmds        *CommondsList
 	core        ServiceCore
 }
 
@@ -64,7 +64,7 @@ func NewChatBotServ(cfg *Config, mgr UserMgr, core ServiceCore) (*Serv, error) {
 		lstPlugins2: NewPluginsList(),
 		MgrUser:     mgr,
 		MgrText:     mgrText,
-		cmds:        NewCommondsList(),
+		Cmds:        NewCommondsList(),
 	}
 
 	for _, v := range cfg.Plugins {
@@ -82,7 +82,7 @@ func NewChatBotServ(cfg *Config, mgr UserMgr, core ServiceCore) (*Serv, error) {
 	}
 
 	for _, v := range cfg.Commands {
-		err = serv.cmds.AddCommand(v)
+		err = serv.Cmds.AddCommand(v)
 		if err != nil {
 			return nil, err
 		}

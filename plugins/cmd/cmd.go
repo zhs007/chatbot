@@ -1,9 +1,10 @@
-package chatbot
+package chatbotcmdplugin
 
 import (
 	"context"
 
 	"github.com/golang/protobuf/proto"
+	chatbot "github.com/zhs007/chatbot"
 	chatbotbase "github.com/zhs007/chatbot/base"
 	chatbotpb "github.com/zhs007/chatbot/proto"
 )
@@ -12,10 +13,10 @@ type cmdPlugin struct {
 }
 
 // OnMessage - get message
-func (cp *cmdPlugin) OnMessage(ctx context.Context, serv *Serv, msg *chatbotpb.ChatMsg,
+func (cp *cmdPlugin) OnMessage(ctx context.Context, serv *chatbot.Serv, msg *chatbotpb.ChatMsg,
 	ui *chatbotpb.UserInfo, ud proto.Message) ([]*chatbotpb.ChatMsg, error) {
 
-	cmd, params, err := serv.cmds.ParseInChat(msg)
+	cmd, params, err := serv.Cmds.ParseInChat(msg)
 	if err != nil {
 		if err != chatbotbase.ErrCmdNoCmd {
 			return nil, err
@@ -25,7 +26,7 @@ func (cp *cmdPlugin) OnMessage(ctx context.Context, serv *Serv, msg *chatbotpb.C
 	}
 
 	if cmd != "" {
-		lst, err := serv.cmds.RunInChat(ctx, cmd, serv, params, msg, ui, ud)
+		lst, err := serv.Cmds.RunInChat(ctx, cmd, serv, params, msg, ui, ud)
 		if err != nil {
 			if err != chatbotbase.ErrCmdNoCmd {
 				return nil, err
@@ -48,4 +49,9 @@ func (cp *cmdPlugin) OnStart(ctx context.Context) error {
 // GetPluginName - get plugin name
 func (cp *cmdPlugin) GetPluginName() string {
 	return "command"
+}
+
+// RegisterPlugin - register debug plugin
+func RegisterPlugin() error {
+	return chatbot.RegPlugin(&cmdPlugin{})
 }

@@ -8,6 +8,7 @@ import (
 	chatbotbase "github.com/zhs007/chatbot/base"
 	chatbotcmdhelp "github.com/zhs007/chatbot/commands/help"
 	chatbotcmdstart "github.com/zhs007/chatbot/commands/start"
+	chatbotcmdplugin "github.com/zhs007/chatbot/plugins/cmd"
 	chatbotdebugplugin "github.com/zhs007/chatbot/plugins/debug"
 	chatbotusermgr "github.com/zhs007/chatbot/usermgr"
 	"go.uber.org/zap/zapcore"
@@ -17,6 +18,13 @@ func main() {
 	err := chatbotdebugplugin.RegisterPlugin()
 	if err != nil {
 		fmt.Printf("chatbotdebugplugin.RegisterPlugin %v", err)
+
+		return
+	}
+
+	err = chatbotcmdplugin.RegisterPlugin()
+	if err != nil {
+		fmt.Printf("chatbotcmdplugin.RegisterPlugin %v", err)
 
 		return
 	}
