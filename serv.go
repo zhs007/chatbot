@@ -25,6 +25,7 @@ type Serv struct {
 	MgrText     *TextMgr
 	Cmds        *CommondsList
 	core        ServiceCore
+	MgrFile     *FileProcessorMgr
 }
 
 // NewChatBotServ -
@@ -65,6 +66,7 @@ func NewChatBotServ(cfg *Config, mgr UserMgr, core ServiceCore) (*Serv, error) {
 		MgrUser:     mgr,
 		MgrText:     mgrText,
 		Cmds:        NewCommondsList(),
+		MgrFile:     &FileProcessorMgr{},
 	}
 
 	for _, v := range cfg.Plugins {
@@ -264,7 +266,7 @@ func (serv *Serv) RequestChat(req *chatbotpb.RequestChatData,
 }
 
 // BuildBasicParamsMap - build basic params map
-func (serv *Serv) BuildBasicParamsMap(msg *chatbotpb.ChatMsg, ui *chatbotpb.UserInfo, lang string) (
+func (serv *Serv) BuildBasicParamsMap(chat *chatbotpb.ChatMsg, ui *chatbotpb.UserInfo, lang string) (
 	map[string]interface{}, error) {
 
 	locale, err := serv.MgrText.GetLocalizer(lang)
@@ -279,18 +281,28 @@ func (serv *Serv) BuildBasicParamsMap(msg *chatbotpb.ChatMsg, ui *chatbotpb.User
 		return nil, err
 	}
 
+	fn := ""
+	ft := ""
+
+	if chat.File != nil {
+		fn = chat.File.Filename
+		ft = chat.File.FileType
+	}
+
 	return map[string]interface{}{
 		"ChatBotName": chatbotname,
 		"Name":        ui.Name,
 		"UID":         ui.Uid,
-		"TextChat":    msg.Msg,
+		"TextChat":    chat.Msg,
+		"FileName":    fn,
+		"FileType":    ft,
 	}, nil
 }
 
 // GetChatMsgLang - get chat message language
-func (serv *Serv) GetChatMsgLang(msg *chatbotpb.ChatMsg) string {
-	if msg.Uai.Lang != "" {
-		return msg.Uai.Lang
+func (serv *Serv) GetChatMsgLang(chat *chatbotpb.ChatMsg) string {
+	if chat.Uai.Lang != "" {
+		return chat.Uai.Lang
 	}
 
 	return serv.Cfg.Language

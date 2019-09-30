@@ -10,7 +10,7 @@ import (
 // Plugin - chat bot plugin interface
 type Plugin interface {
 	// OnMessage - get message
-	OnMessage(ctx context.Context, serv *Serv, msg *chatbotpb.ChatMsg,
+	OnMessage(ctx context.Context, serv *Serv, chat *chatbotpb.ChatMsg,
 		ui *chatbotpb.UserInfo, ud proto.Message) ([]*chatbotpb.ChatMsg, error)
 
 	// OnStart - on start

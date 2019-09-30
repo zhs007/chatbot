@@ -109,7 +109,7 @@ func (client *Client) RegisterAppService(ctx context.Context) error {
 }
 
 // SendChat - SendChat
-func (client *Client) SendChat(ctx context.Context, chatMsg *chatbotpb.ChatMsg) ([]*chatbotpb.ChatMsg, error) {
+func (client *Client) SendChat(ctx context.Context, chat *chatbotpb.ChatMsg) ([]*chatbotpb.ChatMsg, error) {
 
 	err := client.onSendMsg()
 	if err != nil {
@@ -119,7 +119,7 @@ func (client *Client) SendChat(ctx context.Context, chatMsg *chatbotpb.ChatMsg) 
 		return nil, err
 	}
 
-	lst, err := BuildChatMsgStream(chatMsg)
+	lst, err := BuildChatMsgStream(chat)
 	if err != nil {
 		// if error, reset
 		client.reset()

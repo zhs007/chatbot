@@ -13,10 +13,10 @@ type cmdPlugin struct {
 }
 
 // OnMessage - get message
-func (cp *cmdPlugin) OnMessage(ctx context.Context, serv *chatbot.Serv, msg *chatbotpb.ChatMsg,
+func (cp *cmdPlugin) OnMessage(ctx context.Context, serv *chatbot.Serv, chat *chatbotpb.ChatMsg,
 	ui *chatbotpb.UserInfo, ud proto.Message) ([]*chatbotpb.ChatMsg, error) {
 
-	cmd, params, err := serv.Cmds.ParseInChat(msg)
+	cmd, params, err := serv.Cmds.ParseInChat(chat)
 	if err != nil {
 		if err != chatbotbase.ErrCmdNoCmd {
 			return nil, err
@@ -26,7 +26,7 @@ func (cp *cmdPlugin) OnMessage(ctx context.Context, serv *chatbot.Serv, msg *cha
 	}
 
 	if cmd != "" {
-		lst, err := serv.Cmds.RunInChat(ctx, cmd, serv, params, msg, ui, ud)
+		lst, err := serv.Cmds.RunInChat(ctx, cmd, serv, params, chat, ui, ud)
 		if err != nil {
 			if err != chatbotbase.ErrCmdNoCmd {
 				return nil, err

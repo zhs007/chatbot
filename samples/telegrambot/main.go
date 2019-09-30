@@ -30,5 +30,10 @@ func main() {
 		return
 	}
 
-	serv.Start(context.Background())
+	err = serv.Start(context.Background())
+	if err != nil {
+		fmt.Printf("Start %v", err)
+
+		return
+	}
 }

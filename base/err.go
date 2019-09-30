@@ -89,6 +89,9 @@ var (
 	// ErrUserMgrNoUserData - no userdata
 	ErrUserMgrNoUserData = errors.New("no userdata")
 
+	// ErrInvalidFileProcessorMgr - invalid FileProcessorMgr
+	ErrInvalidFileProcessorMgr = errors.New("invalid FileProcessorMgr")
+
 	// ErrUnkonow - unknow error
 	ErrUnkonow = errors.New("unknow error")
 )

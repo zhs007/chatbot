@@ -25,3 +25,6 @@ igetit:
 yousaid:
   description: in debug
   other: 你说 “{{.TextChat}}”。
+igetfile:
+  description: in debug
+  other: 我收到了一个 {{.FileType}} 文件 ({{.FileName}}).
