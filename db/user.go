@@ -51,12 +51,12 @@ func (db *UserDB) GetUserID(ctx context.Context) (int64, error) {
 	buf, err := db.ankaDB.Get(ctx, UserDBName, UserIDDBKey)
 	if err != nil {
 		if err == ankadb.ErrNotFoundKey {
-			err = db.updUserID(ctx, 1)
+			err = db.updUserID(ctx, MinUID)
 			if err != nil {
 				return -1, err
 			}
 
-			return 1, nil
+			return MinUID, nil
 		}
 
 		return -1, err

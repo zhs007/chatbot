@@ -17,6 +17,9 @@ func makeAppServKey(token string) string {
 // UserIDDBKey - This is UserIDDBKey
 const UserIDDBKey = "uid"
 
+// AppDataDBKey - This is AppDataDBKey
+const AppDataDBKey = "appdata"
+
 // UserDBKeyPrefix - This is the prefix of UserDBKey
 const UserDBKeyPrefix = "ui:"
 

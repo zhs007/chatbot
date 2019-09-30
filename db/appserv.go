@@ -12,11 +12,14 @@ import (
 
 // AppServDB - appserv database
 type AppServDB struct {
-	ankaDB ankadb.AnkaDB
+	ankaDB     ankadb.AnkaDB
+	MgrAppData AppDataMgr
 }
 
 // NewAppServDB - new AdaCoreDB
-func NewAppServDB(dbpath string, httpAddr string, engine string) (*AppServDB, error) {
+func NewAppServDB(dbpath string, httpAddr string, engine string,
+	mgrAppData AppDataMgr) (*AppServDB, error) {
+
 	cfg := ankadb.NewConfig()
 
 	cfg.AddrHTTP = httpAddr
@@ -38,14 +41,17 @@ func NewAppServDB(dbpath string, httpAddr string, engine string) (*AppServDB, er
 		zap.String("httpAddr", httpAddr), zap.String("engine", engine))
 
 	db := &AppServDB{
-		ankaDB: ankaDB,
+		ankaDB:     ankaDB,
+		MgrAppData: mgrAppData,
 	}
 
 	return db, err
 }
 
 // GetAppServ - get app service
-func (db *AppServDB) GetAppServ(ctx context.Context, token string) (*chatbotpb.AppServInfo, error) {
+func (db *AppServDB) GetAppServ(ctx context.Context, token string) (
+	*chatbotpb.AppServInfo, error) {
+
 	buf, err := db.ankaDB.Get(ctx, AppServDBName, makeAppServKey(token))
 	if err != nil {
 		if err == ankadb.ErrNotFoundKey {
@@ -66,7 +72,9 @@ func (db *AppServDB) GetAppServ(ctx context.Context, token string) (*chatbotpb.A
 }
 
 // UpdAppServ - update app service
-func (db *AppServDB) UpdAppServ(ctx context.Context, cfg *chatbotbase.AppServConfig) (*chatbotpb.AppServInfo, error) {
+func (db *AppServDB) UpdAppServ(ctx context.Context, cfg *chatbotbase.AppServConfig) (
+	*chatbotpb.AppServInfo, error) {
+
 	casi, err := db.GetAppServ(ctx, cfg.Token)
 	if err != nil {
 		return nil, err
@@ -161,7 +169,8 @@ func (db *AppServDB) GenerateSessionID(ctx context.Context, asi *chatbotpb.AppSe
 }
 
 // UpdAppServEx - update app service
-func (db *AppServDB) UpdAppServEx(ctx context.Context, asi *chatbotpb.AppServInfo) (*chatbotpb.AppServInfo, error) {
+func (db *AppServDB) UpdAppServEx(ctx context.Context, asi *chatbotpb.AppServInfo) (
+	*chatbotpb.AppServInfo, error) {
 
 	buf, err := proto.Marshal(asi)
 	if err != nil {
@@ -177,7 +186,9 @@ func (db *AppServDB) UpdAppServEx(ctx context.Context, asi *chatbotpb.AppServInf
 }
 
 // CheckTokenSessionID - check token & sessionID
-func (db *AppServDB) CheckTokenSessionID(ctx context.Context, token string, sessionid string) (bool, error) {
+func (db *AppServDB) CheckTokenSessionID(ctx context.Context, token string,
+	sessionid string) (bool, error) {
+
 	asi, err := db.GetAppServ(ctx, token)
 	if err != nil {
 		return false, err
@@ -188,4 +199,36 @@ func (db *AppServDB) CheckTokenSessionID(ctx context.Context, token string, sess
 	}
 
 	return false, chatbotbase.ErrInvalidTokenInAppServDB
+}
+
+// UpdAppData - update app data
+func (db *AppServDB) UpdAppData(ctx context.Context, ad proto.Message) error {
+
+	buf, err := proto.Marshal(ad)
+	if err != nil {
+		return err
+	}
+
+	err = db.ankaDB.Set(ctx, AppServDBName, AppDataDBKey, buf)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// GetAppData - get app data
+func (db *AppServDB) GetAppData(ctx context.Context) (
+	proto.Message, error) {
+
+	buf, err := db.ankaDB.Get(ctx, AppServDBName, AppDataDBKey)
+	if err != nil {
+		if err == ankadb.ErrNotFoundKey {
+			return nil, nil
+		}
+
+		return nil, err
+	}
+
+	return db.MgrAppData.Unmarshal(buf)
 }

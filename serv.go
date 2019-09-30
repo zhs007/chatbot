@@ -24,15 +24,18 @@ type Serv struct {
 	MgrUser     UserMgr
 	MgrText     *TextMgr
 	cmds        *CommondsList
+	core        ServiceCore
 }
 
 // NewChatBotServ -
-func NewChatBotServ(cfg *Config, mgr UserMgr) (*Serv, error) {
+func NewChatBotServ(cfg *Config, mgr UserMgr, core ServiceCore) (*Serv, error) {
 	if cfg == nil {
 		return nil, chatbotbase.ErrNoConfig
 	}
 
-	db, err := chatbotdb.NewAppServDB(cfg.DBPath, "", cfg.DBEngine)
+	db, err := chatbotdb.NewAppServDB(cfg.DBPath, "", cfg.DBEngine, &appDataMgr{
+		core: core,
+	})
 	if err != nil {
 		return nil, err
 	}
