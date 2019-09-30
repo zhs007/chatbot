@@ -56,16 +56,25 @@ message ReplyRegisterAppService {
     string sessionID = 3;
 }
 
+// FileData - file data
+message FileData {
+    string filename = 1;
+    bytes fileData = 2;
+    string fileType = 3;
+}
+
 // ChatMsg - chat message
 message ChatMsg {
     string msg = 1;
     UserAppInfo uai = 2;
     AppGroupInfo agi = 3;
-    string filename = 4;
-    bytes fileData = 5;
+    string filename = 4 [deprecated = true];
+    bytes fileData = 5 [deprecated = true];
     string error = 6;
     string token = 7;
     string sessionID = 8;
+    string fileType = 9 [deprecated = true];
+    FileData file = 10;
 }
 
 // ChatMsgStream - chat message stream

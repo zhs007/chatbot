@@ -1,7 +1,9 @@
 package chatbottelegram
 
 import (
+	"bytes"
 	"context"
+	"net/http"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	chatbot "github.com/zhs007/chatbot"
@@ -90,21 +92,22 @@ func (serv *Serv) onMsg(ctx context.Context, upd *tgbotapi.Update) error {
 
 		str := FormatCommand(upd.Message.Text)
 
-		if str != "" {
-			msg := chatbot.BuildTextChatMsg(str,
-				uai, serv.cfg.Token, serv.client.SessionID)
-
-			lstret, err := serv.client.SendChat(ctx, msg)
+		if upd.Message.Document != nil {
+			fd, err := serv.getFileDataWithDocument(upd.Message.Document)
 			if err != nil {
 				return err
 			}
 
-			for _, v := range lstret {
-				err = serv.SendChatMsg(ctx, v)
-				if err != nil {
-					return err
-				}
-			}
+			msg := chatbot.BuildFileChatMsg(str, fd, uai, serv.cfg.Token, serv.client.SessionID)
+
+			return serv.procChatMsg(ctx, msg)
+		}
+
+		if str != "" {
+			msg := chatbot.BuildTextChatMsg(str,
+				uai, serv.cfg.Token, serv.client.SessionID)
+
+			return serv.procChatMsg(ctx, msg)
 		}
 	}
 
@@ -125,6 +128,50 @@ func (serv *Serv) SendChatMsg(ctx context.Context, msg *chatbotpb.ChatMsg) error
 	_, err = serv.bot.Send(telemsg)
 	if err != nil {
 		return err
+	}
+
+	return nil
+}
+
+func (serv *Serv) getFileDataWithDocument(doc *tgbotapi.Document) (*chatbotpb.FileData, error) {
+
+	file, err := serv.bot.GetFile(tgbotapi.FileConfig{
+		FileID: doc.FileID,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	url := file.Link(serv.bot.Token)
+
+	res, err := http.Get(url)
+	if err != nil {
+		return nil, err
+	}
+
+	buf := new(bytes.Buffer)
+	buf.ReadFrom(res.Body)
+
+	fd := &chatbotpb.FileData{
+		Filename: doc.FileName,
+		FileData: buf.Bytes(),
+		FileType: doc.MimeType,
+	}
+
+	return fd, nil
+}
+
+func (serv *Serv) procChatMsg(ctx context.Context, chat *chatbotpb.ChatMsg) error {
+	lstret, err := serv.client.SendChat(ctx, chat)
+	if err != nil {
+		return err
+	}
+
+	for _, v := range lstret {
+		err = serv.SendChatMsg(ctx, v)
+		if err != nil {
+			return err
+		}
 	}
 
 	return nil

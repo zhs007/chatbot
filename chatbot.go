@@ -7,13 +7,37 @@ import (
 
 // ServiceCore - chatbot service core
 type ServiceCore interface {
-	// Unmarshal - unmarshal
+	// UnmarshalAppData - unmarshal
 	UnmarshalAppData(buf []byte) (proto.Message, error)
-	// New - new a app data
+	// NewAppData - new a app data
 	NewAppData() (proto.Message, error)
 
-	// Unmarshal - unmarshal
+	// UnmarshalUserData - unmarshal
 	UnmarshalUserData(buf []byte) (proto.Message, error)
-	// New - new a userdata
+	// NewUserData - new a userdata
 	NewUserData(ui *chatbotpb.UserInfo) (proto.Message, error)
+}
+
+// EmptyServiceCore - chatbot service core
+type EmptyServiceCore struct {
+}
+
+// UnmarshalAppData - unmarshal
+func (core *EmptyServiceCore) UnmarshalAppData(buf []byte) (proto.Message, error) {
+	return nil, nil
+}
+
+// NewAppData - new a app data
+func (core *EmptyServiceCore) NewAppData() (proto.Message, error) {
+	return nil, nil
+}
+
+// UnmarshalUserData - unmarshal
+func (core *EmptyServiceCore) UnmarshalUserData(buf []byte) (proto.Message, error) {
+	return nil, nil
+}
+
+// NewUserData - new a userdata
+func (core *EmptyServiceCore) NewUserData(ui *chatbotpb.UserInfo) (proto.Message, error) {
+	return nil, nil
 }

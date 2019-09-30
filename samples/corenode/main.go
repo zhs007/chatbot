@@ -40,7 +40,7 @@ func main() {
 		return
 	}
 
-	serv, err := chatbot.NewChatBotServ(cfg, mgr)
+	serv, err := chatbot.NewChatBotServ(cfg, mgr, &chatbot.EmptyServiceCore{})
 	if err != nil {
 		fmt.Printf("NewChatBotServ %v", err)
 

@@ -34,6 +34,19 @@ func BuildTextChatMsg(msg string, uai *chatbotpb.UserAppInfo, token string,
 	}
 }
 
+// BuildFileChatMsg - build ChatMsg
+func BuildFileChatMsg(msg string, fd *chatbotpb.FileData, uai *chatbotpb.UserAppInfo, token string,
+	sessionid string) *chatbotpb.ChatMsg {
+
+	return &chatbotpb.ChatMsg{
+		Msg:       msg,
+		Uai:       uai,
+		Token:     token,
+		SessionID: sessionid,
+		File:      fd,
+	}
+}
+
 // BuildErrorChatMsg - build ChatMsg
 func BuildErrorChatMsg(err error, uai *chatbotpb.UserAppInfo, token string,
 	sessionid string) *chatbotpb.ChatMsg {
