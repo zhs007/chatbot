@@ -283,10 +283,14 @@ func (serv *Serv) BuildBasicParamsMap(chat *chatbotpb.ChatMsg, ui *chatbotpb.Use
 
 	fn := ""
 	ft := ""
+	fs := ""
+	fh := ""
 
 	if chat.File != nil {
 		fn = chat.File.Filename
 		ft = chat.File.FileType
+		fs = chatbotbase.FormatFileSize(int64(len(chat.File.FileData)))
+		fh = chatbotbase.MD5Buffer(chat.File.FileData)
 	}
 
 	return map[string]interface{}{
@@ -296,6 +300,8 @@ func (serv *Serv) BuildBasicParamsMap(chat *chatbotpb.ChatMsg, ui *chatbotpb.Use
 		"TextChat":    chat.Msg,
 		"FileName":    fn,
 		"FileType":    ft,
+		"FileSize":    fs,
+		"FileHash":    fh,
 	}, nil
 }
 
