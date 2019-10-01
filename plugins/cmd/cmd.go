@@ -18,7 +18,9 @@ func (cp *cmdPlugin) OnMessage(ctx context.Context, serv *chatbot.Serv, chat *ch
 
 	cmd, params, err := serv.Cmds.ParseInChat(chat)
 	if err != nil {
-		if err != chatbotbase.ErrCmdNoCmd {
+		if err != chatbotbase.ErrCmdNoCmd &&
+			err != chatbotbase.ErrCmdEmptyCmd {
+
 			return nil, err
 		}
 
