@@ -1,0 +1,28 @@
+FROM golang:1.12 as builder
+
+MAINTAINER zerro "zerrozhao@gmail.com"
+
+ENV GOPROXY https://goproxy.io
+
+WORKDIR /src/chatbot
+
+COPY ./go.* /src/chatbot/
+
+RUN go mod download
+
+COPY . /src/chatbot
+
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o telegrambot ./telegramnode \
+    && mkdir /app \
+    && mkdir /app/telegrambot \
+    && mkdir /app/telegrambot/cfg \
+    && mkdir /app/telegrambot/logs \
+    && cp ./telegrambot /app/telegrambot/ \
+    && cp ./cfg/telegram.yaml.sample /app/telegrambot/cfg/config.yaml
+
+FROM alpine
+RUN apk upgrade && apk add --no-cache ca-certificates
+WORKDIR /app/telegrambot
+COPY --from=builder /usr/local/go/lib/time/zoneinfo.zip /usr/local/go/lib/time/zoneinfo.zip
+COPY --from=builder /app/telegrambot /app/telegrambot
+CMD ["./telegrambot"]
