@@ -1,5 +1,10 @@
 # ChatBot Development Log
 
+### 2019-10-02
+
+今天把``telegrambot``发布到``dockerhub``了。  
+这部分后面本来就不需要任何的编码，部署起来会简单一些。
+
 ### 2019-09-30
 
 最近花了点时间，基本上把ChatBot调通了。  
