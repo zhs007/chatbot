@@ -19,6 +19,10 @@ func Str2ID(str string) (int64, error) {
 func FormatCommand(str string) string {
 	str = strings.TrimSpace(str)
 
+	if len(str) <= 1 {
+		return str
+	}
+
 	if str[0] == '/' && strings.IndexByte("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ", str[1]) >= 0 {
 		return str[1:]
 	}

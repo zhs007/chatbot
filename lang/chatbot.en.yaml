@@ -27,4 +27,4 @@ yousaid:
   other: You said "{{.TextChat}}".
 igetfile:
   description: in debug
-  other: I get a {{.FileType}} file ({{.FileName}}).
+  other: I get a {{.FileType}} file ({{.FileName}}), the file size is {{.FileSize}}, the file hash is "{{.FileHash}}".

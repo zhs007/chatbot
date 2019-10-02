@@ -97,3 +97,26 @@ func JSONFormat(obj interface{}) (string, error) {
 
 	return string(s), nil
 }
+
+// FormatFileSize - format size to string
+func FormatFileSize(s int64) string {
+	if s <= 0 {
+		return "invalid size"
+	}
+
+	if s < 1024 {
+		return fmt.Sprintf("%v b", s)
+	} else if s < 1024*1024 {
+		return fmt.Sprintf("%.2f k", float32(s)/1024)
+	} else if s < 1024*1024*1024 {
+		return fmt.Sprintf("%.2f m", float32(s)/1024/1024)
+	} else if s < 1024*1024*1024*1024 {
+		return fmt.Sprintf("%.2f g", float32(s)/1024/1024/1024)
+	} else if s < 1024*1024*1024*1024*1024 {
+		return fmt.Sprintf("%.2f t", float32(s)/1024/1024/1024/1024)
+	} else if s < 1024*1024*1024*1024*1024*1024 {
+		return fmt.Sprintf("%.2f p", float32(s)/1024/1024/1024/1024/1024)
+	}
+
+	return fmt.Sprintf("%v", s)
+}

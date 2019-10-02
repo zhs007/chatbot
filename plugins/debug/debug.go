@@ -55,12 +55,14 @@ func (dbp *debugPlugin) OnMessage(ctx context.Context, serv *chatbot.Serv, chat 
 		lst = append(lst, msgigetfile)
 	}
 
-	msgyousaid, err := chatbot.NewChatMsgWithText(locale, "yousaid", mParams, chat.Uai)
-	if err != nil {
-		return nil, err
-	}
+	if len(chat.Msg) > 0 {
+		msgyousaid, err := chatbot.NewChatMsgWithText(locale, "yousaid", mParams, chat.Uai)
+		if err != nil {
+			return nil, err
+		}
 
-	lst = append(lst, msgyousaid)
+		lst = append(lst, msgyousaid)
+	}
 
 	strui, err := chatbotbase.JSONFormat(ui)
 	if err != nil {

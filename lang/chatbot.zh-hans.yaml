@@ -27,4 +27,4 @@ yousaid:
   other: 你说 “{{.TextChat}}”。
 igetfile:
   description: in debug
-  other: 我收到了一个 {{.FileType}} 文件 ({{.FileName}}).
+  other: 我收到了一个 {{.FileType}} 文件 ({{.FileName}})，文件大小是 {{.FileSize}}，文件Hash是 "{{.FileHash}}"。
