@@ -20,6 +20,10 @@ var logPath string
 var panicFile *os.File
 var logSubName string
 
+func init() {
+	logSubName = "chatbotcore"
+}
+
 func initPanicFile() error {
 	file, err := os.OpenFile(
 		path.Join(logPath, BuildLogFilename("panic", logSubName)),
