@@ -4,11 +4,15 @@ import (
 	"context"
 	"fmt"
 
+	chatbotbase "github.com/zhs007/chatbot/base"
 	chatbottelegram "github.com/zhs007/chatbot/app/telegram"
+	"go.uber.org/zap/zapcore"
 )
 
 func main() {
-	cfg, err := chatbottelegram.LoadConfig("./cfg/config.yaml")
+	chatbotbase.InitLogger(zapcore.InfoLevel, true, "./logs")
+
+	cfg, err := chatbottelegram.LoadConfig("./cfg/telegram.yaml")
 	if err != nil {
 		fmt.Printf("LoadConfig %v", err)
 
