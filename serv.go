@@ -24,7 +24,7 @@ type Serv struct {
 	MgrUser     UserMgr
 	MgrText     *TextMgr
 	Cmds        *CommondsList
-	core        ServiceCore
+	Core        ServiceCore
 	MgrFile     *FileProcessorMgr
 }
 
@@ -67,6 +67,7 @@ func NewChatBotServ(cfg *Config, mgr UserMgr, core ServiceCore) (*Serv, error) {
 		MgrText:     mgrText,
 		Cmds:        NewCommondsList(),
 		MgrFile:     &FileProcessorMgr{},
+		Core:        core,
 	}
 
 	for _, v := range cfg.Plugins {
@@ -97,6 +98,18 @@ func NewChatBotServ(cfg *Config, mgr UserMgr, core ServiceCore) (*Serv, error) {
 	chatbotbase.Info("NewChatBotServ OK.")
 
 	return serv, nil
+}
+
+// NewSimpleChatBotServ - new a simple chatbot service with local user manager
+func NewSimpleChatBotServ(cfg *Config, core ServiceCore) (*Serv, error) {
+	mgr, err := NewLocalUserMgr(cfg.DBPath, "", cfg.DBEngine, core)
+	if err != nil {
+		chatbotbase.Error("NewSimpleChatBotServ:NewLocalUserMgr", zap.Error(err))
+
+		return nil, err
+	}
+
+	return NewChatBotServ(cfg, mgr, core)
 }
 
 // Init - initial service

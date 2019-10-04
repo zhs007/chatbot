@@ -1,6 +1,8 @@
 package chatbot
 
 import (
+	"context"
+
 	"github.com/golang/protobuf/proto"
 	chatbotpb "github.com/zhs007/chatbot/proto"
 )
@@ -16,6 +18,10 @@ type ServiceCore interface {
 	UnmarshalUserData(buf []byte) (proto.Message, error)
 	// NewUserData - new a userdata
 	NewUserData(ui *chatbotpb.UserInfo) (proto.Message, error)
+
+	// OnDebug - call in plugin.debug
+	OnDebug(ctx context.Context, serv *Serv, chat *chatbotpb.ChatMsg,
+		ui *chatbotpb.UserInfo, ud proto.Message) ([]*chatbotpb.ChatMsg, error)
 }
 
 // EmptyServiceCore - chatbot service core
@@ -39,5 +45,11 @@ func (core *EmptyServiceCore) UnmarshalUserData(buf []byte) (proto.Message, erro
 
 // NewUserData - new a userdata
 func (core *EmptyServiceCore) NewUserData(ui *chatbotpb.UserInfo) (proto.Message, error) {
+	return nil, nil
+}
+
+// OnDebug - call in plugin.debug
+func (core *EmptyServiceCore) OnDebug(ctx context.Context, serv *Serv, chat *chatbotpb.ChatMsg,
+	ui *chatbotpb.UserInfo, ud proto.Message) ([]*chatbotpb.ChatMsg, error) {
 	return nil, nil
 }

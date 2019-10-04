@@ -68,13 +68,27 @@ func (dbp *debugPlugin) OnMessage(ctx context.Context, serv *chatbot.Serv, chat 
 	if err != nil {
 		chatbotbase.Warn("debugPlugin.OnMessage:UI",
 			zap.Error(err))
-	} else {
-		msgui := &chatbotpb.ChatMsg{
-			Msg: strui,
-			Uai: chat.Uai,
-		}
 
-		lst = append(lst, msgui)
+		return nil, err
+	}
+
+	msgui := &chatbotpb.ChatMsg{
+		Msg: strui,
+		Uai: chat.Uai,
+	}
+
+	lst = append(lst, msgui)
+
+	nlst, err := serv.Core.OnDebug(ctx, serv, chat, ui, ud)
+	if err != nil {
+		chatbotbase.Warn("debugPlugin.OnMessage:OnDebug",
+			zap.Error(err))
+
+		return nil, err
+	}
+
+	if nlst != nil && len(nlst) > 0 {
+		lst = append(lst, nlst...)
 	}
 
 	return lst, nil
