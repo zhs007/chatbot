@@ -100,6 +100,18 @@ func NewChatBotServ(cfg *Config, mgr UserMgr, core ServiceCore) (*Serv, error) {
 	return serv, nil
 }
 
+// NewSimpleChatBotServ - new a simple chatbot service with local user manager
+func NewSimpleChatBotServ(cfg *Config, core ServiceCore) (*Serv, error) {
+	mgr, err := NewLocalUserMgr(cfg.DBPath, "", cfg.DBEngine, core)
+	if err != nil {
+		chatbotbase.Error("NewSimpleChatBotServ:NewLocalUserMgr", zap.Error(err))
+
+		return nil, err
+	}
+
+	return NewChatBotServ(cfg, mgr, core)
+}
+
 // Init - initial service
 func (serv *Serv) Init(ctx context.Context) error {
 	return serv.dbAppServ.Init(ctx, serv.Cfg.AppServ)

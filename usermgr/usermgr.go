@@ -15,7 +15,9 @@ type UserMgr struct {
 }
 
 // NewUserMgr - new UserMgr
-func NewUserMgr(dbpath string, httpAddr string, engine string, mgrUserData chatbotdb.UserDataMgr) (*UserMgr, error) {
+func NewUserMgr(dbpath string, httpAddr string, engine string,
+	mgrUserData chatbotdb.UserDataMgr) (*UserMgr, error) {
+
 	db, err := chatbotdb.NewUserDB(dbpath, httpAddr, engine, mgrUserData)
 	if err != nil {
 		return nil, err
