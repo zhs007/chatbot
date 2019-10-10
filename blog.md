@@ -1,5 +1,16 @@
 # ChatBot Development Log
 
+### 2019-10-10
+
+今天开始CoolQ的对接开发了。
+
+CoolQ的部署其实还好，官方有个Docker，但因为我们会需要chatbot，后来发现coolqhttp官方也有个Docker，基本上就是用的那个。
+
+然后选了官方推荐的一个golang库，接口和telegrambot一致。
+
+QQ登录时好像会有安全检查，这个其实比较麻烦，好像每次登陆都会需要要不就发短信要不就手机QQ扫码这样的。  
+只有再多试试看了。
+
 ### 2019-10-02
 
 今天把``telegrambot``发布到``dockerhub``了。  
