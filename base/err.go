@@ -55,6 +55,11 @@ var (
 	// ErrNoTelegramToken - no telegramtoken
 	ErrNoTelegramToken = errors.New("no telegramtoken")
 
+	// ErrNoCoolQServURL - no coolq servurl
+	ErrNoCoolQServURL = errors.New("no coolq servurl")
+	// ErrNoCoolQHttpServAddr - no servaddr
+	ErrNoCoolQHttpServAddr = errors.New("no coolq http servaddr")
+
 	// ErrStreamNoMsg - no chat in stream
 	ErrStreamNoMsg = errors.New("no chat in stream")
 	// ErrInvalidStartInStream - invalid start in stream
