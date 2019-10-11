@@ -1,0 +1,11 @@
+ooolqtoken:
+coolqsecret:
+coolqservaddr: http://127.0.0.1:5700
+coolqhttpservaddr: 127.0.0.1:7234
+
+token: 1234567
+servaddr: 127.0.0.1:123
+username: ada
+
+debug: true
+preloaduserinfo: true

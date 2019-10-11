@@ -4,7 +4,7 @@ package chatbotpb;
 // ChatAppType - chat app type
 enum ChatAppType {
     CAT_TELEGRAM = 0;
-    CAT_COOLQQ = 1;
+    CAT_COOLQ = 1;
 };
 
 // UserAppInfo - user app info
