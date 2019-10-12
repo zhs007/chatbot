@@ -1,7 +1,7 @@
 ooolqtoken:
 coolqsecret:
-coolqservaddr: http://127.0.0.1:5700
-coolqhttpservaddr: 127.0.0.1:7234
+coolqservurl: ws://127.0.0.1:5700
+coolqhttpservaddr: 
 
 token: 1234567
 servaddr: 127.0.0.1:123
