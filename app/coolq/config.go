@@ -26,9 +26,9 @@ func checkConfig(cfg *Config) error {
 		return chatbotbase.ErrNoCoolQServURL
 	}
 
-	if cfg.CoolQHttpServAddr == "" {
-		return chatbotbase.ErrNoCoolQHttpServAddr
-	}
+	// if cfg.CoolQHttpServAddr == "" {
+	// 	return chatbotbase.ErrNoCoolQHttpServAddr
+	// }
 
 	if cfg.Username == "" {
 		return chatbotbase.ErrNoUsername

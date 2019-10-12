@@ -2,7 +2,6 @@ package chatbotcoolq
 
 import (
 	"context"
-	"net/http"
 
 	qqbotapi "github.com/catsworld/qq-bot-api"
 	chatbot "github.com/zhs007/chatbot"
@@ -48,30 +47,9 @@ func (serv *Serv) Start(ctx context.Context) error {
 
 	serv.bot.Debug = serv.cfg.Debug
 
-	u := qqbotapi.NewWebhook("/webhook_endpoint")
-	u.PreloadUserInfo = serv.cfg.PreloadUserInfo
-
-	// Use WebHook as event method
-	updates := serv.bot.ListenForWebhook(u)
-	// Or if you love WebSocket Reverse
-	// updates := bot.ListenForWebSocket(u)
-
-	go http.ListenAndServe(serv.cfg.CoolQHttpServAddr, nil)
-
-	// for update := range updates {
-	// 	if update.Message == nil {
-	// 		continue
-	// 	}
-
-	// 	log.Printf("[%s] %s", update.Message.From.String(), update.Message.Text)
-
-	// 	bot.SendMessage(update.Message.Chat.ID, update.Message.Chat.Type, update.Message.Text)
-	// }
-
-	// updates, err := serv.bot.GetUpdatesChan(u)
-	// if err != nil {
-	// 	return err
-	// }
+	u := qqbotapi.NewUpdate(0)
+	u.PreloadUserInfo = true
+	updates, err := serv.bot.GetUpdatesChan(u)
 
 	for {
 		isend := false
