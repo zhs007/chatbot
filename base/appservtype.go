@@ -5,7 +5,7 @@ import (
 )
 
 // strAppServType - appserv type string
-var strAppServType = []string{"telegram", "coolqq"}
+var strAppServType = []string{"telegram", "coolq"}
 
 // GetAppServType - strtype -> chatbotpb.ChatAppType
 func GetAppServType(strType string) (chatbotpb.ChatAppType, error) {
