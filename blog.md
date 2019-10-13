@@ -1,5 +1,18 @@
 # ChatBot Development Log
 
+### 2019-10-13
+
+今天把coolq部署用的shell脚本放到coolq目录了。  
+docker方式部署的，可以直接在linux下部署。
+
+如果部署在一台服务器，建议用link方式，这样可以避免暴露端口出去。
+
+接下来开始``v0.3``的开发了。  
+计划功能如下：
+
+- 增加一组底层command接口。
+- 增加多app账号链接。
+
 ### 2019-10-12
 
 CoolQ建议用websocket，不用配置post_url。  
