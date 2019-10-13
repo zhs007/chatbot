@@ -7,6 +7,8 @@ import (
 	"encoding/binary"
 	"encoding/json"
 	"fmt"
+	"strconv"
+	"strings"
 	"time"
 
 	"go.uber.org/zap"
@@ -119,4 +121,42 @@ func FormatFileSize(s int64) string {
 	}
 
 	return fmt.Sprintf("%v", s)
+}
+
+// FormatCommand - format command, /start => start
+func FormatCommand(str string) string {
+	str = strings.TrimSpace(str)
+
+	if len(str) <= 1 {
+		return str
+	}
+
+	if str[0] == '/' &&
+		strings.IndexByte("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ",
+			str[1]) >= 0 {
+
+		return str[1:]
+	}
+
+	return str
+}
+
+// ID2Str - id -> string
+func ID2Str(id int) string {
+	return strconv.Itoa(id)
+}
+
+// Str2ID - string -> id
+func Str2ID(str string) (int, error) {
+	return strconv.Atoi(str)
+}
+
+// ID642Str - id64 -> string
+func ID642Str(id int64) string {
+	return strconv.FormatInt(id, 10)
+}
+
+// Str2ID64 - string -> id
+func Str2ID64(str string) (int64, error) {
+	return strconv.ParseInt(str, 10, 64)
 }

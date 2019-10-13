@@ -88,9 +88,9 @@ func (serv *Serv) onMsg(ctx context.Context, upd *tgbotapi.Update) error {
 	if upd.Message != nil {
 		from := upd.Message.From
 		uai := chatbot.BuildUserAppInfo(chatbotpb.ChatAppType_CAT_TELEGRAM,
-			serv.cfg.Username, ID2Str(from.ID), from.UserName, from.LanguageCode)
+			serv.cfg.Username, chatbotbase.ID2Str(from.ID), from.UserName, from.LanguageCode)
 
-		str := FormatCommand(upd.Message.Text)
+		str := chatbotbase.FormatCommand(upd.Message.Text)
 
 		if upd.Message.Document != nil {
 			fd, err := serv.getFileDataWithDocument(upd.Message.Document)
@@ -116,7 +116,7 @@ func (serv *Serv) onMsg(ctx context.Context, upd *tgbotapi.Update) error {
 
 // SendChatMsg - send a chat message
 func (serv *Serv) SendChatMsg(ctx context.Context, chat *chatbotpb.ChatMsg) error {
-	i64, err := Str2ID(chat.Uai.Appuid)
+	i64, err := chatbotbase.Str2ID64(chat.Uai.Appuid)
 	if err != nil {
 		return err
 	}
