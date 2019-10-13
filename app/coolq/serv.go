@@ -60,15 +60,15 @@ func (serv *Serv) Start(ctx context.Context) error {
 				continue
 			}
 
-			chatbotbase.Info(update.Message.Text,
-				zap.Int64("ID", update.Message.Chat.ID),
-				zap.String("Type", update.Message.Chat.Type))
+			// chatbotbase.Info(update.Message.Text,
+			// 	zap.Int64("ID", update.Message.Chat.ID),
+			// 	zap.String("Type", update.Message.Chat.Type))
 
-			// err = serv.onMsg(ctx, &update)
-			// if err != nil {
-			// 	chatbotbase.Warn("chatbottelegram.Serv.Start",
-			// 		zap.Error(err))
-			// }
+			err = serv.onMsg(ctx, &update)
+			if err != nil {
+				chatbotbase.Warn("chatbottelegram.Serv.Start",
+					zap.Error(err))
+			}
 		case <-ctx.Done():
 			isend = true
 
@@ -77,6 +77,60 @@ func (serv *Serv) Start(ctx context.Context) error {
 
 		if isend {
 			break
+		}
+	}
+
+	return nil
+}
+
+// onMsg - on message
+func (serv *Serv) onMsg(ctx context.Context, upd *qqbotapi.Update) error {
+	if upd.Message != nil {
+		strID := chatbotbase.ID642Str(upd.Message.Chat.ID)
+
+		if upd.Message.Chat.IsPrivate() {
+			uai := chatbot.BuildUserAppInfo(chatbotpb.ChatAppType_CAT_COOLQ,
+				serv.cfg.Username, strID, strID, "zh-hans")
+
+			str := chatbotbase.FormatCommand(upd.Message.Text)
+
+			if str != "" {
+				msg := chatbot.BuildTextChatMsg(str,
+					uai, serv.cfg.Token, serv.client.SessionID)
+
+				return serv.procChatMsg(ctx, msg)
+			}
+		}
+	}
+
+	return nil
+}
+
+// SendChatMsg - send a chat message
+func (serv *Serv) SendChatMsg(ctx context.Context, chat *chatbotpb.ChatMsg) error {
+	i64, err := chatbotbase.Str2ID64(chat.Uai.Appuid)
+	if err != nil {
+		return err
+	}
+
+	_, err = serv.bot.SendMessage(i64, "private", chat.Msg)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (serv *Serv) procChatMsg(ctx context.Context, chat *chatbotpb.ChatMsg) error {
+	lstret, err := serv.client.SendChat(ctx, chat)
+	if err != nil {
+		return err
+	}
+
+	for _, v := range lstret {
+		err = serv.SendChatMsg(ctx, v)
+		if err != nil {
+			return err
 		}
 	}
 

@@ -1,5 +1,10 @@
 # ChatBot Development Log
 
+### 2019-10-12
+
+CoolQ建议用websocket，不用配置post_url。  
+今天把CoolQBot和CoolQ对接的流程调通了，能收到消息了。
+
 ### 2019-10-11
 
 CoolQ走的是Android版，所以不能和手机同时登陆。  
