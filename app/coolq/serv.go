@@ -60,6 +60,11 @@ func (serv *Serv) Start(ctx context.Context) error {
 				continue
 			}
 
+			if serv.cfg.Debug {
+				chatbotbase.Info("recv message",
+					chatbotbase.JSON("msg", &update))
+			}
+
 			// chatbotbase.Info(update.Message.Text,
 			// 	zap.Int64("ID", update.Message.Chat.ID),
 			// 	zap.String("Type", update.Message.Chat.Type))
