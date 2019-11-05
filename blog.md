@@ -1,5 +1,17 @@
 # ChatBot Development Log
 
+### 2019-10-14
+
+coolq分为 air 和 pro 2个版本，pro是付费的，按月付费。  
+pro多了图片的收发。  
+coolq发图片是要求图片放在data/image里面，然后通过CQ码用文件路径发图片。  
+
+官网说air就能收图片，但我不知道怎么能收到图片，data目录下也没找到，coolqhttp消息我也没找到文件名。  
+
+然后就是红包什么的也没支持。
+
+感觉coolq比还是比官方功能少很多，coolq只能是一个缺少功能的版本，后面有时间，还是得自己写一个才行。
+
 ### 2019-10-13
 
 今天把coolq部署用的shell脚本放到coolq目录了。  
