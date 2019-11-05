@@ -146,6 +146,10 @@ func (serv *Serv) getFileDataWithDocument(doc *tgbotapi.Document) (*chatbotpb.Fi
 
 	res, err := http.Get(url)
 	if err != nil {
+		chatbotbase.Error("getFileDataWithDocument",
+			zap.Error(err),
+			zap.String("url", url))
+
 		return nil, err
 	}
 
