@@ -92,6 +92,9 @@ func (serv *Serv) onMsg(ctx context.Context, upd *tgbotapi.Update) error {
 
 		str := chatbotbase.FormatCommand(upd.Message.Text)
 
+		chatbotbase.Info("onMsg",
+			zap.String("Text", upd.Message.Text))
+
 		if upd.Message.Document != nil {
 			fd, err := serv.getFileDataWithDocument(upd.Message.Document)
 			if err != nil {
@@ -134,11 +137,17 @@ func (serv *Serv) SendChatMsg(ctx context.Context, chat *chatbotpb.ChatMsg) erro
 }
 
 func (serv *Serv) getFileDataWithDocument(doc *tgbotapi.Document) (*chatbotpb.FileData, error) {
+	chatbotbase.Info("getFileDataWithDocument",
+		zap.String("FileID", doc.FileID))
 
 	file, err := serv.bot.GetFile(tgbotapi.FileConfig{
 		FileID: doc.FileID,
 	})
 	if err != nil {
+		chatbotbase.Error("getFileDataWithDocument",
+			zap.Error(err),
+			zap.String("FileID", doc.FileID))
+
 		return nil, err
 	}
 
