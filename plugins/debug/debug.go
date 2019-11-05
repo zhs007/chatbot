@@ -29,11 +29,19 @@ func (dbp *debugPlugin) OnMessage(ctx context.Context, serv *chatbot.Serv, chat 
 
 	mParams, err := serv.BuildBasicParamsMap(chat, ui, lang)
 	if err != nil {
+		chatbotbase.Warn("debugPlugin.OnMessage:BuildBasicParamsMap",
+			zap.Error(err),
+			zap.String("lang", lang))
+
 		return nil, err
 	}
 
 	locale, err := serv.MgrText.GetLocalizer(lang)
 	if err != nil {
+		chatbotbase.Warn("debugPlugin.OnMessage:GetLocalizer",
+			zap.Error(err),
+			zap.String("lang", lang))
+
 		return nil, err
 	}
 
@@ -41,6 +49,9 @@ func (dbp *debugPlugin) OnMessage(ctx context.Context, serv *chatbot.Serv, chat 
 
 	msgigetit, err := chatbot.NewChatMsgWithText(locale, "igetit", mParams, chat.Uai)
 	if err != nil {
+		chatbotbase.Warn("debugPlugin.OnMessage:NewChatMsgWithText(igetit)",
+			zap.Error(err))
+
 		return nil, err
 	}
 
@@ -49,6 +60,9 @@ func (dbp *debugPlugin) OnMessage(ctx context.Context, serv *chatbot.Serv, chat 
 	if chat.File != nil {
 		msgigetfile, err := chatbot.NewChatMsgWithText(locale, "igetfile", mParams, chat.Uai)
 		if err != nil {
+			chatbotbase.Warn("debugPlugin.OnMessage:NewChatMsgWithText(igetfile)",
+				zap.Error(err))
+
 			return nil, err
 		}
 
@@ -58,6 +72,9 @@ func (dbp *debugPlugin) OnMessage(ctx context.Context, serv *chatbot.Serv, chat 
 	if len(chat.Msg) > 0 {
 		msgyousaid, err := chatbot.NewChatMsgWithText(locale, "yousaid", mParams, chat.Uai)
 		if err != nil {
+			chatbotbase.Warn("debugPlugin.OnMessage:NewChatMsgWithText(yousaid)",
+				zap.Error(err))
+
 			return nil, err
 		}
 

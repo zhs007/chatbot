@@ -93,7 +93,8 @@ func (serv *Serv) onMsg(ctx context.Context, upd *tgbotapi.Update) error {
 		str := chatbotbase.FormatCommand(upd.Message.Text)
 
 		chatbotbase.Info("onMsg",
-			zap.String("Text", upd.Message.Text))
+			zap.String("Text", upd.Message.Text),
+			zap.String("lang", from.LanguageCode))
 
 		if upd.Message.Document != nil {
 			fd, err := serv.getFileDataWithDocument(upd.Message.Document)

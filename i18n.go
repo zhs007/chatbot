@@ -6,17 +6,20 @@ import (
 	"strings"
 	"sync"
 
+	"go.uber.org/zap"
 	"golang.org/x/text/language"
 
 	"gopkg.in/yaml.v2"
 
 	"github.com/nicksnyder/go-i18n/v2/i18n"
+	chatbotbase "github.com/zhs007/chatbot/base"
 )
 
 // TextMgr - text manager
 type TextMgr struct {
 	bundle *i18n.Bundle
 	mapL   sync.Map
+	lang   string
 }
 
 // NewTextMgr - new TextMgr
@@ -49,6 +52,7 @@ func NewTextMgr(cfg *Config) (*TextMgr, error) {
 
 	return &TextMgr{
 		bundle: b,
+		lang:   cfg.Language,
 	}, nil
 }
 
@@ -56,7 +60,12 @@ func NewTextMgr(cfg *Config) (*TextMgr, error) {
 func (mgr *TextMgr) GetLocalizer(lang string) (*i18n.Localizer, error) {
 	_, err := language.Parse(lang)
 	if err != nil {
-		return nil, err
+		chatbotbase.Warn("TextMgr.GetLocalizer",
+			zap.Error(err),
+			zap.String("lang", lang))
+
+		lang = mgr.lang
+		// return nil, err
 	}
 
 	li, isok := mgr.mapL.Load(lang)
