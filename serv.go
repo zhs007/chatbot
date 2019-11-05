@@ -176,6 +176,9 @@ func (serv *Serv) SendChat(scs chatbotpb.ChatBotService_SendChatServer) error {
 		}
 
 		if err != nil {
+			chatbotbase.Warn("SendChat:Recv",
+				zap.Error(err))
+
 			serv.replySendChatErr(scs, err)
 
 			return err
@@ -183,12 +186,18 @@ func (serv *Serv) SendChat(scs chatbotpb.ChatBotService_SendChatServer) error {
 
 		isvalidtoken, err := serv.dbAppServ.CheckTokenSessionID(scs.Context(), in.Token, in.SessionID)
 		if err != nil {
+			chatbotbase.Warn("SendChat:CheckTokenSessionID",
+				zap.Error(err))
+
 			serv.replySendChatErr(scs, err)
 
 			return err
 		}
 
 		if !isvalidtoken {
+			chatbotbase.Warn("SendChat:isvalidtoken",
+				zap.Error(chatbotbase.ErrServInvalidToken))
+
 			serv.replySendChatErr(scs, chatbotbase.ErrServInvalidToken)
 
 			return chatbotbase.ErrServInvalidToken
@@ -199,12 +208,18 @@ func (serv *Serv) SendChat(scs chatbotpb.ChatBotService_SendChatServer) error {
 
 	cd, err := BuildChatMsg(lst)
 	if err != nil {
+		chatbotbase.Warn("SendChat:BuildChatMsg",
+			zap.Error(err))
+
 		serv.replySendChatErr(scs, err)
 
 		return err
 	}
 
 	if cd == nil {
+		chatbotbase.Warn("SendChat:ErrInvalidStream",
+			zap.Error(chatbotbase.ErrInvalidStream))
+
 		serv.replySendChatErr(scs, chatbotbase.ErrInvalidStream)
 
 		return chatbotbase.ErrInvalidStream
@@ -212,6 +227,14 @@ func (serv *Serv) SendChat(scs chatbotpb.ChatBotService_SendChatServer) error {
 
 	ui, ud, err := serv.MgrUser.GetAppUserInfo(scs.Context(), cd.Token, cd.Uai)
 	if err != nil || ui == nil {
+		if err != nil {
+			chatbotbase.Warn("SendChat:GetAppUserInfo",
+				zap.Error(err))
+		} else {
+			chatbotbase.Warn("SendChat:GetAppUserInfo",
+				zap.Error(chatbotbase.ErrServInvalidUserInfo))
+		}
+
 		serv.replySendChatErr(scs, chatbotbase.ErrServInvalidUserInfo)
 
 		return chatbotbase.ErrServInvalidUserInfo
@@ -219,6 +242,9 @@ func (serv *Serv) SendChat(scs chatbotpb.ChatBotService_SendChatServer) error {
 
 	lstret, err := serv.lstPlugins.OnMessage(scs.Context(), serv, cd, ui, ud)
 	if err != nil {
+		chatbotbase.Warn("SendChat:OnMessage",
+			zap.Error(err))
+
 		serv.replySendChatErr(scs, err)
 
 		return err
@@ -226,6 +252,9 @@ func (serv *Serv) SendChat(scs chatbotpb.ChatBotService_SendChatServer) error {
 
 	lstret2, err := serv.lstPlugins2.OnMessageEx(scs.Context(), serv, cd, ui, ud)
 	if err != nil {
+		chatbotbase.Warn("SendChat:OnMessageEx",
+			zap.Error(err))
+
 		serv.replySendChatErr(scs, err)
 
 		return err
@@ -238,6 +267,9 @@ func (serv *Serv) SendChat(scs chatbotpb.ChatBotService_SendChatServer) error {
 	for _, v := range lstret {
 		lststream, err := BuildChatMsgStream(v)
 		if err != nil {
+			chatbotbase.Warn("SendChat:BuildChatMsgStream",
+				zap.Error(err))
+
 			serv.replySendChatErr(scs, err)
 
 			return err
@@ -246,6 +278,9 @@ func (serv *Serv) SendChat(scs chatbotpb.ChatBotService_SendChatServer) error {
 		for _, sv := range lststream {
 			err = scs.Send(sv)
 			if err != nil {
+				chatbotbase.Warn("SendChat:Send",
+					zap.Error(err))
+
 				serv.replySendChatErr(scs, err)
 
 				return err
@@ -262,7 +297,7 @@ func (serv *Serv) replySendChatErr(scs chatbotpb.ChatBotService_SendChatServer, 
 		return serv.replySendChatErr(scs, chatbotbase.ErrServInvalidErr)
 	}
 
-	chatbotbase.Warn("replySendChatErr", zap.Error(err))
+	// chatbotbase.Warn("replySendChatErr", zap.Error(err))
 
 	reply := &chatbotpb.ChatMsgStream{
 		Error: err.Error(),
