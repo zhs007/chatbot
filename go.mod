@@ -13,7 +13,7 @@ require (
 	github.com/stretchr/testify v1.4.0 // indirect
 	github.com/syndtr/goleveldb v1.0.0 // indirect
 	github.com/technoweenie/multipartstreamer v1.0.1 // indirect
-	github.com/zhs007/ankadb v0.3.31
+	github.com/zhs007/ankadb v0.3.33
 	go.uber.org/atomic v1.4.0 // indirect
 	go.uber.org/multierr v1.1.0 // indirect
 	go.uber.org/zap v1.10.0
