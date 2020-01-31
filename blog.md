@@ -1,5 +1,11 @@
 # ChatBot Development Log
 
+### 2020-01-31
+
+今天加入了一组ctrl，用来控制bot用的，譬如加入group、channel等。  
+这样对原有结构需要有一点调整，需要有一个持续的ctrl侦听。  
+后期会考虑将chat并进来。
+
 ### 2019-10-14
 
 coolq分为 air 和 pro 2个版本，pro是付费的，按月付费。  

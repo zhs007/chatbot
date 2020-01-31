@@ -36,6 +36,14 @@ message AppGroupInfo {
     string groupname = 4;
 }
 
+// AppChannelInfo - app channel info
+message AppChannelInfo {
+    ChatAppType app = 1;
+    string usernameAppServ = 2;
+    string channelid = 3;
+    string channelname = 4;
+}
+
 // AppServInfo - app server info
 message AppServInfo {
     string token = 1;
@@ -107,6 +115,38 @@ message RequestChatData {
     string sessionID = 2;
 }
 
+// AppCtrlType - app control type
+enum AppCtrlType {
+    ACT_JOINCHANNEL = 0;
+}
+
+// RequestCtrlData - request app control data
+message RequestCtrlData {
+    int64 lastCtrlID = 1;
+    string token = 2;
+}
+
+// AppCtrlData - app control data
+message AppCtrlData {
+    int64 ctrlID = 1;
+    AppCtrlType act = 2;
+    AppChannelInfo channel = 3;
+}
+
+// AppCtrlResult - app control result
+message AppCtrlResult {
+    int64 ctrlID = 1;
+    string token = 2;
+    AppCtrlData ctrl = 3;
+    int32 resultCode = 4;
+}
+
+// SCRResult - result for sendctrlresult
+message SCRResult {
+    int64 ctrlID = 1;
+    int32 resultCode = 2;
+}
+
 // ChatBotService - ChatBot service
 service ChatBotService {
     // registerAppService - register app service
@@ -115,7 +155,12 @@ service ChatBotService {
     // sendChat - send chat
     rpc sendChat(stream ChatMsgStream) returns (stream ChatMsgStream) {}
     // requestChat - request chat
-    rpc requestChat(RequestChatData) returns (stream ChatMsgStream) {}    
+    rpc requestChat(RequestChatData) returns (stream ChatMsgStream) {}
+    
+    // requestCtrl - request control
+    rpc requestCtrl(RequestCtrlData) returns (AppCtrlData) {}
+    // sendCtrlResult - send control result
+    rpc sendCtrlResult(AppCtrlResult) returns (SCRResult) {}
 }
 
 // ChatBotServInfo - ChatBot service infomation

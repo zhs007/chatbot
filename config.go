@@ -9,6 +9,11 @@ import (
 	chatbotbase "github.com/zhs007/chatbot/base"
 )
 
+// TelegramConfig - config for telegram
+type TelegramConfig struct {
+	Channels []string
+}
+
 // Config - config
 type Config struct {
 
@@ -43,6 +48,11 @@ type Config struct {
 	StartText       []string
 	HelpText        []string
 	ChatBotNameText string
+
+	//------------------------------------------------------------------
+	// telegram
+
+	Telegram *TelegramConfig
 }
 
 func checkConfig(cfg *Config) error {

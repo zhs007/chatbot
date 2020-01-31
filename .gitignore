@@ -10,7 +10,7 @@
 
 # Output of the go coverage tool, specifically when used with LiteIDE
 *.out
-.vscode
+# .vscode
 samples/corenode/data
 samples/corenode/config.yaml
 samples/telegrambot/data

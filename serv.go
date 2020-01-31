@@ -361,3 +361,17 @@ func (serv *Serv) GetChatMsgLang(chat *chatbotpb.ChatMsg) string {
 
 	return serv.Cfg.Language
 }
+
+// RequestCtrl - request control
+func (serv *Serv) RequestCtrl(ctx context.Context, msg *chatbotpb.RequestCtrlData) (
+	*chatbotpb.AppCtrlData, error) {
+
+	return nil, nil
+}
+
+// SendCtrlResult - send control result
+func (serv *Serv) SendCtrlResult(ctx context.Context, msg *chatbotpb.AppCtrlResult) (
+	*chatbotpb.SCRResult, error) {
+
+	return nil, nil
+}
