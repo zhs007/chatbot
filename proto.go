@@ -6,7 +6,7 @@ import (
 	"github.com/golang/protobuf/proto"
 	"github.com/nicksnyder/go-i18n/v2/i18n"
 	chatbotbase "github.com/zhs007/chatbot/base"
-	chatbotpb "github.com/zhs007/chatbot/proto"
+	chatbotpb "github.com/zhs007/chatbot/pb"
 )
 
 // BuildUserAppInfo - build UserAppInfo
