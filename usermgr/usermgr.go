@@ -6,7 +6,7 @@ import (
 	"github.com/golang/protobuf/proto"
 	chatbotbase "github.com/zhs007/chatbot/base"
 	chatbotdb "github.com/zhs007/chatbot/db"
-	chatbotpb "github.com/zhs007/chatbot/proto"
+	chatbotpb "github.com/zhs007/chatbot/pb"
 )
 
 // UserMgr - user manager

@@ -5,7 +5,7 @@ import (
 
 	"github.com/golang/protobuf/proto"
 	chatbotbase "github.com/zhs007/chatbot/base"
-	chatbotpb "github.com/zhs007/chatbot/proto"
+	chatbotpb "github.com/zhs007/chatbot/pb"
 )
 
 // PluginsList - plugins list

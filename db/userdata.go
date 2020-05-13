@@ -2,7 +2,7 @@ package chatbotdb
 
 import (
 	"github.com/golang/protobuf/proto"
-	chatbotpb "github.com/zhs007/chatbot/proto"
+	chatbotpb "github.com/zhs007/chatbot/pb"
 )
 
 // UserDataMgr - user data for chatbot

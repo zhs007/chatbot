@@ -6,7 +6,7 @@ import (
 	"github.com/golang/protobuf/proto"
 	ankadb "github.com/zhs007/ankadb"
 	chatbotbase "github.com/zhs007/chatbot/base"
-	chatbotpb "github.com/zhs007/chatbot/proto"
+	chatbotpb "github.com/zhs007/chatbot/pb"
 	"go.uber.org/zap"
 )
 
