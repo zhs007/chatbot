@@ -2,7 +2,7 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "corenode",
+            "name": "sample.corenode",
             "type": "go",
             "request": "launch",
             "mode": "auto",
@@ -11,12 +11,22 @@
             "args": []
         },
         {
-            "name": "telegrambot",
+            "name": "sample.telegrambot",
             "type": "go",
             "request": "launch",
             "mode": "auto",
             "program": "${workspaceFolder}/samples/telegrambot/main.go",
             "env": {"http_proxy":"127.0.0.1:1087"},
+            "args": []
+        },
+        {
+            "name": "telegrambot",
+            "type": "go",
+            "request": "launch",
+            "mode": "auto",
+            "program": "${workspaceFolder}/telegramnode/main.go",
+            "env": {"http_proxy":"127.0.0.1:1087"},
+            "cwd": "${workspaceFolder}",
             "args": []
         }
     ]
