@@ -264,29 +264,7 @@ func (serv *Serv) SendChat(scs chatbotpb.ChatBotService_SendChatServer) error {
 		lstret = append(lstret, lstret2...)
 	}
 
-	for _, v := range lstret {
-		lststream, err := BuildChatMsgStream(v)
-		if err != nil {
-			chatbotbase.Warn("SendChat:BuildChatMsgStream",
-				zap.Error(err))
-
-			serv.replySendChatErr(scs, err)
-
-			return err
-		}
-
-		for _, sv := range lststream {
-			err = scs.Send(sv)
-			if err != nil {
-				chatbotbase.Warn("SendChat:Send",
-					zap.Error(err))
-
-				serv.replySendChatErr(scs, err)
-
-				return err
-			}
-		}
-	}
+	serv.SendChatMsgList(scs, lstret)
 
 	return nil
 }
@@ -374,4 +352,34 @@ func (serv *Serv) SendCtrlResult(ctx context.Context, msg *chatbotpb.AppCtrlResu
 	*chatbotpb.SCRResult, error) {
 
 	return nil, nil
+}
+
+// SendChatMsgList - send ChatMsg List
+func (serv *Serv) SendChatMsgList(scs chatbotpb.ChatBotService_SendChatServer, lst []*chatbotpb.ChatMsg) error {
+
+	for _, v := range lst {
+		lststream, err := BuildChatMsgStream(v)
+		if err != nil {
+			chatbotbase.Warn("SendChatMsgList:BuildChatMsgStream",
+				zap.Error(err))
+
+			serv.replySendChatErr(scs, err)
+
+			return err
+		}
+
+		for _, sv := range lststream {
+			err = scs.Send(sv)
+			if err != nil {
+				chatbotbase.Warn("SendChatMsgList:Send",
+					zap.Error(err))
+
+				serv.replySendChatErr(scs, err)
+
+				return err
+			}
+		}
+	}
+
+	return nil
 }
