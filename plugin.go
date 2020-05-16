@@ -11,7 +11,8 @@ import (
 type Plugin interface {
 	// OnMessage - get message
 	OnMessage(ctx context.Context, serv *Serv, chat *chatbotpb.ChatMsg,
-		ui *chatbotpb.UserInfo, ud proto.Message) ([]*chatbotpb.ChatMsg, error)
+		ui *chatbotpb.UserInfo, ud proto.Message,
+		scs chatbotpb.ChatBotService_SendChatServer) ([]*chatbotpb.ChatMsg, error)
 
 	// OnStart - on start
 	OnStart(ctx context.Context) error

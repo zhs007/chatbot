@@ -14,7 +14,7 @@ type cmdPlugin struct {
 
 // OnMessage - get message
 func (cp *cmdPlugin) OnMessage(ctx context.Context, serv *chatbot.Serv, chat *chatbotpb.ChatMsg,
-	ui *chatbotpb.UserInfo, ud proto.Message) ([]*chatbotpb.ChatMsg, error) {
+	ui *chatbotpb.UserInfo, ud proto.Message, scs chatbotpb.ChatBotService_SendChatServer) ([]*chatbotpb.ChatMsg, error) {
 
 	cmd, params, err := serv.Cmds.ParseInChat(chat)
 	if err != nil {

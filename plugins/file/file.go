@@ -14,7 +14,7 @@ type filePlugin struct {
 
 // OnMessage - get message
 func (dbp *filePlugin) OnMessage(ctx context.Context, serv *chatbot.Serv, chat *chatbotpb.ChatMsg,
-	ui *chatbotpb.UserInfo, ud proto.Message) ([]*chatbotpb.ChatMsg, error) {
+	ui *chatbotpb.UserInfo, ud proto.Message, scs chatbotpb.ChatBotService_SendChatServer) ([]*chatbotpb.ChatMsg, error) {
 
 	if chat.File == nil {
 		return nil, nil
