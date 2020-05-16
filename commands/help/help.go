@@ -16,7 +16,8 @@ type cmdHelp struct {
 
 // RunCommand - run command
 func (cmd *cmdHelp) RunCommand(ctx context.Context, serv *chatbot.Serv, params proto.Message,
-	chat *chatbotpb.ChatMsg, ui *chatbotpb.UserInfo, ud proto.Message) ([]*chatbotpb.ChatMsg, error) {
+	chat *chatbotpb.ChatMsg, ui *chatbotpb.UserInfo, ud proto.Message,
+	scs chatbotpb.ChatBotService_SendChatServer) ([]*chatbotpb.ChatMsg, error) {
 
 	if serv == nil {
 		return nil, chatbotbase.ErrCmdInvalidServ
