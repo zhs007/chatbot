@@ -240,7 +240,7 @@ func (serv *Serv) SendChat(scs chatbotpb.ChatBotService_SendChatServer) error {
 		return chatbotbase.ErrServInvalidUserInfo
 	}
 
-	lstret, err := serv.lstPlugins.OnMessage(scs.Context(), serv, cd, ui, ud)
+	lstret, err := serv.lstPlugins.OnMessage(scs.Context(), serv, cd, ui, ud, scs)
 	if err != nil {
 		chatbotbase.Warn("SendChat:OnMessage",
 			zap.Error(err))
@@ -250,7 +250,7 @@ func (serv *Serv) SendChat(scs chatbotpb.ChatBotService_SendChatServer) error {
 		return err
 	}
 
-	lstret2, err := serv.lstPlugins2.OnMessageEx(scs.Context(), serv, cd, ui, ud)
+	lstret2, err := serv.lstPlugins2.OnMessageEx(scs.Context(), serv, cd, ui, ud, scs)
 	if err != nil {
 		chatbotbase.Warn("SendChat:OnMessageEx",
 			zap.Error(err))
