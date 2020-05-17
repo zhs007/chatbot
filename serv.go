@@ -26,7 +26,7 @@ type Serv struct {
 	Cmds        *CommondsList
 	Core        ServiceCore
 	MgrFile     *FileProcessorMgr
-	mapChatMsgs chatMsgMap
+	mapChatMsgs *chatMsgMap
 }
 
 // NewChatBotServ -
@@ -69,6 +69,7 @@ func NewChatBotServ(cfg *Config, mgr UserMgr, core ServiceCore) (*Serv, error) {
 		Cmds:        NewCommondsList(),
 		MgrFile:     &FileProcessorMgr{},
 		Core:        core,
+		mapChatMsgs: newChatMsgMap(),
 	}
 
 	for _, v := range cfg.Plugins {
