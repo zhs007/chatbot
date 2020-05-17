@@ -86,7 +86,7 @@ func (serv *Serv) Start(ctx context.Context) error {
 			if curseconds >= 5 {
 				curseconds = 0
 
-				serv.client.RequestChat(ctx)
+				serv.procTicker(ctx)
 			}
 		}
 
@@ -200,12 +200,40 @@ func (serv *Serv) getFileDataWithDocument(doc *tgbotapi.Document) (*chatbotpb.Fi
 func (serv *Serv) procChatMsg(ctx context.Context, chat *chatbotpb.ChatMsg) error {
 	lstret, err := serv.client.SendChat(ctx, chat)
 	if err != nil {
+		chatbotbase.Error("procChatMsg:SendChat",
+			zap.Error(err))
+
 		return err
 	}
 
 	for _, v := range lstret {
 		err = serv.SendChatMsg(ctx, v)
 		if err != nil {
+			chatbotbase.Error("procChatMsg:SendChatMsg",
+				zap.Error(err))
+
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (serv *Serv) procTicker(ctx context.Context) error {
+	lstret, err := serv.client.RequestChat(ctx)
+	if err != nil {
+		chatbotbase.Error("procTicker:RequestChat",
+			zap.Error(err))
+
+		return err
+	}
+
+	for _, v := range lstret {
+		err = serv.SendChatMsg(ctx, v)
+		if err != nil {
+			chatbotbase.Error("procTicker:SendChatMsg",
+				zap.Error(err))
+
 			return err
 		}
 	}
