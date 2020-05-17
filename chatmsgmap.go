@@ -50,5 +50,6 @@ func (msgmap *chatMsgMap) getChatMsgs(token string, onChatMsgs FuncOnChatMsgs) {
 
 	msgs.lock.Lock()
 	onChatMsgs(msgs.lst)
+	msgs.lst = nil
 	msgs.lock.Unlock()
 }
