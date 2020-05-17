@@ -20,6 +20,12 @@ type chatMsgMap struct {
 	mapMsgs map[string]*chatMsgList
 }
 
+func newChatMsgMap() *chatMsgMap {
+	return &chatMsgMap{
+		mapMsgs: make(map[string]*chatMsgList),
+	}
+}
+
 // addChatMsgs - add chat msgs
 func (msgmap *chatMsgMap) addChatMsgs(token string, lst []*chatbotpb.ChatMsg) {
 	msgs, isok := msgmap.mapMsgs[token]
