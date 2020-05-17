@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"net/http"
+	"time"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	chatbot "github.com/zhs007/chatbot"
@@ -17,6 +18,7 @@ type Serv struct {
 	cfg    *Config
 	bot    *tgbotapi.BotAPI
 	client *chatbot.Client
+	ticker *time.Ticker
 }
 
 // NewServ - new a service
@@ -35,6 +37,7 @@ func NewServ(cfg *Config) (*Serv, error) {
 		cfg:    cfg,
 		bot:    bot,
 		client: client,
+		ticker: time.NewTicker(time.Second),
 	}
 
 	return serv, nil
@@ -42,6 +45,8 @@ func NewServ(cfg *Config) (*Serv, error) {
 
 // Start - start telegram bot
 func (serv *Serv) Start(ctx context.Context) error {
+	defer serv.ticker.Stop()
+
 	err := serv.client.RegisterAppService(ctx)
 	if err != nil {
 		return err
@@ -54,6 +59,8 @@ func (serv *Serv) Start(ctx context.Context) error {
 	if err != nil {
 		return err
 	}
+
+	curseconds := 0
 
 	for {
 		isend := false
@@ -73,6 +80,14 @@ func (serv *Serv) Start(ctx context.Context) error {
 			isend = true
 
 			break
+		case <-serv.ticker.C:
+			curseconds++
+
+			if curseconds >= 5 {
+				curseconds = 0
+
+				serv.client.RequestChat(ctx)
+			}
 		}
 
 		if isend {

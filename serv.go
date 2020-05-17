@@ -26,6 +26,7 @@ type Serv struct {
 	Cmds        *CommondsList
 	Core        ServiceCore
 	MgrFile     *FileProcessorMgr
+	mapChatMsgs chatMsgMap
 }
 
 // NewChatBotServ -
@@ -264,7 +265,29 @@ func (serv *Serv) SendChat(scs chatbotpb.ChatBotService_SendChatServer) error {
 		lstret = append(lstret, lstret2...)
 	}
 
-	serv.SendChatMsgList(scs, lstret)
+	for _, v := range lstret {
+		lststream, err := BuildChatMsgStream(v)
+		if err != nil {
+			chatbotbase.Warn("SendChat:BuildChatMsgStream",
+				zap.Error(err))
+
+			serv.replySendChatErr(scs, err)
+
+			return err
+		}
+
+		for _, sv := range lststream {
+			err = scs.Send(sv)
+			if err != nil {
+				chatbotbase.Warn("SendChat:Send",
+					zap.Error(err))
+
+				serv.replySendChatErr(scs, err)
+
+				return err
+			}
+		}
+	}
 
 	return nil
 }
@@ -288,7 +311,81 @@ func (serv *Serv) replySendChatErr(scs chatbotpb.ChatBotService_SendChatServer, 
 func (serv *Serv) RequestChat(req *chatbotpb.RequestChatData,
 	ecs chatbotpb.ChatBotService_RequestChatServer) error {
 
+	isvalidtoken, err := serv.dbAppServ.CheckTokenSessionID(ecs.Context(), req.Token, req.SessionID)
+	if err != nil {
+		chatbotbase.Warn("RequestChat:CheckTokenSessionID",
+			zap.Error(err))
+
+		serv.replyRequestChatErr(ecs, err)
+
+		return err
+	}
+
+	if !isvalidtoken {
+		chatbotbase.Warn("RequestChat:isvalidtoken",
+			zap.Error(chatbotbase.ErrServInvalidToken))
+
+		serv.replyRequestChatErr(ecs, chatbotbase.ErrServInvalidToken)
+
+		return chatbotbase.ErrServInvalidToken
+	}
+
+	var lstret []*chatbotpb.ChatMsg
+
+	serv.mapChatMsgs.getChatMsgs(req.Token, func(lst []*chatbotpb.ChatMsg) {
+		if len(lst) > 0 {
+			lstret = append(lstret, lst...)
+		}
+	})
+
+	if len(lstret) > 0 {
+		for _, v := range lstret {
+			lststream, err := BuildChatMsgStream(v)
+			if err != nil {
+				chatbotbase.Warn("RequestChat:BuildChatMsgStream",
+					zap.Error(err))
+
+				serv.replyRequestChatErr(ecs, err)
+
+				return err
+			}
+
+			for _, sv := range lststream {
+				err = ecs.Send(sv)
+				if err != nil {
+					chatbotbase.Warn("RequestChat:Send",
+						zap.Error(err))
+
+					serv.replyRequestChatErr(ecs, err)
+
+					return err
+				}
+			}
+		}
+	} else {
+		reply := &chatbotpb.ChatMsgStream{
+			IsNoMsg: true,
+		}
+
+		ecs.Send(reply)
+	}
+
 	return nil
+}
+
+// replyRequestChatErr - reply a error for RequestChat
+func (serv *Serv) replyRequestChatErr(ecs chatbotpb.ChatBotService_RequestChatServer, err error) error {
+	if err == nil {
+		return serv.replyRequestChatErr(ecs, chatbotbase.ErrServInvalidErr)
+	}
+
+	// chatbotbase.Warn("replySendChatErr", zap.Error(err))
+
+	reply := &chatbotpb.ChatMsgStream{
+		Error: err.Error(),
+	}
+
+	return ecs.Send(reply)
 }
 
 // BuildBasicParamsMap - build basic params map
@@ -354,32 +451,7 @@ func (serv *Serv) SendCtrlResult(ctx context.Context, msg *chatbotpb.AppCtrlResu
 	return nil, nil
 }
 
-// SendChatMsgList - send ChatMsg List
-func (serv *Serv) SendChatMsgList(scs chatbotpb.ChatBotService_SendChatServer, lst []*chatbotpb.ChatMsg) error {
-
-	for _, v := range lst {
-		lststream, err := BuildChatMsgStream(v)
-		if err != nil {
-			chatbotbase.Warn("SendChatMsgList:BuildChatMsgStream",
-				zap.Error(err))
-
-			serv.replySendChatErr(scs, err)
-
-			return err
-		}
-
-		for _, sv := range lststream {
-			err = scs.Send(sv)
-			if err != nil {
-				chatbotbase.Warn("SendChatMsgList:Send",
-					zap.Error(err))
-
-				serv.replySendChatErr(scs, err)
-
-				return err
-			}
-		}
-	}
-
-	return nil
+// PushChatMsgs - send ChatMsg List
+func (serv *Serv) PushChatMsgs(token string, lst []*chatbotpb.ChatMsg) {
+	serv.mapChatMsgs.addChatMsgs(token, lst)
 }
