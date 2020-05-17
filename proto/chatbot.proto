@@ -106,8 +106,10 @@ message ChatMsgStream {
     string token = 8;
     // sessionID
     string sessionID = 9;
-
+    // chat
     ChatMsg chat = 10;
+    // isNoMsg - no msg
+    bool isNoMsg = 11;
 }
 
 // RequestChatData - request chat data

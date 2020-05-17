@@ -194,3 +194,65 @@ func (client *Client) SendChat(ctx context.Context, chat *chatbotpb.ChatMsg) ([]
 
 	return lstret, nil
 }
+
+// RequestChat - RequestChat
+func (client *Client) RequestChat(ctx context.Context) ([]*chatbotpb.ChatMsg, error) {
+
+	in := &chatbotpb.RequestChatData{
+		Token:     client.token,
+		SessionID: client.SessionID,
+	}
+
+	stream, err := client.client.RequestChat(ctx, in)
+	if err != nil {
+		// if error, reset
+		client.reset()
+
+		return nil, err
+	}
+
+	var recverr error
+	var lstrecv []*chatbotpb.ChatMsgStream
+	waitc := make(chan struct{})
+
+	go func() {
+		for {
+			in, err := stream.Recv()
+			if err == io.EOF {
+				// read done.
+				close(waitc)
+
+				return
+			}
+
+			if err != nil {
+				recverr = err
+
+				close(waitc)
+
+				return
+			}
+
+			lstrecv = append(lstrecv, in)
+		}
+	}()
+
+	<-waitc
+
+	if recverr != nil {
+		// if error, reset
+		client.reset()
+
+		return nil, recverr
+	}
+
+	lstret, err := BuildChatMsgList(lstrecv)
+	if err != nil {
+		// if error, reset
+		client.reset()
+
+		return nil, err
+	}
+
+	return lstret, nil
+}
