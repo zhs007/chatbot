@@ -175,6 +175,10 @@ func BuildChatMsgList(lst []*chatbotpb.ChatMsgStream) ([]*chatbotpb.ChatMsg, err
 	var curlst []*chatbotpb.ChatMsgStream
 
 	for _, v := range lst {
+		if v.IsNoMsg {
+			continue
+		}
+
 		if v.Chat != nil {
 			cr, err := BuildChatMsg([]*chatbotpb.ChatMsgStream{v})
 			if err != nil {
