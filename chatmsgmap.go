@@ -3,7 +3,7 @@ package chatbot
 import (
 	"sync"
 
-	chatbotpb "github.com/zhs007/chatbot/pb"
+	chatbotpb "github.com/zhs007/chatbot/chatbotpb"
 )
 
 // FuncOnChatMsgs - function

@@ -2,7 +2,7 @@ package chatbot
 
 import (
 	"github.com/golang/protobuf/proto"
-	chatbotpb "github.com/zhs007/chatbot/pb"
+	chatbotpb "github.com/zhs007/chatbot/chatbotpb"
 	chatbotusermgr "github.com/zhs007/chatbot/usermgr"
 )
 

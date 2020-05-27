@@ -6,7 +6,7 @@ import (
 	"io"
 
 	chatbotbase "github.com/zhs007/chatbot/base"
-	chatbotpb "github.com/zhs007/chatbot/pb"
+	chatbotpb "github.com/zhs007/chatbot/chatbotpb"
 	"google.golang.org/grpc"
 )
 

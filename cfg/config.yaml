@@ -1,0 +1,41 @@
+appserv:
+  - type: telegram
+    token: 36NkbiThRmFQbekb
+    username: drake
+
+bindaddr: 127.0.0.1:7010
+
+dbpath: ./data
+dbengine: leveldb
+
+plugins:
+  - command
+
+pluginssecondline:
+  - debug
+
+commands:
+  - help
+  - start
+
+# This is the text configuration used to reply to the start command
+# 这里的配置，用于默认的start指令返回
+starttext:
+  - start001
+  - start002
+  - start003
+
+# This is the text configuration used to reply to the help command
+# 这里的配置，用于默认的help指令返回
+helptext:
+  - help001
+  - help002
+  - help003
+
+# This is the text configuration for the robot name
+# 这里的配置，用于机器人的名字
+chatbotnametext: drake
+
+language: en
+
+langpath: ./lang

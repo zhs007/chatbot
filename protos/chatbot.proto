@@ -1,6 +1,6 @@
 syntax = "proto3";
 package chatbotpb;
-option go_package = "github.com/zhs007/chatbot";
+option go_package = "github.com/zhs007/chatbot/chatbotpb";
 
 // ChatAppType - chat app type
 enum ChatAppType {
