@@ -4,4 +4,4 @@ token: 1234567
 servaddr: 127.0.0.1:123
 username: ada
 
-previewwebpage: true
+#previewwebpage: true
