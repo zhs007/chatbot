@@ -20,6 +20,7 @@ type paramsCmd struct {
 // cmdNote - command note
 type cmdNote struct {
 	IsTakingNotes bool
+	Keys          []string
 }
 
 // RunCommand - run command
@@ -35,7 +36,20 @@ func (cmd *cmdNote) RunCommand(ctx context.Context, serv *chatbot.Serv, params i
 		return true, nil, ErrCmdNoParams
 	}
 
-	return true, nil, nil
+	cp, isok := params.(paramsCmd)
+	if !isok {
+		return true, nil, ErrCmdInvalidParams
+	}
+
+	cmd.IsTakingNotes = true
+	cmd.Keys = cp.keys
+
+	msg := &chatbotpb.ChatMsg{
+		Msg: "note start...",
+		Uai: chat.Uai,
+	}
+
+	return false, []*chatbotpb.ChatMsg{msg}, nil
 }
 
 // OnMessage - get message
@@ -43,7 +57,28 @@ func (cmd *cmdNote) OnMessage(ctx context.Context, serv *chatbot.Serv, chat *cha
 	ui *chatbotpb.UserInfo, ud proto.Message,
 	scs chatbotpb.ChatBotService_SendChatServer) (bool, []*chatbotpb.ChatMsg, error) {
 
-	return true, nil, chatbotbase.ErrCmdItsNotMine
+	if !cmd.IsTakingNotes {
+		return true, nil, chatbotbase.ErrCmdItsNotMine
+	}
+
+	if chat.Forward == nil {
+		msg := &chatbotpb.ChatMsg{
+			Msg: "note end.",
+			Uai: chat.Uai,
+		}
+
+		return true, []*chatbotpb.ChatMsg{msg}, chatbotbase.ErrCmdItsNotMine
+	}
+
+	msg := &chatbotpb.ChatMsg{
+		Uai: chat.Uai,
+		Forward: &chatbotpb.ForwardData{
+			Uai:      chat.Uai,
+			AppMsgID: chat.AppMsgID,
+		},
+	}
+
+	return false, []*chatbotpb.ChatMsg{msg}, nil
 }
 
 // ParseCommandLine - parse command line

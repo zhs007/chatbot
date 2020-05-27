@@ -17,6 +17,25 @@ type cmdPlugin struct {
 func (cp *cmdPlugin) OnMessage(ctx context.Context, serv *chatbot.Serv, chat *chatbotpb.ChatMsg,
 	ui *chatbotpb.UserInfo, ud proto.Message, scs chatbotpb.ChatBotService_SendChatServer) ([]*chatbotpb.ChatMsg, error) {
 
+	if cp.activeCmd != "" {
+		isend, lst, err := serv.Cmds.OnMessage(ctx, cp.activeCmd, serv, chat, ui, ud, scs)
+		if err != nil {
+			if err == chatbotbase.ErrCmdItsNotMine {
+				cp.activeCmd = ""
+
+				return nil, chatbotbase.ErrPluginItsNotMine
+			}
+
+			return nil, err
+		}
+
+		if isend {
+			cp.activeCmd = ""
+		}
+
+		return lst, nil
+	}
+
 	cmd, params, err := serv.Cmds.ParseInChat(chat)
 	if err != nil {
 		if err != chatbotbase.ErrCmdNoCmd &&
@@ -46,26 +65,26 @@ func (cp *cmdPlugin) OnMessage(ctx context.Context, serv *chatbot.Serv, chat *ch
 		return lst, nil
 	}
 
-	if cp.activeCmd != "" {
-		isend, lst, err := serv.Cmds.OnMessage(ctx, cmd, serv, chat, ui, ud, scs)
-		if err != nil {
-			if err == chatbotbase.ErrCmdItsNotMine {
-				return nil, chatbotbase.ErrPluginItsNotMine
-			}
+	// if cp.activeCmd != "" {
+	// 	isend, lst, err := serv.Cmds.OnMessage(ctx, cmd, serv, chat, ui, ud, scs)
+	// 	if err != nil {
+	// 		if err == chatbotbase.ErrCmdItsNotMine {
+	// 			return nil, chatbotbase.ErrPluginItsNotMine
+	// 		}
 
-			if err != chatbotbase.ErrCmdNoCmd {
-				return nil, err
-			}
+	// 		if err != chatbotbase.ErrCmdNoCmd {
+	// 			return nil, err
+	// 		}
 
-			return nil, nil
-		}
+	// 		return nil, nil
+	// 	}
 
-		if isend {
-			cp.activeCmd = ""
-		}
+	// 	if isend {
+	// 		cp.activeCmd = ""
+	// 	}
 
-		return lst, nil
-	}
+	// 	return lst, nil
+	// }
 
 	return nil, nil
 }
