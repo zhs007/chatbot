@@ -5,17 +5,18 @@ import (
 	"crypto/md5"
 	"encoding/base64"
 	"encoding/binary"
-	"encoding/json"
 	"fmt"
 	"strconv"
 	"strings"
 	"time"
 
+	jsoniter "github.com/json-iterator/go"
 	"go.uber.org/zap"
 )
 
 // JSON - make json to field
 func JSON(key string, obj interface{}) zap.Field {
+	json := jsoniter.ConfigCompatibleWithStandardLibrary
 	s, err := json.Marshal(obj)
 	if err != nil {
 		return zap.Error(err)
@@ -92,6 +93,7 @@ func MD5Buffer(buf []byte) string {
 
 // JSONFormat - json format string
 func JSONFormat(obj interface{}) (string, error) {
+	json := jsoniter.ConfigCompatibleWithStandardLibrary
 	s, err := json.MarshalIndent(obj, "", "  ")
 	if err != nil {
 		return "", err

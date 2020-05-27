@@ -101,6 +101,9 @@ func (serv *Serv) Start(ctx context.Context) error {
 // onMsg - on message
 func (serv *Serv) onMsg(ctx context.Context, upd *tgbotapi.Update) error {
 	if upd.Message != nil {
+		chatbotbase.Debug("Serv:onMsg",
+			chatbotbase.JSON("msg", upd.Message))
+
 		from := upd.Message.From
 		uai := chatbot.BuildUserAppInfo(chatbotpb.ChatAppType_CAT_TELEGRAM,
 			serv.cfg.Username, chatbotbase.ID2Str(from.ID), from.UserName, from.LanguageCode)
