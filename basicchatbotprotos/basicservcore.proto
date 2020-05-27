@@ -8,5 +8,4 @@ message ChatBotData{
 
 // UserData - user data
 message UserData {
-    string token = 1;
 }
