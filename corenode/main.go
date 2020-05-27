@@ -28,7 +28,7 @@ func main() {
 
 	chatbotbase.InitLogger(zapcore.InfoLevel, true, "./")
 
-	serv, err := chatbot.NewSimpleChatBotServ(cfg, &chatbot.EmptyServiceCore{})
+	serv, err := chatbot.NewSimpleChatBotServ(cfg, &basicchatbot.ServiceCore{})
 	if err != nil {
 		fmt.Printf("NewChatBotServ %v", err)
 

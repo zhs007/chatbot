@@ -37,6 +37,7 @@ helptext:
 
 # This is the text configuration for the robot name
 # 这里的配置，用于机器人的名字
+# 这个名字需要能在lang里查到，所以叫 chatbotname，不建议在这里改
 chatbotnametext: chatbotname
 
 language: en
