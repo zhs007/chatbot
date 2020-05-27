@@ -15,6 +15,7 @@ type Config struct {
 	ServAddr       string
 	Username       string
 	PreviewWebPage bool
+	LogLevel       string
 }
 
 func checkConfig(cfg *Config) error {

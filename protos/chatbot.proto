@@ -103,6 +103,7 @@ message ChatMsg {
     repeated ImageData imgs = 11;
     ForwardData forward = 12;
     string caption = 13;
+    string appMsgID = 14;
 }
 
 // ChatMsgStream - chat message stream

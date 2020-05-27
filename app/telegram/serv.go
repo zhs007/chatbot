@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"net/http"
+	"strconv"
 	"time"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
@@ -131,6 +132,8 @@ func (serv *Serv) buildChatMsg(msg *tgbotapi.Message) (*chatbotpb.ChatMsg, error
 		cmsg = chatbot.BuildTextChatMsg(str, uai, serv.cfg.Token, serv.client.SessionID)
 	}
 
+	cmsg.AppMsgID = strconv.Itoa(msg.MessageID)
+
 	if msg.ForwardDate > 0 {
 		cmsg.Forward = &chatbotpb.ForwardData{
 			Date: int64(msg.ForwardDate),
@@ -164,6 +167,16 @@ func (serv *Serv) onMsg(ctx context.Context, upd *tgbotapi.Update) error {
 		}
 
 		if msg != nil {
+			if msg.Forward != nil {
+				serv.ForwardMsg(ctx, &chatbotpb.ChatMsg{
+					Uai: msg.Uai,
+					Forward: &chatbotpb.ForwardData{
+						Uai:      msg.Uai,
+						AppMsgID: msg.AppMsgID,
+					},
+				})
+			}
+
 			return serv.procChatMsg(ctx, msg)
 		}
 
@@ -208,6 +221,34 @@ func (serv *Serv) SendChatMsg(ctx context.Context, chat *chatbotpb.ChatMsg) erro
 	telemsg := tgbotapi.NewMessage(i64, chat.Msg)
 
 	telemsg.DisableWebPagePreview = !serv.cfg.PreviewWebPage
+
+	_, err = serv.bot.Send(telemsg)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// ForwardMsg - forward a chat message
+func (serv *Serv) ForwardMsg(ctx context.Context, chat *chatbotpb.ChatMsg) error {
+	if chat.Forward == nil {
+		return serv.SendChatMsg(ctx, chat)
+	}
+
+	i64, err := chatbotbase.Str2ID64(chat.Uai.Appuid)
+	if err != nil {
+		return err
+	}
+
+	fromi64, err := chatbotbase.Str2ID64(chat.Forward.Uai.Appuid)
+	if err != nil {
+		return err
+	}
+
+	msgid, err := strconv.Atoi(chat.Forward.AppMsgID)
+
+	telemsg := tgbotapi.NewForward(i64, fromi64, msgid)
 
 	_, err = serv.bot.Send(telemsg)
 	if err != nil {
