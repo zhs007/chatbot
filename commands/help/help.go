@@ -7,7 +7,7 @@ import (
 	"github.com/nicksnyder/go-i18n/v2/i18n"
 	"github.com/zhs007/chatbot"
 	chatbotbase "github.com/zhs007/chatbot/base"
-	chatbotpb "github.com/zhs007/chatbot/pb"
+	chatbotpb "github.com/zhs007/chatbot/chatbotpb"
 )
 
 // cmdHelp - command help

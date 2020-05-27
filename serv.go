@@ -7,8 +7,8 @@ import (
 
 	"github.com/nicksnyder/go-i18n/v2/i18n"
 	chatbotbase "github.com/zhs007/chatbot/base"
+	chatbotpb "github.com/zhs007/chatbot/chatbotpb"
 	chatbotdb "github.com/zhs007/chatbot/db"
-	chatbotpb "github.com/zhs007/chatbot/pb"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
 )

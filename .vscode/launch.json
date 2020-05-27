@@ -28,6 +28,15 @@
             "env": {"http_proxy":"127.0.0.1:1087"},
             "cwd": "${workspaceFolder}",
             "args": []
+        },
+        {
+            "name": "corenode",
+            "type": "go",
+            "request": "launch",
+            "mode": "auto",
+            "program": "${workspaceFolder}/corenode/main.go",
+            "cwd": "${workspaceFolder}",
+            "args": []
         }
     ]
 }

@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/golang/protobuf/proto"
-	chatbotpb "github.com/zhs007/chatbot/pb"
+	chatbotpb "github.com/zhs007/chatbot/chatbotpb"
 )
 
 // FileProcessor - file processor

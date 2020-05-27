@@ -1,7 +1,7 @@
 package chatbotbase
 
 import (
-	chatbotpb "github.com/zhs007/chatbot/pb"
+	chatbotpb "github.com/zhs007/chatbot/chatbotpb"
 )
 
 // strAppServType - appserv type string

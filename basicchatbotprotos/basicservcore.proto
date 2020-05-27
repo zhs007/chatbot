@@ -1,0 +1,11 @@
+syntax = "proto3";
+package basicchatbotpb;
+option go_package = "github.com/zhs007/charbot/basicchatbotpb";
+
+// ChatBotData - chatbot data
+message ChatBotData{
+}
+
+// UserData - user data
+message UserData {
+}

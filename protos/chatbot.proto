@@ -1,6 +1,6 @@
 syntax = "proto3";
 package chatbotpb;
-option go_package = "github.com/zhs007/chatbot";
+option go_package = "github.com/zhs007/chatbot/chatbotpb";
 
 // ChatAppType - chat app type
 enum ChatAppType {
@@ -72,6 +72,22 @@ message FileData {
     string fileType = 3;
 }
 
+// ImageData - image data
+message ImageData {
+    int32 width = 1;
+    int32 height = 2;
+    string filename = 3;
+    string appfileid = 4;
+    bytes fileData = 5;
+}
+
+// ForwardData - forward data
+message ForwardData {
+    UserAppInfo uai = 1;
+    string appMsgID = 2;
+    int64 date = 3;
+}
+
 // ChatMsg - chat message
 message ChatMsg {
     string msg = 1;
@@ -84,6 +100,10 @@ message ChatMsg {
     string sessionID = 8;
     string fileType = 9 [deprecated = true];
     FileData file = 10;
+    repeated ImageData imgs = 11;
+    ForwardData forward = 12;
+    string caption = 13;
+    string appMsgID = 14;
 }
 
 // ChatMsgStream - chat message stream

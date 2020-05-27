@@ -1,9 +1,7 @@
 telegramtoken: 1234567
 
-token: 1234567
+token: 12345678
 servaddr: 127.0.0.1:123
 username: ada
 
 previewwebpage: true
-
-loglevel: info

@@ -4,12 +4,13 @@ import (
 	"bytes"
 	"context"
 	"net/http"
+	"strconv"
 	"time"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	chatbot "github.com/zhs007/chatbot"
 	chatbotbase "github.com/zhs007/chatbot/base"
-	chatbotpb "github.com/zhs007/chatbot/pb"
+	chatbotpb "github.com/zhs007/chatbot/chatbotpb"
 	"go.uber.org/zap"
 )
 
@@ -98,36 +99,113 @@ func (serv *Serv) Start(ctx context.Context) error {
 	return nil
 }
 
+func (serv *Serv) buildChatMsg(msg *tgbotapi.Message) (*chatbotpb.ChatMsg, error) {
+	var cmsg *chatbotpb.ChatMsg
+
+	from := msg.From
+	uai := chatbot.BuildUserAppInfo(chatbotpb.ChatAppType_CAT_TELEGRAM,
+		serv.cfg.Username, chatbotbase.ID2Str(from.ID), from.UserName, from.LanguageCode)
+
+	if msg.Document != nil {
+		str := chatbotbase.FormatCommand(msg.Caption)
+
+		fd, err := serv.getFileDataWithDocument(msg.Document)
+		if err != nil {
+			return nil, err
+		}
+
+		cmsg = chatbot.BuildFileChatMsg(str, fd, uai, serv.cfg.Token, serv.client.SessionID)
+	} else if msg.Photo != nil {
+		str := chatbotbase.FormatCommand(msg.Caption)
+
+		// fd, err := serv.getFileDataWithDocument(msg.Document)
+		// if err != nil {
+		// 	return nil, err
+		// }
+
+		cmsg = chatbot.BuildTextChatMsg(str, uai, serv.cfg.Token, serv.client.SessionID)
+
+		// cmsg = chatbot.BuildFileChatMsg(str, fd, uai, serv.cfg.Token, serv.client.SessionID)
+	} else {
+		str := chatbotbase.FormatCommand(msg.Text)
+
+		cmsg = chatbot.BuildTextChatMsg(str, uai, serv.cfg.Token, serv.client.SessionID)
+	}
+
+	cmsg.AppMsgID = strconv.Itoa(msg.MessageID)
+
+	if msg.ForwardDate > 0 {
+		cmsg.Forward = &chatbotpb.ForwardData{
+			Date: int64(msg.ForwardDate),
+		}
+
+		if msg.ForwardFrom != nil {
+			cmsg.Forward.Uai = chatbot.BuildUserAppInfo(chatbotpb.ChatAppType_CAT_TELEGRAM,
+				serv.cfg.Username, chatbotbase.ID2Str(msg.ForwardFrom.ID), msg.ForwardFrom.UserName, msg.ForwardFrom.LanguageCode)
+		}
+	}
+
+	return cmsg, nil
+}
+
 // onMsg - on message
 func (serv *Serv) onMsg(ctx context.Context, upd *tgbotapi.Update) error {
 	if upd.Message != nil {
-		from := upd.Message.From
-		uai := chatbot.BuildUserAppInfo(chatbotpb.ChatAppType_CAT_TELEGRAM,
-			serv.cfg.Username, chatbotbase.ID2Str(from.ID), from.UserName, from.LanguageCode)
+		chatbotbase.Debug("Serv:onMsg",
+			chatbotbase.JSON("msg", upd.Message))
 
-		str := chatbotbase.FormatCommand(upd.Message.Text)
+		// from := upd.Message.From
+		// uai := chatbot.BuildUserAppInfo(chatbotpb.ChatAppType_CAT_TELEGRAM,
+		// 	serv.cfg.Username, chatbotbase.ID2Str(from.ID), from.UserName, from.LanguageCode)
 
-		chatbotbase.Info("onMsg",
-			zap.String("Text", upd.Message.Text),
-			zap.String("lang", from.LanguageCode))
+		msg, err := serv.buildChatMsg(upd.Message)
+		if err != nil {
+			chatbotbase.Error("Serv:onMsg:buildChatMsg",
+				zap.Error(err))
 
-		if upd.Message.Document != nil {
-			fd, err := serv.getFileDataWithDocument(upd.Message.Document)
-			if err != nil {
-				return err
+			return err
+		}
+
+		if msg != nil {
+			if msg.Forward != nil {
+				serv.ForwardMsg(ctx, &chatbotpb.ChatMsg{
+					Uai: msg.Uai,
+					Forward: &chatbotpb.ForwardData{
+						Uai:      msg.Uai,
+						AppMsgID: msg.AppMsgID,
+					},
+				})
 			}
 
-			msg := chatbot.BuildFileChatMsg(str, fd, uai, serv.cfg.Token, serv.client.SessionID)
-
 			return serv.procChatMsg(ctx, msg)
 		}
 
-		if str != "" {
-			msg := chatbot.BuildTextChatMsg(str,
-				uai, serv.cfg.Token, serv.client.SessionID)
+		// str := chatbotbase.FormatCommand(upd.Message.Text)
 
-			return serv.procChatMsg(ctx, msg)
-		}
+		// chatbotbase.Info("onMsg",
+		// 	zap.String("Text", upd.Message.Text),
+		// 	zap.String("lang", from.LanguageCode))
+
+		// if upd.Message.Document != nil {
+		// 	fd, err := serv.getFileDataWithDocument(upd.Message.Document)
+		// 	if err != nil {
+		// 		return err
+		// 	}
+
+		// 	msg := chatbot.BuildFileChatMsg(str, fd, uai, serv.cfg.Token, serv.client.SessionID)
+
+		// 	return serv.procChatMsg(ctx, msg)
+		// }
+
+		// if isValidMsg(upd.Message) {
+
+		// }
+		// if str != "" && isValidMsg(upd.Message) {
+		// 	msg := chatbot.BuildTextChatMsg(str,
+		// 		uai, serv.cfg.Token, serv.client.SessionID)
+
+		// 	return serv.procChatMsg(ctx, msg)
+		// }
 	}
 
 	return nil
@@ -142,7 +220,35 @@ func (serv *Serv) SendChatMsg(ctx context.Context, chat *chatbotpb.ChatMsg) erro
 
 	telemsg := tgbotapi.NewMessage(i64, chat.Msg)
 
-	telemsg.DisableWebPagePreview = true
+	telemsg.DisableWebPagePreview = !serv.cfg.PreviewWebPage
+
+	_, err = serv.bot.Send(telemsg)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// ForwardMsg - forward a chat message
+func (serv *Serv) ForwardMsg(ctx context.Context, chat *chatbotpb.ChatMsg) error {
+	if chat.Forward == nil {
+		return serv.SendChatMsg(ctx, chat)
+	}
+
+	i64, err := chatbotbase.Str2ID64(chat.Uai.Appuid)
+	if err != nil {
+		return err
+	}
+
+	fromi64, err := chatbotbase.Str2ID64(chat.Forward.Uai.Appuid)
+	if err != nil {
+		return err
+	}
+
+	msgid, err := strconv.Atoi(chat.Forward.AppMsgID)
+
+	telemsg := tgbotapi.NewForward(i64, fromi64, msgid)
 
 	_, err = serv.bot.Send(telemsg)
 	if err != nil {

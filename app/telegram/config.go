@@ -10,10 +10,12 @@ import (
 
 // Config - configuate
 type Config struct {
-	TelegramToken string
-	Token         string
-	ServAddr      string
-	Username      string
+	TelegramToken  string
+	Token          string
+	ServAddr       string
+	Username       string
+	PreviewWebPage bool
+	LogLevel       string
 }
 
 func checkConfig(cfg *Config) error {
