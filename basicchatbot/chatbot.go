@@ -2,6 +2,7 @@ package basicchatbot
 
 import (
 	chatbotcmdhelp "github.com/zhs007/chatbot/commands/help"
+	chatbotcmdnote "github.com/zhs007/chatbot/commands/note"
 	chatbotcmdstart "github.com/zhs007/chatbot/commands/start"
 	chatbotcmdplugin "github.com/zhs007/chatbot/plugins/cmd"
 	chatbotdebugplugin "github.com/zhs007/chatbot/plugins/debug"
@@ -27,6 +28,7 @@ func InitBasicChatBot() error {
 
 	chatbotcmdhelp.RegisterCommand()
 	chatbotcmdstart.RegisterCommand()
+	chatbotcmdnote.RegisterCommand()
 
 	return nil
 }

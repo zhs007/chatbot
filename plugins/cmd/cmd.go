@@ -10,6 +10,7 @@ import (
 )
 
 type cmdPlugin struct {
+	activeCmd string
 }
 
 // OnMessage - get message
@@ -24,17 +25,43 @@ func (cp *cmdPlugin) OnMessage(ctx context.Context, serv *chatbot.Serv, chat *ch
 			return nil, err
 		}
 
-		return nil, nil
+		return nil, chatbotbase.ErrPluginItsNotMine
 	}
 
 	if cmd != "" {
-		lst, err := serv.Cmds.RunInChat(ctx, cmd, serv, params, chat, ui, ud, scs)
+		isend, lst, err := serv.Cmds.RunInChat(ctx, cmd, serv, params, chat, ui, ud, scs)
 		if err != nil {
 			if err != chatbotbase.ErrCmdNoCmd {
 				return nil, err
 			}
 
+			return nil, chatbotbase.ErrPluginItsNotMine
+		}
+
+		if !isend {
+			cp.activeCmd = cmd
+		}
+		// cp.activeCmd =
+
+		return lst, nil
+	}
+
+	if cp.activeCmd != "" {
+		isend, lst, err := serv.Cmds.OnMessage(ctx, cmd, serv, chat, ui, ud, scs)
+		if err != nil {
+			if err == chatbotbase.ErrCmdItsNotMine {
+				return nil, chatbotbase.ErrPluginItsNotMine
+			}
+
+			if err != chatbotbase.ErrCmdNoCmd {
+				return nil, err
+			}
+
 			return nil, nil
+		}
+
+		if isend {
+			cp.activeCmd = ""
 		}
 
 		return lst, nil

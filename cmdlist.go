@@ -33,7 +33,7 @@ func (cmds *CommondsList) AddCommand(cmd string) error {
 }
 
 // ParseInChat - parse in chat
-func (cmds *CommondsList) ParseInChat(chat *chatbotpb.ChatMsg) (string, proto.Message, error) {
+func (cmds *CommondsList) ParseInChat(chat *chatbotpb.ChatMsg) (string, interface{}, error) {
 	lst := SplitCommandString(chat.Msg)
 	if len(lst) <= 0 {
 		return "", nil, chatbotbase.ErrCmdEmptyCmd
@@ -52,16 +52,29 @@ func (cmds *CommondsList) ParseInChat(chat *chatbotpb.ChatMsg) (string, proto.Me
 }
 
 // RunInChat - run func with cmd
-func (cmds *CommondsList) RunInChat(ctx context.Context, cmd string, serv *Serv, params proto.Message,
+func (cmds *CommondsList) RunInChat(ctx context.Context, cmd string, serv *Serv, params interface{},
 	chat *chatbotpb.ChatMsg, ui *chatbotpb.UserInfo, ud proto.Message,
-	scs chatbotpb.ChatBotService_SendChatServer) ([]*chatbotpb.ChatMsg, error) {
+	scs chatbotpb.ChatBotService_SendChatServer) (bool, []*chatbotpb.ChatMsg, error) {
 
 	c, ok := cmds.cmds[cmd]
 	if ok {
 		return c.RunCommand(ctx, serv, params, chat, ui, ud, scs)
 	}
 
-	return nil, chatbotbase.ErrCmdNoCmd
+	return true, nil, chatbotbase.ErrCmdNoCmd
+}
+
+// OnMessage - get message
+func (cmds *CommondsList) OnMessage(ctx context.Context, cmd string, serv *Serv, chat *chatbotpb.ChatMsg,
+	ui *chatbotpb.UserInfo, ud proto.Message,
+	scs chatbotpb.ChatBotService_SendChatServer) (bool, []*chatbotpb.ChatMsg, error) {
+
+	c, ok := cmds.cmds[cmd]
+	if ok {
+		return c.OnMessage(ctx, serv, chat, ui, ud, scs)
+	}
+
+	return true, nil, chatbotbase.ErrCmdNoCmd
 }
 
 // HasCommand - has command

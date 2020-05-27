@@ -10,9 +10,13 @@ import (
 // Command - command
 type Command interface {
 	// RunCommand - run command
-	RunCommand(ctx context.Context, serv *Serv, params proto.Message,
+	RunCommand(ctx context.Context, serv *Serv, params interface{},
 		chat *chatbotpb.ChatMsg, ui *chatbotpb.UserInfo, ud proto.Message,
-		scs chatbotpb.ChatBotService_SendChatServer) ([]*chatbotpb.ChatMsg, error)
+		scs chatbotpb.ChatBotService_SendChatServer) (bool, []*chatbotpb.ChatMsg, error)
 	// ParseCommandLine - parse command line
-	ParseCommandLine(cmdline []string, chat *chatbotpb.ChatMsg) (proto.Message, error)
+	ParseCommandLine(cmdline []string, chat *chatbotpb.ChatMsg) (interface{}, error)
+	// OnMessage - get message
+	OnMessage(ctx context.Context, serv *Serv, chat *chatbotpb.ChatMsg,
+		ui *chatbotpb.UserInfo, ud proto.Message,
+		scs chatbotpb.ChatBotService_SendChatServer) (bool, []*chatbotpb.ChatMsg, error)
 }
