@@ -16,3 +16,4 @@ samples/corenode/config.yaml
 samples/telegrambot/data
 samples/telegrambot/config.yaml
 data
+cfg/*.yaml
