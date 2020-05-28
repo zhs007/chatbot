@@ -1,6 +1,6 @@
 module github.com/zhs007/chatbot
 
-go 1.12
+go 1.13
 
 require (
 	github.com/catsworld/qq-bot-api v0.0.0-20190915143611-7eed820cac55

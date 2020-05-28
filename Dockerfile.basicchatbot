@@ -1,6 +1,6 @@
-FROM golang:1.12 as builder
+FROM golang:1.13 as builder
 
-MAINTAINER zerro "zerrozhao@gmail.com"
+LABEL maintainer="zerrozhao@gmail.com"
 
 ENV GOPROXY https://goproxy.io
 
@@ -12,12 +12,12 @@ RUN go mod download
 
 COPY . /src/chatbot
 
-RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o basicchatbot ./basicchatbot \
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o basicchatbotnode ./basicchatbot \
     && mkdir /app \
     && mkdir /app/basicchatbot \
     && mkdir /app/basicchatbot/cfg \
     && mkdir /app/basicchatbot/logs \
-    && cp ./basicchatbot /app/basicchatbot/ \
+    && cp ./basicchatbotnode /app/basicchatbot/ \
     && cp ./cfg/config.yaml.sample /app/basicchatbot/cfg/config.yaml
 
 FROM alpine
@@ -25,4 +25,4 @@ RUN apk upgrade && apk add --no-cache ca-certificates
 WORKDIR /app/basicchatbot
 COPY --from=builder /usr/local/go/lib/time/zoneinfo.zip /usr/local/go/lib/time/zoneinfo.zip
 COPY --from=builder /app/basicchatbot /app/basicchatbot
-CMD ["./basicchatbot"]
+CMD ["./basicchatbotnode"]
