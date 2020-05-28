@@ -2,6 +2,7 @@ package chatbotdb
 
 import (
 	"strconv"
+	"unicode"
 
 	chatbotbase "github.com/zhs007/chatbot/base"
 )
@@ -42,4 +43,27 @@ const AppUIDDBKeyPrefix = "at:"
 // makeAppUID - Generate a database key via apptoken and appuid
 func makeAppUID(appToken string, appUID string) string {
 	return chatbotbase.AppendString(AppUIDDBKeyPrefix, appToken, ":", appUID)
+}
+
+// NoteInfoDBKeyPrefix - This is the prefix of NoteInfo
+const NoteInfoDBKeyPrefix = "ni:"
+
+// makeNoteInfoKey - Generate a database key via note name
+func makeNoteInfoKey(name string) string {
+	return chatbotbase.AppendString(NoteInfoDBKeyPrefix, name)
+}
+
+// IsValidNoteName - is valid note name
+func IsValidNoteName(name string) bool {
+	if name == "" {
+		return false
+	}
+
+	for _, v := range name {
+		if !(unicode.IsLetter(v) || unicode.IsDigit(v)) {
+			return false
+		}
+	}
+
+	return true
 }

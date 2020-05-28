@@ -12,4 +12,10 @@ type UserMgr interface {
 	// GetAppUserInfo - get user infomation
 	GetAppUserInfo(ctx context.Context, appToken string, uai *chatbotpb.UserAppInfo) (
 		*chatbotpb.UserInfo, proto.Message, error)
+
+	// GetNoteInfo - get note infomation
+	GetNoteInfo(ctx context.Context, name string) (
+		*chatbotpb.NoteInfo, error)
+	// UpdNoteInfo - update note infomation
+	UpdNoteInfo(ctx context.Context, ni *chatbotpb.NoteInfo) error
 }

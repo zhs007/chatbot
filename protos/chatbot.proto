@@ -29,6 +29,15 @@ message UserInfo {
     int64 money = 10;
 }
 
+// NoteInfo - note infomation
+message NoteInfo {
+    string name = 1;
+    repeated string keys = 2;
+    int64 noteNums = 3;
+    repeated int64 masters = 4;
+    bool isPublic = 5;
+}
+
 // AppGroupInfo - app group info
 message AppGroupInfo {
     ChatAppType app = 1;

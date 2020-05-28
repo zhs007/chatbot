@@ -13,7 +13,32 @@ import (
 // CmdName - cmd name
 const CmdName = "note"
 
+// NoteMode - note mode
+type NoteMode int
+
+const (
+	// NoteModeNone - none
+	NoteModeNone NoteMode = 0
+	// NoteModeNew - new note
+	NoteModeNew NoteMode = 1
+	// NoteModeForward - taking notes for forward
+	NoteModeForward NoteMode = 2
+)
+
+// ParseNoteMode - string => NoteMode
+func ParseNoteMode(str string) NoteMode {
+	if str == "new" {
+		return NoteModeNew
+	} else if str == "forward" {
+		return NoteModeForward
+	}
+
+	return NoteModeNone
+}
+
 type paramsCmd struct {
+	mode NoteMode
+	name string
 	keys []string
 }
 
@@ -87,6 +112,8 @@ func (cmd *cmdNote) ParseCommandLine(cmdline []string, chat *chatbotpb.ChatMsg) 
 
 	flagset := pflag.NewFlagSet(CmdName, pflag.ContinueOnError)
 
+	strMode := flagset.StringP("mode", "m", "none", "mode")
+	strName := flagset.StringP("name", "n", "", "name")
 	keys := flagset.StringArrayP("keys", "k", []string{}, "key")
 
 	err := flagset.Parse(cmdline[1:])
@@ -94,7 +121,11 @@ func (cmd *cmdNote) ParseCommandLine(cmdline []string, chat *chatbotpb.ChatMsg) 
 		return nil, err
 	}
 
-	return paramsCmd{keys: *keys}, nil
+	return paramsCmd{
+		mode: ParseNoteMode(*strMode),
+		name: *strName,
+		keys: *keys,
+	}, nil
 }
 
 // RegisterCommand - register command

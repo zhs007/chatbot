@@ -101,6 +101,9 @@ var (
 	// ErrInvalidFileProcessorMgr - invalid FileProcessorMgr
 	ErrInvalidFileProcessorMgr = errors.New("invalid FileProcessorMgr")
 
+	// ErrNoteInvalidName - invalid note name
+	ErrNoteInvalidName = errors.New("invalid note name")
+
 	// ErrUnkonow - unknow error
 	ErrUnkonow = errors.New("unknow error")
 )
