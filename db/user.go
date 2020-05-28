@@ -251,3 +251,40 @@ func (db *UserDB) UpdNoteInfo(ctx context.Context, ni *chatbotpb.NoteInfo) error
 
 	return nil
 }
+
+// UpdNoteNode - update note node
+func (db *UserDB) UpdNoteNode(ctx context.Context, nn *chatbotpb.NoteNode) error {
+	ni, err := db.GetNoteInfo(ctx, nn.Name)
+	if err != nil {
+		return err
+	}
+
+	if ni == nil {
+		return chatbotbase.ErrNoteNone
+	}
+
+	nn.NoteIndex = ni.NoteNums
+
+	ni.NoteNums++
+	ni.Keys = MergeKeys(ni.Keys, nn.Keys)
+	InsMapKeys(ni, nn.Keys, nn.NoteIndex)
+
+	err = db.UpdNoteInfo(ctx, ni)
+	if err != nil {
+		return err
+	}
+
+	k := makeNoteNodeKey(ni.Name, nn.NoteIndex)
+
+	buf, err := proto.Marshal(nn)
+	if err != nil {
+		return err
+	}
+
+	err = db.ankaDB.Set(ctx, UserDBName, k, buf)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}

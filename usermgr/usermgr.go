@@ -115,3 +115,8 @@ func (mgr *UserMgr) GetNoteInfo(ctx context.Context, name string) (
 func (mgr *UserMgr) UpdNoteInfo(ctx context.Context, ni *chatbotpb.NoteInfo) error {
 	return mgr.db.UpdNoteInfo(ctx, ni)
 }
+
+// UpdNoteNode - update note node
+func (mgr *UserMgr) UpdNoteNode(ctx context.Context, nn *chatbotpb.NoteNode) error {
+	return mgr.db.UpdNoteNode(ctx, nn)
+}

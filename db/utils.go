@@ -5,6 +5,7 @@ import (
 	"unicode"
 
 	chatbotbase "github.com/zhs007/chatbot/base"
+	chatbotpb "github.com/zhs007/chatbot/chatbotpb"
 )
 
 // AppServDBKeyPrefix - This is the prefix of AppServDBKey
@@ -66,4 +67,42 @@ func IsValidNoteName(name string) bool {
 	}
 
 	return true
+}
+
+// NoteNodeDBKeyPrefix - This is the prefix of NoteNode
+const NoteNodeDBKeyPrefix = "nn:"
+
+// makeNoteNodeKey - Generate a database key via note name
+func makeNoteNodeKey(name string, nodeIndex int64) string {
+	return chatbotbase.AppendString(NoteInfoDBKeyPrefix, name,
+		":", strconv.FormatInt(nodeIndex, 10))
+}
+
+// MergeKeys - return arr0 + arr1
+func MergeKeys(arr0 []string, arr1 []string) []string {
+	for _, v := range arr1 {
+		if chatbotbase.IndexOfArrayString(arr0, v) < 0 {
+			arr0 = append(arr0, v)
+		}
+	}
+
+	return arr0
+}
+
+// InsMapKeys - insert into mapKeys
+func InsMapKeys(ni *chatbotpb.NoteInfo, keys []string, noteIndex int64) {
+	if ni.MapKeys == nil {
+		ni.MapKeys = make(map[string]*chatbotpb.NoteKeyInfo)
+	}
+
+	for _, v := range keys {
+		ks, isok := ni.MapKeys[v]
+		if !isok {
+			ni.MapKeys[v] = &chatbotpb.NoteKeyInfo{
+				Nodes: []int64{noteIndex},
+			}
+		} else {
+			ks.Nodes = append(ks.Nodes, noteIndex)
+		}
+	}
 }

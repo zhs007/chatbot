@@ -52,8 +52,9 @@ type paramsCmd struct {
 
 // cmdNote - command note
 type cmdNote struct {
-	IsTakingNotes bool
-	Keys          []string
+	isRunning bool
+	keys      []string
+	noteName  string
 }
 
 // onNew - run command
@@ -141,10 +142,38 @@ func (cmd *cmdNote) onInfo(ctx context.Context, serv *chatbot.Serv, params param
 	return []*chatbotpb.ChatMsg{msg}, nil
 }
 
+// onForward - run command
+func (cmd *cmdNote) onForward(ctx context.Context, serv *chatbot.Serv, params paramsCmd,
+	chat *chatbotpb.ChatMsg, ui *chatbotpb.UserInfo, ud proto.Message,
+	scs chatbotpb.ChatBotService_SendChatServer) (bool, []*chatbotpb.ChatMsg, error) {
+
+	if !chatbotdb.IsValidNoteName(params.name) {
+		msg := &chatbotpb.ChatMsg{
+			Msg: "Please input a valid name for note, it consists only of lowercase letters and numbers.",
+			Uai: chat.Uai,
+		}
+
+		return true, []*chatbotpb.ChatMsg{msg}, nil
+	}
+
+	cmd.isRunning = true
+	cmd.keys = params.keys
+	cmd.noteName = params.name
+
+	msg := &chatbotpb.ChatMsg{
+		Msg: "note starts ...",
+		Uai: chat.Uai,
+	}
+
+	return false, []*chatbotpb.ChatMsg{msg}, nil
+}
+
 // RunCommand - run command
 func (cmd *cmdNote) RunCommand(ctx context.Context, serv *chatbot.Serv, params interface{},
 	chat *chatbotpb.ChatMsg, ui *chatbotpb.UserInfo, ud proto.Message,
 	scs chatbotpb.ChatBotService_SendChatServer) (bool, []*chatbotpb.ChatMsg, error) {
+
+	cmd.isRunning = false
 
 	if serv == nil {
 		return true, nil, chatbotbase.ErrCmdInvalidServ
@@ -173,15 +202,11 @@ func (cmd *cmdNote) RunCommand(ctx context.Context, serv *chatbot.Serv, params i
 		return true, lst, err
 	}
 
-	cmd.IsTakingNotes = true
-	cmd.Keys = cp.keys
-
-	msg := &chatbotpb.ChatMsg{
-		Msg: "note start...",
-		Uai: chat.Uai,
+	if cp.mode == NoteModeForward {
+		return cmd.onForward(ctx, serv, cp, chat, ui, ud, scs)
 	}
 
-	return false, []*chatbotpb.ChatMsg{msg}, nil
+	return true, nil, ErrCmdInvalidNoteMode
 }
 
 // OnMessage - get message
@@ -189,7 +214,7 @@ func (cmd *cmdNote) OnMessage(ctx context.Context, serv *chatbot.Serv, chat *cha
 	ui *chatbotpb.UserInfo, ud proto.Message,
 	scs chatbotpb.ChatBotService_SendChatServer) (bool, []*chatbotpb.ChatMsg, error) {
 
-	if !cmd.IsTakingNotes {
+	if !cmd.isRunning {
 		return true, nil, chatbotbase.ErrCmdItsNotMine
 	}
 
@@ -200,6 +225,24 @@ func (cmd *cmdNote) OnMessage(ctx context.Context, serv *chatbot.Serv, chat *cha
 		}
 
 		return true, []*chatbotpb.ChatMsg{msg}, chatbotbase.ErrCmdItsNotMine
+	}
+
+	text := chat.Msg
+	if text == "" {
+		text = chat.Caption
+	}
+
+	err := serv.MgrUser.UpdNoteNode(ctx, &chatbotpb.NoteNode{
+		Keys:            cmd.keys,
+		Name:            cmd.noteName,
+		ForwardAppMsgID: chat.AppMsgID,
+		Text:            text,
+	})
+	if err != nil {
+		chatbotbase.Error("cmdNote.OnMessage:UpdNoteNode",
+			zap.Error(err))
+
+		return false, nil, err
 	}
 
 	msg := &chatbotpb.ChatMsg{

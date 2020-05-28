@@ -18,4 +18,6 @@ type UserMgr interface {
 		*chatbotpb.NoteInfo, error)
 	// UpdNoteInfo - update note infomation
 	UpdNoteInfo(ctx context.Context, ni *chatbotpb.NoteInfo) error
+	// UpdNoteNode - update note node
+	UpdNoteNode(ctx context.Context, nn *chatbotpb.NoteNode) error
 }

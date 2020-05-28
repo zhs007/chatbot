@@ -29,6 +29,11 @@ message UserInfo {
     int64 money = 10;
 }
 
+// NoteKeyInfo - note key infomation
+message NoteKeyInfo {
+    repeated int64 nodes = 1;
+}
+
 // NoteInfo - note infomation
 message NoteInfo {
     string name = 1;
@@ -36,6 +41,16 @@ message NoteInfo {
     int64 noteNums = 3;
     repeated int64 masters = 4;
     bool isPublic = 5;
+    map<string, NoteKeyInfo> mapKeys = 6;
+}
+
+// NoteNode - note node
+message NoteNode {
+    string name = 1;
+    repeated string keys = 2;
+    int64 noteIndex = 3;
+    string forwardAppMsgID = 4;
+    string text = 5;
 }
 
 // AppGroupInfo - app group info

@@ -103,6 +103,8 @@ var (
 
 	// ErrNoteInvalidName - invalid note name
 	ErrNoteInvalidName = errors.New("invalid note name")
+	// ErrNoteNone - no note
+	ErrNoteNone = errors.New("no note")
 
 	// ErrUnkonow - unknow error
 	ErrUnkonow = errors.New("unknow error")
