@@ -2,6 +2,10 @@ package chatbotcmdnote
 
 import (
 	"context"
+	"strings"
+
+	chatbotdb "github.com/zhs007/chatbot/db"
+	"go.uber.org/zap"
 
 	"github.com/golang/protobuf/proto"
 	"github.com/spf13/pflag"
@@ -23,6 +27,8 @@ const (
 	NoteModeNew NoteMode = 1
 	// NoteModeForward - taking notes for forward
 	NoteModeForward NoteMode = 2
+	// NoteModeInfo - get infomation for note
+	NoteModeInfo NoteMode = 3
 )
 
 // ParseNoteMode - string => NoteMode
@@ -31,6 +37,8 @@ func ParseNoteMode(str string) NoteMode {
 		return NoteModeNew
 	} else if str == "forward" {
 		return NoteModeForward
+	} else if str == "info" {
+		return NoteModeInfo
 	}
 
 	return NoteModeNone
@@ -46,6 +54,91 @@ type paramsCmd struct {
 type cmdNote struct {
 	IsTakingNotes bool
 	Keys          []string
+}
+
+// onNew - run command
+func (cmd *cmdNote) onNew(ctx context.Context, serv *chatbot.Serv, params paramsCmd,
+	chat *chatbotpb.ChatMsg, ui *chatbotpb.UserInfo, ud proto.Message,
+	scs chatbotpb.ChatBotService_SendChatServer) ([]*chatbotpb.ChatMsg, error) {
+
+	if !chatbotdb.IsValidNoteName(params.name) {
+		msg := &chatbotpb.ChatMsg{
+			Msg: "Please input a valid name for note, it consists only of lowercase letters and numbers.",
+			Uai: chat.Uai,
+		}
+
+		return []*chatbotpb.ChatMsg{msg}, nil
+	}
+
+	ni := &chatbotpb.NoteInfo{
+		Name:     strings.ToLower(params.name),
+		Masters:  []int64{ui.Uid},
+		IsPublic: true,
+	}
+
+	err := serv.MgrUser.UpdNoteInfo(ctx, ni)
+	if err != nil {
+		chatbotbase.Error("cmdNote.onNew:UpdNoteInfo",
+			zap.Error(err))
+
+		return nil, err
+	}
+
+	msg := &chatbotpb.ChatMsg{
+		Msg: "The note (" + params.name + ") is created.",
+		Uai: chat.Uai,
+	}
+
+	return []*chatbotpb.ChatMsg{msg}, nil
+}
+
+// onInfo - run command
+func (cmd *cmdNote) onInfo(ctx context.Context, serv *chatbot.Serv, params paramsCmd,
+	chat *chatbotpb.ChatMsg, ui *chatbotpb.UserInfo, ud proto.Message,
+	scs chatbotpb.ChatBotService_SendChatServer) ([]*chatbotpb.ChatMsg, error) {
+
+	if !chatbotdb.IsValidNoteName(params.name) {
+		msg := &chatbotpb.ChatMsg{
+			Msg: "Please input a valid name for note, it consists only of lowercase letters and numbers.",
+			Uai: chat.Uai,
+		}
+
+		return []*chatbotpb.ChatMsg{msg}, nil
+	}
+
+	params.name = strings.ToLower(params.name)
+
+	ni, err := serv.MgrUser.GetNoteInfo(ctx, params.name)
+	if err != nil {
+		chatbotbase.Error("cmdNote.onInfo:GetNoteInfo",
+			zap.Error(err))
+
+		return nil, err
+	}
+
+	if ni == nil {
+		msg := &chatbotpb.ChatMsg{
+			Msg: "Sorry, I can't find the note (" + params.name + ")",
+			Uai: chat.Uai,
+		}
+
+		return []*chatbotpb.ChatMsg{msg}, nil
+	}
+
+	strni, err := chatbotbase.JSONFormat(ni)
+	if err != nil {
+		chatbotbase.Error("cmdNote.onInfo:JSONFormat",
+			zap.Error(err))
+
+		return nil, err
+	}
+
+	msg := &chatbotpb.ChatMsg{
+		Msg: "The note (" + params.name + ") is \n " + strni + ".",
+		Uai: chat.Uai,
+	}
+
+	return []*chatbotpb.ChatMsg{msg}, nil
 }
 
 // RunCommand - run command
@@ -64,6 +157,20 @@ func (cmd *cmdNote) RunCommand(ctx context.Context, serv *chatbot.Serv, params i
 	cp, isok := params.(paramsCmd)
 	if !isok {
 		return true, nil, ErrCmdInvalidParams
+	}
+
+	if cp.mode == NoteModeNone {
+		return true, nil, nil
+	}
+
+	if cp.mode == NoteModeNew {
+		lst, err := cmd.onNew(ctx, serv, cp, chat, ui, ud, scs)
+		return true, lst, err
+	}
+
+	if cp.mode == NoteModeInfo {
+		lst, err := cmd.onInfo(ctx, serv, cp, chat, ui, ud, scs)
+		return true, lst, err
 	}
 
 	cmd.IsTakingNotes = true

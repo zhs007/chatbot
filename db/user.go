@@ -203,7 +203,7 @@ func (db *UserDB) GetUserData(ctx context.Context, uid int64) (proto.Message, er
 
 // GetNoteInfo - get note infomation
 func (db *UserDB) GetNoteInfo(ctx context.Context, name string) (*chatbotpb.NoteInfo, error) {
-	if IsValidNoteName(name) {
+	if !IsValidNoteName(name) {
 		return nil, chatbotbase.ErrNoteInvalidName
 	}
 
@@ -231,6 +231,10 @@ func (db *UserDB) GetNoteInfo(ctx context.Context, name string) (*chatbotpb.Note
 
 // UpdNoteInfo - update note infomation
 func (db *UserDB) UpdNoteInfo(ctx context.Context, ni *chatbotpb.NoteInfo) error {
+	if !IsValidNoteName(ni.Name) {
+		return chatbotbase.ErrNoteInvalidName
+	}
+
 	ni.Name = strings.ToLower(ni.Name)
 
 	k := makeNoteInfoKey(ni.Name)
