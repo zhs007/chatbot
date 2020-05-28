@@ -20,4 +20,7 @@ type UserMgr interface {
 	UpdNoteInfo(ctx context.Context, ni *chatbotpb.NoteInfo) error
 	// UpdNoteNode - update note node
 	UpdNoteNode(ctx context.Context, nn *chatbotpb.NoteNode) error
+	// GetNoteNode - get note node
+	GetNoteNode(ctx context.Context, nameNote string, noteIndex int64) (
+		*chatbotpb.NoteNode, error)
 }

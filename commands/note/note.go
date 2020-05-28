@@ -29,6 +29,8 @@ const (
 	NoteModeForward NoteMode = 2
 	// NoteModeInfo - get infomation for note
 	NoteModeInfo NoteMode = 3
+	// NoteModeSearch - search note with key
+	NoteModeSearch NoteMode = 4
 )
 
 // ParseNoteMode - string => NoteMode
@@ -39,6 +41,8 @@ func ParseNoteMode(str string) NoteMode {
 		return NoteModeForward
 	} else if str == "info" {
 		return NoteModeInfo
+	} else if str == "search" {
+		return NoteModeSearch
 	}
 
 	return NoteModeNone
@@ -168,6 +172,69 @@ func (cmd *cmdNote) onForward(ctx context.Context, serv *chatbot.Serv, params pa
 	return false, []*chatbotpb.ChatMsg{msg}, nil
 }
 
+// onSearch - run command
+func (cmd *cmdNote) onSearch(ctx context.Context, serv *chatbot.Serv, params paramsCmd,
+	chat *chatbotpb.ChatMsg, ui *chatbotpb.UserInfo, ud proto.Message,
+	scs chatbotpb.ChatBotService_SendChatServer) ([]*chatbotpb.ChatMsg, error) {
+
+	if !chatbotdb.IsValidNoteName(params.name) {
+		msg := &chatbotpb.ChatMsg{
+			Msg: "Please input a valid name for note, it consists only of lowercase letters and numbers.",
+			Uai: chat.Uai,
+		}
+
+		return []*chatbotpb.ChatMsg{msg}, nil
+	}
+
+	params.name = strings.ToLower(params.name)
+
+	ni, err := serv.MgrUser.GetNoteInfo(ctx, params.name)
+	if err != nil {
+		chatbotbase.Error("cmdNote.onSearch:GetNoteInfo",
+			zap.Error(err))
+
+		return nil, err
+	}
+
+	if ni == nil {
+		msg := &chatbotpb.ChatMsg{
+			Msg: "Sorry, I can't find the note (" + params.name + ")",
+			Uai: chat.Uai,
+		}
+
+		return []*chatbotpb.ChatMsg{msg}, nil
+	}
+
+	lsti64 := chatbotdb.SearchKeys(ni, params.keys)
+	var lstmsg []*chatbotpb.ChatMsg
+
+	for _, v := range lsti64 {
+		nn, err := serv.MgrUser.GetNoteNode(ctx, ni.Name, v)
+		if err != nil {
+			chatbotbase.Error("cmdNote.onSearch:GetNoteNode",
+				zap.Error(err))
+		}
+
+		if nn != nil {
+			msg := &chatbotpb.ChatMsg{
+				Uai: chat.Uai,
+				Forward: &chatbotpb.ForwardData{
+					Uai:      nn.Uai,
+					AppMsgID: nn.ForwardAppMsgID,
+				},
+			}
+
+			if msg.Forward.Uai == nil {
+				msg.Forward.Uai = chat.Uai
+			}
+
+			lstmsg = append(lstmsg, msg)
+		}
+	}
+
+	return lstmsg, nil
+}
+
 // RunCommand - run command
 func (cmd *cmdNote) RunCommand(ctx context.Context, serv *chatbot.Serv, params interface{},
 	chat *chatbotpb.ChatMsg, ui *chatbotpb.UserInfo, ud proto.Message,
@@ -206,6 +273,11 @@ func (cmd *cmdNote) RunCommand(ctx context.Context, serv *chatbot.Serv, params i
 		return cmd.onForward(ctx, serv, cp, chat, ui, ud, scs)
 	}
 
+	if cp.mode == NoteModeSearch {
+		lst, err := cmd.onSearch(ctx, serv, cp, chat, ui, ud, scs)
+		return true, lst, err
+	}
+
 	return true, nil, ErrCmdInvalidNoteMode
 }
 
@@ -237,6 +309,7 @@ func (cmd *cmdNote) OnMessage(ctx context.Context, serv *chatbot.Serv, chat *cha
 		Name:            cmd.noteName,
 		ForwardAppMsgID: chat.AppMsgID,
 		Text:            text,
+		Uai:             chat.Uai,
 	})
 	if err != nil {
 		chatbotbase.Error("cmdNote.OnMessage:UpdNoteNode",

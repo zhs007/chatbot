@@ -288,3 +288,26 @@ func (db *UserDB) UpdNoteNode(ctx context.Context, nn *chatbotpb.NoteNode) error
 
 	return nil
 }
+
+// GetNoteNode - get note node
+func (db *UserDB) GetNoteNode(ctx context.Context, nameNote string, noteIndex int64) (*chatbotpb.NoteNode, error) {
+	k := makeNoteNodeKey(nameNote, noteIndex)
+
+	buf, err := db.ankaDB.Get(ctx, UserDBName, k)
+	if err != nil {
+		if err == ankadb.ErrNotFoundKey {
+			return nil, nil
+		}
+
+		return nil, err
+	}
+
+	nn := &chatbotpb.NoteNode{}
+
+	err = proto.Unmarshal(buf, nn)
+	if err != nil {
+		return nil, err
+	}
+
+	return nn, nil
+}

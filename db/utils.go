@@ -106,3 +106,33 @@ func InsMapKeys(ni *chatbotpb.NoteInfo, keys []string, noteIndex int64) {
 		}
 	}
 }
+
+func insKeys(lst []int64, noteIndex int64) []int64 {
+	for _, v := range lst {
+		if v == noteIndex {
+			return lst
+		}
+	}
+
+	return append(lst, noteIndex)
+}
+
+// SearchKeys - search with keys
+func SearchKeys(ni *chatbotpb.NoteInfo, keys []string) []int64 {
+	var lst []int64
+
+	if ni.MapKeys == nil {
+		return nil
+	}
+
+	for _, v := range keys {
+		ks, isok := ni.MapKeys[v]
+		if isok {
+			for _, v1 := range ks.Nodes {
+				lst = insKeys(lst, v1)
+			}
+		}
+	}
+
+	return lst
+}

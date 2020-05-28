@@ -51,6 +51,7 @@ message NoteNode {
     int64 noteIndex = 3;
     string forwardAppMsgID = 4;
     string text = 5;
+    UserAppInfo uai = 6;
 }
 
 // AppGroupInfo - app group info
