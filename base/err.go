@@ -40,6 +40,8 @@ var (
 	ErrPluginInvalidServ = errors.New("invalid serv in plugin")
 	// ErrPluginInvalidServMgrText - invalid serv.MgrText in plugin
 	ErrPluginInvalidServMgrText = errors.New("invalid serv.MgrText in plugin")
+	// ErrPluginItsNotMine - It's not mine
+	ErrPluginItsNotMine = errors.New("Plugin: It's not mine")
 
 	// ErrNoAppServDB - no appserv database
 	ErrNoAppServDB = errors.New("no appserv database")
@@ -90,12 +92,19 @@ var (
 	ErrCmdInvalidServ = errors.New("invalid serv in command")
 	// ErrCmdInvalidServMgrText - invalid serv.MgrText in command
 	ErrCmdInvalidServMgrText = errors.New("invalid serv.MgrText in command")
+	// ErrCmdItsNotMine - It's not mine
+	ErrCmdItsNotMine = errors.New("Command: It's not mine")
 
 	// ErrUserMgrNoUserData - no userdata
 	ErrUserMgrNoUserData = errors.New("no userdata")
 
 	// ErrInvalidFileProcessorMgr - invalid FileProcessorMgr
 	ErrInvalidFileProcessorMgr = errors.New("invalid FileProcessorMgr")
+
+	// ErrNoteInvalidName - invalid note name
+	ErrNoteInvalidName = errors.New("invalid note name")
+	// ErrNoteNone - no note
+	ErrNoteNone = errors.New("no note")
 
 	// ErrUnkonow - unknow error
 	ErrUnkonow = errors.New("unknow error")

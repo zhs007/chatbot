@@ -48,6 +48,10 @@ func (lst *PluginsList) OnMessage(ctx context.Context, serv *Serv, chat *chatbot
 	for _, v := range lst.plugins {
 		lst, err := v.OnMessage(ctx, serv, chat, ui, ud, scs)
 		if err != nil {
+			if err == chatbotbase.ErrPluginItsNotMine {
+				continue
+			}
+
 			return nil, err
 		}
 

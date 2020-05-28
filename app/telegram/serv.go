@@ -109,12 +109,16 @@ func (serv *Serv) buildChatMsg(msg *tgbotapi.Message) (*chatbotpb.ChatMsg, error
 	if msg.Document != nil {
 		str := chatbotbase.FormatCommand(msg.Caption)
 
-		fd, err := serv.getFileDataWithDocument(msg.Document)
-		if err != nil {
-			return nil, err
-		}
+		if msg.ForwardDate > 0 {
+			cmsg = chatbot.BuildTextChatMsg(str, uai, serv.cfg.Token, serv.client.SessionID)
+		} else {
+			fd, err := serv.getFileDataWithDocument(msg.Document)
+			if err != nil {
+				return nil, err
+			}
 
-		cmsg = chatbot.BuildFileChatMsg(str, fd, uai, serv.cfg.Token, serv.client.SessionID)
+			cmsg = chatbot.BuildFileChatMsg(str, fd, uai, serv.cfg.Token, serv.client.SessionID)
+		}
 	} else if msg.Photo != nil {
 		str := chatbotbase.FormatCommand(msg.Caption)
 
@@ -167,15 +171,15 @@ func (serv *Serv) onMsg(ctx context.Context, upd *tgbotapi.Update) error {
 		}
 
 		if msg != nil {
-			if msg.Forward != nil {
-				serv.ForwardMsg(ctx, &chatbotpb.ChatMsg{
-					Uai: msg.Uai,
-					Forward: &chatbotpb.ForwardData{
-						Uai:      msg.Uai,
-						AppMsgID: msg.AppMsgID,
-					},
-				})
-			}
+			// if msg.Forward != nil {
+			// 	serv.ForwardMsg(ctx, &chatbotpb.ChatMsg{
+			// 		Uai: msg.Uai,
+			// 		Forward: &chatbotpb.ForwardData{
+			// 			Uai:      msg.Uai,
+			// 			AppMsgID: msg.AppMsgID,
+			// 		},
+			// 	})
+			// }
 
 			return serv.procChatMsg(ctx, msg)
 		}
@@ -252,6 +256,10 @@ func (serv *Serv) ForwardMsg(ctx context.Context, chat *chatbotpb.ChatMsg) error
 
 	_, err = serv.bot.Send(telemsg)
 	if err != nil {
+		chatbotbase.Error("Serv.ForwardMsg:Send",
+			chatbotbase.JSON("forward", telemsg),
+			zap.Error(err))
+
 		return err
 	}
 
@@ -313,12 +321,23 @@ func (serv *Serv) procChatMsg(ctx context.Context, chat *chatbotpb.ChatMsg) erro
 	}
 
 	for _, v := range lstret {
-		err = serv.SendChatMsg(ctx, v)
-		if err != nil {
-			chatbotbase.Error("procChatMsg:SendChatMsg",
-				zap.Error(err))
+		if v.Forward != nil {
+			err = serv.ForwardMsg(ctx, v)
 
-			return err
+			if err != nil {
+				chatbotbase.Error("procChatMsg:ForwardMsg",
+					zap.Error(err))
+
+				return err
+			}
+		} else {
+			err = serv.SendChatMsg(ctx, v)
+			if err != nil {
+				chatbotbase.Error("procChatMsg:SendChatMsg",
+					zap.Error(err))
+
+				return err
+			}
 		}
 	}
 

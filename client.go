@@ -198,6 +198,14 @@ func (client *Client) SendChat(ctx context.Context, chat *chatbotpb.ChatMsg) ([]
 // RequestChat - RequestChat
 func (client *Client) RequestChat(ctx context.Context) ([]*chatbotpb.ChatMsg, error) {
 
+	err := client.onSendMsg()
+	if err != nil {
+		// if error, reset
+		client.reset()
+
+		return nil, err
+	}
+
 	in := &chatbotpb.RequestChatData{
 		Token:     client.token,
 		SessionID: client.SessionID,

@@ -2,6 +2,7 @@ package chatbotdb
 
 import (
 	"context"
+	"strings"
 
 	"github.com/golang/protobuf/proto"
 	ankadb "github.com/zhs007/ankadb"
@@ -198,4 +199,115 @@ func (db *UserDB) GetUserData(ctx context.Context, uid int64) (proto.Message, er
 	}
 
 	return db.MgrUserData.Unmarshal(buf)
+}
+
+// GetNoteInfo - get note infomation
+func (db *UserDB) GetNoteInfo(ctx context.Context, name string) (*chatbotpb.NoteInfo, error) {
+	if !IsValidNoteName(name) {
+		return nil, chatbotbase.ErrNoteInvalidName
+	}
+
+	name = strings.ToLower(name)
+
+	k := makeNoteInfoKey(name)
+	buf, err := db.ankaDB.Get(ctx, UserDBName, k)
+	if err != nil {
+		if err == ankadb.ErrNotFoundKey {
+			return nil, nil
+		}
+
+		return nil, err
+	}
+
+	ni := &chatbotpb.NoteInfo{}
+
+	err = proto.Unmarshal(buf, ni)
+	if err != nil {
+		return nil, err
+	}
+
+	return ni, nil
+}
+
+// UpdNoteInfo - update note infomation
+func (db *UserDB) UpdNoteInfo(ctx context.Context, ni *chatbotpb.NoteInfo) error {
+	if !IsValidNoteName(ni.Name) {
+		return chatbotbase.ErrNoteInvalidName
+	}
+
+	ni.Name = strings.ToLower(ni.Name)
+
+	k := makeNoteInfoKey(ni.Name)
+
+	buf, err := proto.Marshal(ni)
+	if err != nil {
+		return err
+	}
+
+	err = db.ankaDB.Set(ctx, UserDBName, k, buf)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// UpdNoteNode - update note node
+func (db *UserDB) UpdNoteNode(ctx context.Context, nn *chatbotpb.NoteNode) error {
+	ni, err := db.GetNoteInfo(ctx, nn.Name)
+	if err != nil {
+		return err
+	}
+
+	if ni == nil {
+		return chatbotbase.ErrNoteNone
+	}
+
+	nn.NoteIndex = ni.NoteNums
+
+	ni.NoteNums++
+	ni.Keys = MergeKeys(ni.Keys, nn.Keys)
+	InsMapKeys(ni, nn.Keys, nn.NoteIndex)
+
+	err = db.UpdNoteInfo(ctx, ni)
+	if err != nil {
+		return err
+	}
+
+	k := makeNoteNodeKey(ni.Name, nn.NoteIndex)
+
+	buf, err := proto.Marshal(nn)
+	if err != nil {
+		return err
+	}
+
+	err = db.ankaDB.Set(ctx, UserDBName, k, buf)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// GetNoteNode - get note node
+func (db *UserDB) GetNoteNode(ctx context.Context, nameNote string, noteIndex int64) (*chatbotpb.NoteNode, error) {
+	k := makeNoteNodeKey(nameNote, noteIndex)
+
+	buf, err := db.ankaDB.Get(ctx, UserDBName, k)
+	if err != nil {
+		if err == ankadb.ErrNotFoundKey {
+			return nil, nil
+		}
+
+		return nil, err
+	}
+
+	nn := &chatbotpb.NoteNode{}
+
+	err = proto.Unmarshal(buf, nn)
+	if err != nil {
+		return nil, err
+	}
+
+	return nn, nil
 }

@@ -103,3 +103,27 @@ func (mgr *UserMgr) GetAppUserInfo(ctx context.Context, appToken string, uai *ch
 
 	return ui, nil, nil
 }
+
+// GetNoteInfo - get note infomation
+func (mgr *UserMgr) GetNoteInfo(ctx context.Context, name string) (
+	*chatbotpb.NoteInfo, error) {
+
+	return mgr.db.GetNoteInfo(ctx, name)
+}
+
+// UpdNoteInfo - update note infomation
+func (mgr *UserMgr) UpdNoteInfo(ctx context.Context, ni *chatbotpb.NoteInfo) error {
+	return mgr.db.UpdNoteInfo(ctx, ni)
+}
+
+// UpdNoteNode - update note node
+func (mgr *UserMgr) UpdNoteNode(ctx context.Context, nn *chatbotpb.NoteNode) error {
+	return mgr.db.UpdNoteNode(ctx, nn)
+}
+
+// GetNoteNode - get note node
+func (mgr *UserMgr) GetNoteNode(ctx context.Context, nameNote string, noteIndex int64) (
+	*chatbotpb.NoteNode, error) {
+
+	return mgr.db.GetNoteNode(ctx, nameNote, noteIndex)
+}
