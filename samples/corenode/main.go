@@ -12,13 +12,6 @@ import (
 
 func main() {
 
-	err := basicchatbot.InitBasicChatBot()
-	if err != nil {
-		fmt.Printf("basicchatbot.InitBasicChatBot %v", err)
-
-		return
-	}
-
 	cfg, err := chatbot.LoadConfig("./config.yaml")
 	if err != nil {
 		fmt.Printf("LoadConfig %v", err)
@@ -27,6 +20,13 @@ func main() {
 	}
 
 	chatbotbase.InitLogger(zapcore.InfoLevel, true, "./")
+
+	err = basicchatbot.InitBasicChatBot(*cfg)
+	if err != nil {
+		fmt.Printf("basicchatbot.InitBasicChatBot %v", err)
+
+		return
+	}
 
 	serv, err := chatbot.NewSimpleChatBotServ(cfg, &chatbot.EmptyServiceCore{})
 	if err != nil {

@@ -19,6 +19,7 @@ type Serv struct {
 	lis         net.Listener
 	grpcServ    *grpc.Server
 	dbAppServ   *chatbotdb.AppServDB
+	lstPlugins0 *PluginsList
 	lstPlugins  *PluginsList
 	lstPlugins2 *PluginsList
 	MgrUser     UserMgr
@@ -62,6 +63,7 @@ func NewChatBotServ(cfg *Config, mgr UserMgr, core ServiceCore) (*Serv, error) {
 		Cfg:         cfg,
 		lis:         lis,
 		grpcServ:    grpcServ,
+		lstPlugins0: NewPluginsList(),
 		lstPlugins:  NewPluginsList(),
 		lstPlugins2: NewPluginsList(),
 		MgrUser:     mgr,
@@ -70,6 +72,13 @@ func NewChatBotServ(cfg *Config, mgr UserMgr, core ServiceCore) (*Serv, error) {
 		MgrFile:     &FileProcessorMgr{},
 		Core:        core,
 		mapChatMsgs: newChatMsgMap(),
+	}
+
+	for _, v := range cfg.PluginsPreprocess {
+		err = serv.lstPlugins0.AddPlugin(v)
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	for _, v := range cfg.Plugins {
@@ -242,9 +251,19 @@ func (serv *Serv) SendChat(scs chatbotpb.ChatBotService_SendChatServer) error {
 		return chatbotbase.ErrServInvalidUserInfo
 	}
 
+	lstret0, err := serv.lstPlugins0.OnMessage(scs.Context(), serv, cd, ui, ud, scs)
+	if err != nil {
+		chatbotbase.Warn("SendChat:lstPlugins0.OnMessage",
+			zap.Error(err))
+
+		serv.replySendChatErr(scs, err)
+
+		return err
+	}
+
 	lstret, err := serv.lstPlugins.OnMessage(scs.Context(), serv, cd, ui, ud, scs)
 	if err != nil {
-		chatbotbase.Warn("SendChat:OnMessage",
+		chatbotbase.Warn("SendChat:lstPlugins.OnMessage",
 			zap.Error(err))
 
 		serv.replySendChatErr(scs, err)
@@ -254,12 +273,16 @@ func (serv *Serv) SendChat(scs chatbotpb.ChatBotService_SendChatServer) error {
 
 	lstret2, err := serv.lstPlugins2.OnMessageEx(scs.Context(), serv, cd, ui, ud, scs)
 	if err != nil {
-		chatbotbase.Warn("SendChat:OnMessageEx",
+		chatbotbase.Warn("SendChat:lstPlugins2.OnMessageEx",
 			zap.Error(err))
 
 		serv.replySendChatErr(scs, err)
 
 		return err
+	}
+
+	if lstret0 != nil {
+		lstret = append(lstret0, lstret...)
 	}
 
 	if lstret2 != nil {

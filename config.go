@@ -32,6 +32,7 @@ type Config struct {
 	//------------------------------------------------------------------
 	// plugins
 
+	PluginsPreprocess []string
 	Plugins           []string
 	PluginsSecondLine []string
 
@@ -48,6 +49,11 @@ type Config struct {
 	StartText       []string
 	HelpText        []string
 	ChatBotNameText string
+
+	//------------------------------------------------------------------
+	// plugin config
+
+	Preprocessor string
 
 	//------------------------------------------------------------------
 	// telegram

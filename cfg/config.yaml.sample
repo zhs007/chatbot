@@ -11,6 +11,9 @@ bindaddr: 127.0.0.1:7010
 dbpath: ./data
 dbengine: leveldb
 
+pluginspreprocess:
+  - preprocessor
+
 plugins:
   - command
 
@@ -44,3 +47,5 @@ chatbotnametext: chatbotname
 language: en
 
 langpath: ./lang
+
+preprocessor: ./cfg/preprocessor.yaml

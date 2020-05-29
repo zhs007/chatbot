@@ -12,7 +12,7 @@ RUN go mod download
 
 COPY . /src/chatbot
 
-RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o basicchatbotnode ./basicchatbot \
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o basicchatbotnode ./corenode \
     && mkdir /app \
     && mkdir /app/basicchatbot \
     && mkdir /app/basicchatbot/cfg \
