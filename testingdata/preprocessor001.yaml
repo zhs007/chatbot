@@ -1,0 +1,9 @@
+lstregexp:
+  - pattern: 找漫画(.*)
+    prefix: 'note -m search -n comic '
+    mode: paramarray
+    paramarrayprefix: ' -k '     
+  - pattern: 找(.*)
+    prefix: 'note -m search -n comic '
+    mode: paramarray
+    paramarrayprefix: ' -k '     

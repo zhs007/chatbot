@@ -50,6 +50,11 @@ type Config struct {
 	ChatBotNameText string
 
 	//------------------------------------------------------------------
+	// plugin config
+
+	Preprocessor string
+
+	//------------------------------------------------------------------
 	// telegram
 
 	Telegram *TelegramConfig

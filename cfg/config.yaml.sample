@@ -44,3 +44,5 @@ chatbotnametext: chatbotname
 language: en
 
 langpath: ./lang
+
+preprocessor: ./cfg/preprocessor.yaml

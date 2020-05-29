@@ -1,16 +1,18 @@
 package basicchatbot
 
 import (
+	chatbot "github.com/zhs007/chatbot"
 	chatbotcmdhelp "github.com/zhs007/chatbot/commands/help"
 	chatbotcmdnote "github.com/zhs007/chatbot/commands/note"
 	chatbotcmdstart "github.com/zhs007/chatbot/commands/start"
 	chatbotcmdplugin "github.com/zhs007/chatbot/plugins/cmd"
 	chatbotdebugplugin "github.com/zhs007/chatbot/plugins/debug"
 	chatbotfileplugin "github.com/zhs007/chatbot/plugins/file"
+	chatbotpreprocplugin "github.com/zhs007/chatbot/plugins/preproc"
 )
 
 // InitBasicChatBot - initial basic chatbot
-func InitBasicChatBot() error {
+func InitBasicChatBot(cfg chatbot.Config) error {
 	err := chatbotdebugplugin.RegisterPlugin()
 	if err != nil {
 		return err
@@ -22,6 +24,11 @@ func InitBasicChatBot() error {
 	}
 
 	err = chatbotfileplugin.RegisterPlugin()
+	if err != nil {
+		return err
+	}
+
+	err = chatbotpreprocplugin.RegisterPlugin(cfg.Preprocessor)
 	if err != nil {
 		return err
 	}
