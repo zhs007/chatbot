@@ -11,6 +11,9 @@ bindaddr: 127.0.0.1:7010
 dbpath: ./data
 dbengine: leveldb
 
+pluginspreprocess:
+  - preprocessor
+
 plugins:
   - command
 

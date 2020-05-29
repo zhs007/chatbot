@@ -40,6 +40,12 @@ func Test_LoadConfig001(t *testing.T) {
 			t.Fatalf("Test_LoadConfig001 LoadConfig preprocessor001.yaml LstRegexp[1].Pattern %v",
 				cfg.LstRegexp[0].Pattern)
 		}
+
+		// arr := cfg.LstRegexp[0].r.FindAllStringSubmatchIndex("找漫画北斗神拳", -1)
+		// // t.Fatalf("%v", arr)
+
+		// arr = cfg.LstRegexp[1].r.FindAllStringSubmatchIndex("找漫画北斗神拳", -1)
+		// t.Fatalf("%v", arr)
 	}
 
 	t.Log("Test_LoadConfig001 OK")

@@ -32,6 +32,7 @@ type Config struct {
 	//------------------------------------------------------------------
 	// plugins
 
+	PluginsPreprocess []string
 	Plugins           []string
 	PluginsSecondLine []string
 

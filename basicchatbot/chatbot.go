@@ -28,9 +28,11 @@ func InitBasicChatBot(cfg chatbot.Config) error {
 		return err
 	}
 
-	err = chatbotpreprocplugin.RegisterPlugin(cfg.Preprocessor)
-	if err != nil {
-		return err
+	if cfg.Preprocessor != "" {
+		err = chatbotpreprocplugin.RegisterPlugin(cfg.Preprocessor)
+		if err != nil {
+			return err
+		}
 	}
 
 	chatbotcmdhelp.RegisterCommand()
