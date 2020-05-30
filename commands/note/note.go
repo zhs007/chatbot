@@ -234,15 +234,13 @@ func (cmd *cmdNote) onSearch(ctx context.Context, serv *chatbot.Serv, params par
 
 	if chat.Gai != nil {
 		msg0 := &chatbotpb.ChatMsg{
-			Msg:            "The message is too big, I will send you private chats.",
-			Uai:            chat.Uai,
-			IsReplyPrivate: true,
+			Msg: "The message is too big, I will send you private chats.",
+			Uai: chat.Uai,
 		}
 
 		msg1 := &chatbotpb.ChatMsg{
-			Msg:            "If you don’t receive it, you need to send a private chat to me and send /start",
-			Uai:            chat.Uai,
-			IsReplyPrivate: true,
+			Msg: "If you don’t receive it, you need to send a private chat to me and send /start",
+			Uai: chat.Uai,
 		}
 
 		lstmsg = append(lstmsg, msg0)
@@ -264,6 +262,7 @@ func (cmd *cmdNote) onSearch(ctx context.Context, serv *chatbot.Serv, params par
 						Uai:      nn.Uai,
 						AppMsgID: nn.ForwardAppMsgID,
 					},
+					IsReplyPrivate: true,
 				}
 
 				if msg.Forward.Uai == nil {
@@ -278,6 +277,7 @@ func (cmd *cmdNote) onSearch(ctx context.Context, serv *chatbot.Serv, params par
 						Uai:      nn.SendUai,
 						AppMsgID: nn.SendAppMsgID,
 					},
+					IsReplyPrivate: true,
 				}
 
 				lstmsg = append(lstmsg, msg)
