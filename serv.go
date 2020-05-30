@@ -290,7 +290,7 @@ func (serv *Serv) SendChat(scs chatbotpb.ChatBotService_SendChatServer) error {
 	}
 
 	for _, v := range lstret {
-		if cd.Gai != nil {
+		if cd.Gai != nil && !v.IsReplyPrivate {
 			v.Gai = cd.Gai
 		}
 

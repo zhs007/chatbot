@@ -133,6 +133,7 @@ message ChatMsg {
     ForwardData forward = 12;
     string caption = 13;
     string appMsgID = 14;
+    bool isReplyPrivate = 15;
 }
 
 // ChatMsgStream - chat message stream
