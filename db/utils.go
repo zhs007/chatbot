@@ -136,3 +136,35 @@ func SearchKeys(ni *chatbotpb.NoteInfo, keys []string) []int64 {
 
 	return lst
 }
+
+// RemoveKeys - remove keys
+func RemoveKeys(ni *chatbotpb.NoteInfo, keys []string) *chatbotpb.NoteInfo {
+	var nkeys []string
+	for _, v := range ni.Keys {
+		haskey := false
+		for _, v1 := range keys {
+			if v == v1 {
+				haskey = true
+
+				break
+			}
+		}
+
+		if !haskey {
+			nkeys = append(nkeys, v)
+		}
+	}
+
+	ni.Keys = nkeys
+
+	if ni.MapKeys != nil {
+		for _, v := range keys {
+			_, isok := ni.MapKeys[v]
+			if isok {
+				delete(ni.MapKeys, v)
+			}
+		}
+	}
+
+	return ni
+}
