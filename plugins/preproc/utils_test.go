@@ -48,5 +48,36 @@ func Test_procRegexpNode(t *testing.T) {
 		t.Fatalf("Test_procRegexpNode procRegexpNode fail. %v", ret.Msg)
 	}
 
-	t.Log("procRegexpNode OK")
+	t.Log("Test_procRegexpNode OK")
+}
+
+func Test_procRegexpNode2(t *testing.T) {
+	rn := &RegexpNode{
+		Pattern:          ".*(漫画列表)",
+		Prefix:           "note -m keys -n comic",
+		Mode:             "nodata",
+		ParamArrayPrefix: "",
+	}
+
+	r, err := regexp.Compile(rn.Pattern)
+	if err != nil {
+		t.Fatalf("Test_procRegexpNode2 Compile %v", err)
+	}
+
+	rn.r = r
+
+	chat := &chatbotpb.ChatMsg{
+		Msg: "我想查漫画列表",
+	}
+
+	ret, err := procRegexpNode(rn, chat)
+	if err != nil {
+		t.Fatalf("Test_procRegexpNode2 procRegexpNode %v", err)
+	}
+
+	if ret.Msg != "note -m keys -n comic" {
+		t.Fatalf("Test_procRegexpNode2 procRegexpNode fail. %v", ret.Msg)
+	}
+
+	t.Log("Test_procRegexpNode2 OK")
 }

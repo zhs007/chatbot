@@ -323,7 +323,7 @@ func (cmd *cmdNote) onRemoveKeys(ctx context.Context, serv *chatbot.Serv, params
 
 	ni, err := serv.MgrUser.GetNoteInfo(ctx, params.name)
 	if err != nil {
-		chatbotbase.Error("cmdNote.onSearch:GetNoteInfo",
+		chatbotbase.Error("cmdNote.onRemoveKeys:GetNoteInfo",
 			zap.Error(err))
 
 		return nil, err
@@ -339,6 +339,14 @@ func (cmd *cmdNote) onRemoveKeys(ctx context.Context, serv *chatbot.Serv, params
 	}
 
 	ni = chatbotdb.RemoveKeys(ni, params.keys)
+
+	err = serv.MgrUser.UpdNoteInfo(ctx, ni)
+	if err != nil {
+		chatbotbase.Error("cmdNote.onRemoveKeys:UpdNoteInfo",
+			zap.Error(err))
+
+		return nil, err
+	}
 
 	str, err := chatbotbase.JSONFormat(ni.Keys)
 
