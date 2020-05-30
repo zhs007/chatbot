@@ -165,6 +165,15 @@ func (cmd *cmdNote) onForward(ctx context.Context, serv *chatbot.Serv, params pa
 	chat *chatbotpb.ChatMsg, ui *chatbotpb.UserInfo, ud proto.Message,
 	scs chatbotpb.ChatBotService_SendChatServer) (bool, []*chatbotpb.ChatMsg, error) {
 
+	if chat.Gai != nil {
+		msg := &chatbotpb.ChatMsg{
+			Msg: "Sorry, I can't forward the message in groups.",
+			Uai: chat.Uai,
+		}
+
+		return true, []*chatbotpb.ChatMsg{msg}, nil
+	}
+
 	if !chatbotdb.IsValidNoteName(params.name) {
 		msg := &chatbotpb.ChatMsg{
 			Msg: "Please input a valid name for note, it consists only of lowercase letters and numbers.",

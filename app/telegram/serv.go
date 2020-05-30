@@ -106,6 +106,13 @@ func (serv *Serv) buildChatMsg(msg *tgbotapi.Message) (*chatbotpb.ChatMsg, error
 	uai := chatbot.BuildUserAppInfo(chatbotpb.ChatAppType_CAT_TELEGRAM,
 		serv.cfg.Username, chatbotbase.ID2Str(from.ID), from.UserName, from.LanguageCode)
 
+	// if msg.Chat.IsGroup() {
+	// 	gai := chatbot.BuildGroupAppInfo(chatbotpb.ChatAppType_CAT_TELEGRAM,
+	// 		serv.cfg.Username, chatbotbase.ID642Str(msg.Chat.ID), msg.Chat.Title)
+
+	// 	cmsg.Gai = gai
+	// }
+
 	if msg.Document != nil {
 		str := chatbotbase.FormatCommand(msg.Caption)
 
@@ -136,6 +143,13 @@ func (serv *Serv) buildChatMsg(msg *tgbotapi.Message) (*chatbotpb.ChatMsg, error
 		cmsg = chatbot.BuildTextChatMsg(str, uai, serv.cfg.Token, serv.client.SessionID)
 	}
 
+	if msg.Chat.IsGroup() {
+		gai := chatbot.BuildGroupAppInfo(chatbotpb.ChatAppType_CAT_TELEGRAM,
+			serv.cfg.Username, chatbotbase.ID642Str(msg.Chat.ID), msg.Chat.Title)
+
+		cmsg.Gai = gai
+	}
+
 	cmsg.AppMsgID = strconv.Itoa(msg.MessageID)
 
 	if msg.ForwardDate > 0 {
@@ -158,10 +172,6 @@ func (serv *Serv) onMsg(ctx context.Context, upd *tgbotapi.Update) error {
 		chatbotbase.Debug("Serv:onMsg",
 			chatbotbase.JSON("msg", upd.Message))
 
-		// from := upd.Message.From
-		// uai := chatbot.BuildUserAppInfo(chatbotpb.ChatAppType_CAT_TELEGRAM,
-		// 	serv.cfg.Username, chatbotbase.ID2Str(from.ID), from.UserName, from.LanguageCode)
-
 		msg, err := serv.buildChatMsg(upd.Message)
 		if err != nil {
 			chatbotbase.Error("Serv:onMsg:buildChatMsg",
@@ -171,45 +181,8 @@ func (serv *Serv) onMsg(ctx context.Context, upd *tgbotapi.Update) error {
 		}
 
 		if msg != nil {
-			// if msg.Forward != nil {
-			// 	serv.ForwardMsg(ctx, &chatbotpb.ChatMsg{
-			// 		Uai: msg.Uai,
-			// 		Forward: &chatbotpb.ForwardData{
-			// 			Uai:      msg.Uai,
-			// 			AppMsgID: msg.AppMsgID,
-			// 		},
-			// 	})
-			// }
-
 			return serv.procChatMsg(ctx, msg)
 		}
-
-		// str := chatbotbase.FormatCommand(upd.Message.Text)
-
-		// chatbotbase.Info("onMsg",
-		// 	zap.String("Text", upd.Message.Text),
-		// 	zap.String("lang", from.LanguageCode))
-
-		// if upd.Message.Document != nil {
-		// 	fd, err := serv.getFileDataWithDocument(upd.Message.Document)
-		// 	if err != nil {
-		// 		return err
-		// 	}
-
-		// 	msg := chatbot.BuildFileChatMsg(str, fd, uai, serv.cfg.Token, serv.client.SessionID)
-
-		// 	return serv.procChatMsg(ctx, msg)
-		// }
-
-		// if isValidMsg(upd.Message) {
-
-		// }
-		// if str != "" && isValidMsg(upd.Message) {
-		// 	msg := chatbot.BuildTextChatMsg(str,
-		// 		uai, serv.cfg.Token, serv.client.SessionID)
-
-		// 	return serv.procChatMsg(ctx, msg)
-		// }
 	}
 
 	return nil
@@ -217,12 +190,22 @@ func (serv *Serv) onMsg(ctx context.Context, upd *tgbotapi.Update) error {
 
 // SendChatMsg - send a chat message
 func (serv *Serv) SendChatMsg(ctx context.Context, chat *chatbotpb.ChatMsg) error {
-	i64, err := chatbotbase.Str2ID64(chat.Uai.Appuid)
-	if err != nil {
-		return err
+	var id64 int64
+	var err error
+
+	if chat.Gai != nil {
+		id64, err = chatbotbase.Str2ID64(chat.Gai.Groupid)
+		if err != nil {
+			return err
+		}
+	} else {
+		id64, err = chatbotbase.Str2ID64(chat.Uai.Appuid)
+		if err != nil {
+			return err
+		}
 	}
 
-	telemsg := tgbotapi.NewMessage(i64, chat.Msg)
+	telemsg := tgbotapi.NewMessage(id64, chat.Msg)
 
 	telemsg.DisableWebPagePreview = !serv.cfg.PreviewWebPage
 
@@ -240,9 +223,19 @@ func (serv *Serv) ForwardMsg(ctx context.Context, chat *chatbotpb.ChatMsg) error
 		return serv.SendChatMsg(ctx, chat)
 	}
 
-	i64, err := chatbotbase.Str2ID64(chat.Uai.Appuid)
-	if err != nil {
-		return err
+	var id64 int64
+	var err error
+
+	if chat.Gai != nil {
+		id64, err = chatbotbase.Str2ID64(chat.Gai.Groupid)
+		if err != nil {
+			return err
+		}
+	} else {
+		id64, err = chatbotbase.Str2ID64(chat.Uai.Appuid)
+		if err != nil {
+			return err
+		}
 	}
 
 	fromi64, err := chatbotbase.Str2ID64(chat.Forward.Uai.Appuid)
@@ -252,7 +245,7 @@ func (serv *Serv) ForwardMsg(ctx context.Context, chat *chatbotpb.ChatMsg) error
 
 	msgid, err := strconv.Atoi(chat.Forward.AppMsgID)
 
-	telemsg := tgbotapi.NewForward(i64, fromi64, msgid)
+	telemsg := tgbotapi.NewForward(id64, fromi64, msgid)
 
 	_, err = serv.bot.Send(telemsg)
 	if err != nil {
