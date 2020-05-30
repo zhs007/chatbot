@@ -23,4 +23,6 @@ type UserMgr interface {
 	// GetNoteNode - get note node
 	GetNoteNode(ctx context.Context, nameNote string, noteIndex int64) (
 		*chatbotpb.NoteNode, error)
+	// DelNoteNode - delete note node
+	DelNoteNode(ctx context.Context, nameNote string, noteIndex int64) error
 }

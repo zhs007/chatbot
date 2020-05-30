@@ -311,3 +311,10 @@ func (db *UserDB) GetNoteNode(ctx context.Context, nameNote string, noteIndex in
 
 	return nn, nil
 }
+
+// DelNoteNode - delete note node
+func (db *UserDB) DelNoteNode(ctx context.Context, nameNote string, noteIndex int64) error {
+	k := makeNoteNodeKey(nameNote, noteIndex)
+
+	return db.ankaDB.Delete(ctx, UserDBName, k)
+}

@@ -328,7 +328,7 @@ func (serv *Serv) procChatMsg(ctx context.Context, chat *chatbotpb.ChatMsg) erro
 				chatbotbase.Error("procChatMsg:ForwardMsg",
 					zap.Error(err))
 
-				return err
+				// return err
 			}
 		} else {
 			err = serv.SendChatMsg(ctx, v)
@@ -336,7 +336,7 @@ func (serv *Serv) procChatMsg(ctx context.Context, chat *chatbotpb.ChatMsg) erro
 				chatbotbase.Error("procChatMsg:SendChatMsg",
 					zap.Error(err))
 
-				return err
+				// return err
 			}
 		}
 	}

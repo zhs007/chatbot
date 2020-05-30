@@ -127,3 +127,9 @@ func (mgr *UserMgr) GetNoteNode(ctx context.Context, nameNote string, noteIndex 
 
 	return mgr.db.GetNoteNode(ctx, nameNote, noteIndex)
 }
+
+// DelNoteNode - delete note node
+func (mgr *UserMgr) DelNoteNode(ctx context.Context, nameNote string, noteIndex int64) error {
+
+	return mgr.db.DelNoteNode(ctx, nameNote, noteIndex)
+}

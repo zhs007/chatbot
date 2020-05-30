@@ -9,4 +9,6 @@ var (
 	ErrCmdInvalidParams = errors.New("invalid command params in note")
 	// ErrCmdInvalidNoteMode - invalid note mode
 	ErrCmdInvalidNoteMode = errors.New("invalid note mode")
+	// ErrCmdInvalidNoteName - invalid note name
+	ErrCmdInvalidNoteName = errors.New("invalid note name")
 )
