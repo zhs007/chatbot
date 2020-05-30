@@ -165,6 +165,15 @@ func (cmd *cmdNote) onForward(ctx context.Context, serv *chatbot.Serv, params pa
 	chat *chatbotpb.ChatMsg, ui *chatbotpb.UserInfo, ud proto.Message,
 	scs chatbotpb.ChatBotService_SendChatServer) (bool, []*chatbotpb.ChatMsg, error) {
 
+	if chat.Gai != nil {
+		msg := &chatbotpb.ChatMsg{
+			Msg: "Sorry, I can't forward the message in groups.",
+			Uai: chat.Uai,
+		}
+
+		return true, []*chatbotpb.ChatMsg{msg}, nil
+	}
+
 	if !chatbotdb.IsValidNoteName(params.name) {
 		msg := &chatbotpb.ChatMsg{
 			Msg: "Please input a valid name for note, it consists only of lowercase letters and numbers.",
@@ -323,7 +332,7 @@ func (cmd *cmdNote) onRemoveKeys(ctx context.Context, serv *chatbot.Serv, params
 
 	ni, err := serv.MgrUser.GetNoteInfo(ctx, params.name)
 	if err != nil {
-		chatbotbase.Error("cmdNote.onSearch:GetNoteInfo",
+		chatbotbase.Error("cmdNote.onRemoveKeys:GetNoteInfo",
 			zap.Error(err))
 
 		return nil, err
@@ -339,6 +348,14 @@ func (cmd *cmdNote) onRemoveKeys(ctx context.Context, serv *chatbot.Serv, params
 	}
 
 	ni = chatbotdb.RemoveKeys(ni, params.keys)
+
+	err = serv.MgrUser.UpdNoteInfo(ctx, ni)
+	if err != nil {
+		chatbotbase.Error("cmdNote.onRemoveKeys:UpdNoteInfo",
+			zap.Error(err))
+
+		return nil, err
+	}
 
 	str, err := chatbotbase.JSONFormat(ni.Keys)
 

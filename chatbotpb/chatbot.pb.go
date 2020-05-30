@@ -556,8 +556,8 @@ func (x *NoteNode) GetDestUai() *UserAppInfo {
 	return nil
 }
 
-// AppGroupInfo - app group info
-type AppGroupInfo struct {
+// GroupAppInfo - app group info
+type GroupAppInfo struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
@@ -568,8 +568,8 @@ type AppGroupInfo struct {
 	Groupname       string      `protobuf:"bytes,4,opt,name=groupname,proto3" json:"groupname,omitempty"`
 }
 
-func (x *AppGroupInfo) Reset() {
-	*x = AppGroupInfo{}
+func (x *GroupAppInfo) Reset() {
+	*x = GroupAppInfo{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_chatbot_proto_msgTypes[5]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -577,13 +577,13 @@ func (x *AppGroupInfo) Reset() {
 	}
 }
 
-func (x *AppGroupInfo) String() string {
+func (x *GroupAppInfo) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AppGroupInfo) ProtoMessage() {}
+func (*GroupAppInfo) ProtoMessage() {}
 
-func (x *AppGroupInfo) ProtoReflect() protoreflect.Message {
+func (x *GroupAppInfo) ProtoReflect() protoreflect.Message {
 	mi := &file_chatbot_proto_msgTypes[5]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -595,33 +595,33 @@ func (x *AppGroupInfo) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AppGroupInfo.ProtoReflect.Descriptor instead.
-func (*AppGroupInfo) Descriptor() ([]byte, []int) {
+// Deprecated: Use GroupAppInfo.ProtoReflect.Descriptor instead.
+func (*GroupAppInfo) Descriptor() ([]byte, []int) {
 	return file_chatbot_proto_rawDescGZIP(), []int{5}
 }
 
-func (x *AppGroupInfo) GetApp() ChatAppType {
+func (x *GroupAppInfo) GetApp() ChatAppType {
 	if x != nil {
 		return x.App
 	}
 	return ChatAppType_CAT_TELEGRAM
 }
 
-func (x *AppGroupInfo) GetUsernameAppServ() string {
+func (x *GroupAppInfo) GetUsernameAppServ() string {
 	if x != nil {
 		return x.UsernameAppServ
 	}
 	return ""
 }
 
-func (x *AppGroupInfo) GetGroupid() string {
+func (x *GroupAppInfo) GetGroupid() string {
 	if x != nil {
 		return x.Groupid
 	}
 	return ""
 }
 
-func (x *AppGroupInfo) GetGroupname() string {
+func (x *GroupAppInfo) GetGroupname() string {
 	if x != nil {
 		return x.Groupname
 	}
@@ -1100,7 +1100,7 @@ type ChatMsg struct {
 
 	Msg string        `protobuf:"bytes,1,opt,name=msg,proto3" json:"msg,omitempty"`
 	Uai *UserAppInfo  `protobuf:"bytes,2,opt,name=uai,proto3" json:"uai,omitempty"`
-	Agi *AppGroupInfo `protobuf:"bytes,3,opt,name=agi,proto3" json:"agi,omitempty"`
+	Gai *GroupAppInfo `protobuf:"bytes,3,opt,name=gai,proto3" json:"gai,omitempty"`
 	// Deprecated: Do not use.
 	Filename string `protobuf:"bytes,4,opt,name=filename,proto3" json:"filename,omitempty"`
 	// Deprecated: Do not use.
@@ -1163,9 +1163,9 @@ func (x *ChatMsg) GetUai() *UserAppInfo {
 	return nil
 }
 
-func (x *ChatMsg) GetAgi() *AppGroupInfo {
+func (x *ChatMsg) GetGai() *GroupAppInfo {
 	if x != nil {
-		return x.Agi
+		return x.Gai
 	}
 	return nil
 }
@@ -1939,7 +1939,7 @@ var file_chatbot_proto_rawDesc = []byte{
 	0x12, 0x30, 0x0a, 0x07, 0x64, 0x65, 0x73, 0x74, 0x55, 0x61, 0x69, 0x18, 0x0a, 0x20, 0x01, 0x28,
 	0x0b, 0x32, 0x16, 0x2e, 0x63, 0x68, 0x61, 0x74, 0x62, 0x6f, 0x74, 0x70, 0x62, 0x2e, 0x55, 0x73,
 	0x65, 0x72, 0x41, 0x70, 0x70, 0x49, 0x6e, 0x66, 0x6f, 0x52, 0x07, 0x64, 0x65, 0x73, 0x74, 0x55,
-	0x61, 0x69, 0x22, 0x9a, 0x01, 0x0a, 0x0c, 0x41, 0x70, 0x70, 0x47, 0x72, 0x6f, 0x75, 0x70, 0x49,
+	0x61, 0x69, 0x22, 0x9a, 0x01, 0x0a, 0x0c, 0x47, 0x72, 0x6f, 0x75, 0x70, 0x41, 0x70, 0x70, 0x49,
 	0x6e, 0x66, 0x6f, 0x12, 0x28, 0x0a, 0x03, 0x61, 0x70, 0x70, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0e,
 	0x32, 0x16, 0x2e, 0x63, 0x68, 0x61, 0x74, 0x62, 0x6f, 0x74, 0x70, 0x62, 0x2e, 0x43, 0x68, 0x61,
 	0x74, 0x41, 0x70, 0x70, 0x54, 0x79, 0x70, 0x65, 0x52, 0x03, 0x61, 0x70, 0x70, 0x12, 0x28, 0x0a,
@@ -2007,9 +2007,9 @@ var file_chatbot_proto_rawDesc = []byte{
 	0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x6d, 0x73, 0x67, 0x12, 0x28, 0x0a, 0x03, 0x75, 0x61,
 	0x69, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x16, 0x2e, 0x63, 0x68, 0x61, 0x74, 0x62, 0x6f,
 	0x74, 0x70, 0x62, 0x2e, 0x55, 0x73, 0x65, 0x72, 0x41, 0x70, 0x70, 0x49, 0x6e, 0x66, 0x6f, 0x52,
-	0x03, 0x75, 0x61, 0x69, 0x12, 0x29, 0x0a, 0x03, 0x61, 0x67, 0x69, 0x18, 0x03, 0x20, 0x01, 0x28,
-	0x0b, 0x32, 0x17, 0x2e, 0x63, 0x68, 0x61, 0x74, 0x62, 0x6f, 0x74, 0x70, 0x62, 0x2e, 0x41, 0x70,
-	0x70, 0x47, 0x72, 0x6f, 0x75, 0x70, 0x49, 0x6e, 0x66, 0x6f, 0x52, 0x03, 0x61, 0x67, 0x69, 0x12,
+	0x03, 0x75, 0x61, 0x69, 0x12, 0x29, 0x0a, 0x03, 0x67, 0x61, 0x69, 0x18, 0x03, 0x20, 0x01, 0x28,
+	0x0b, 0x32, 0x17, 0x2e, 0x63, 0x68, 0x61, 0x74, 0x62, 0x6f, 0x74, 0x70, 0x62, 0x2e, 0x47, 0x72,
+	0x6f, 0x75, 0x70, 0x41, 0x70, 0x70, 0x49, 0x6e, 0x66, 0x6f, 0x52, 0x03, 0x67, 0x61, 0x69, 0x12,
 	0x1e, 0x0a, 0x08, 0x66, 0x69, 0x6c, 0x65, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x04, 0x20, 0x01, 0x28,
 	0x09, 0x42, 0x02, 0x18, 0x01, 0x52, 0x08, 0x66, 0x69, 0x6c, 0x65, 0x6e, 0x61, 0x6d, 0x65, 0x12,
 	0x1e, 0x0a, 0x08, 0x66, 0x69, 0x6c, 0x65, 0x44, 0x61, 0x74, 0x61, 0x18, 0x05, 0x20, 0x01, 0x28,
@@ -2166,7 +2166,7 @@ var file_chatbot_proto_goTypes = []interface{}{
 	(*NoteKeyInfo)(nil),              // 4: chatbotpb.NoteKeyInfo
 	(*NoteInfo)(nil),                 // 5: chatbotpb.NoteInfo
 	(*NoteNode)(nil),                 // 6: chatbotpb.NoteNode
-	(*AppGroupInfo)(nil),             // 7: chatbotpb.AppGroupInfo
+	(*GroupAppInfo)(nil),             // 7: chatbotpb.GroupAppInfo
 	(*AppChannelInfo)(nil),           // 8: chatbotpb.AppChannelInfo
 	(*AppServInfo)(nil),              // 9: chatbotpb.AppServInfo
 	(*RegisterAppService)(nil),       // 10: chatbotpb.RegisterAppService
@@ -2193,14 +2193,14 @@ var file_chatbot_proto_depIdxs = []int32{
 	2,  // 3: chatbotpb.NoteNode.uai:type_name -> chatbotpb.UserAppInfo
 	2,  // 4: chatbotpb.NoteNode.sendUai:type_name -> chatbotpb.UserAppInfo
 	2,  // 5: chatbotpb.NoteNode.destUai:type_name -> chatbotpb.UserAppInfo
-	0,  // 6: chatbotpb.AppGroupInfo.app:type_name -> chatbotpb.ChatAppType
+	0,  // 6: chatbotpb.GroupAppInfo.app:type_name -> chatbotpb.ChatAppType
 	0,  // 7: chatbotpb.AppChannelInfo.app:type_name -> chatbotpb.ChatAppType
 	0,  // 8: chatbotpb.AppServInfo.appType:type_name -> chatbotpb.ChatAppType
 	9,  // 9: chatbotpb.RegisterAppService.appServ:type_name -> chatbotpb.AppServInfo
 	0,  // 10: chatbotpb.ReplyRegisterAppService.appType:type_name -> chatbotpb.ChatAppType
 	2,  // 11: chatbotpb.ForwardData.uai:type_name -> chatbotpb.UserAppInfo
 	2,  // 12: chatbotpb.ChatMsg.uai:type_name -> chatbotpb.UserAppInfo
-	7,  // 13: chatbotpb.ChatMsg.agi:type_name -> chatbotpb.AppGroupInfo
+	7,  // 13: chatbotpb.ChatMsg.gai:type_name -> chatbotpb.GroupAppInfo
 	12, // 14: chatbotpb.ChatMsg.file:type_name -> chatbotpb.FileData
 	13, // 15: chatbotpb.ChatMsg.imgs:type_name -> chatbotpb.ImageData
 	14, // 16: chatbotpb.ChatMsg.forward:type_name -> chatbotpb.ForwardData
@@ -2296,7 +2296,7 @@ func file_chatbot_proto_init() {
 			}
 		}
 		file_chatbot_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*AppGroupInfo); i {
+			switch v := v.(*GroupAppInfo); i {
 			case 0:
 				return &v.state
 			case 1:

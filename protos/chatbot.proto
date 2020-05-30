@@ -58,8 +58,8 @@ message NoteNode {
     UserAppInfo destUai = 10;    
 }
 
-// AppGroupInfo - app group info
-message AppGroupInfo {
+// GroupAppInfo - app group info
+message GroupAppInfo {
     ChatAppType app = 1;
     string usernameAppServ = 2;
     string groupid = 3;
@@ -121,7 +121,7 @@ message ForwardData {
 message ChatMsg {
     string msg = 1;
     UserAppInfo uai = 2;
-    AppGroupInfo agi = 3;
+    GroupAppInfo gai = 3;
     string filename = 4 [deprecated = true];
     bytes fileData = 5 [deprecated = true];
     string error = 6;

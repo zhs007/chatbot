@@ -290,6 +290,10 @@ func (serv *Serv) SendChat(scs chatbotpb.ChatBotService_SendChatServer) error {
 	}
 
 	for _, v := range lstret {
+		if cd.Gai != nil {
+			v.Gai = cd.Gai
+		}
+
 		lststream, err := BuildChatMsgStream(v)
 		if err != nil {
 			chatbotbase.Warn("SendChat:BuildChatMsgStream",

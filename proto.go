@@ -22,6 +22,18 @@ func BuildUserAppInfo(appType chatbotpb.ChatAppType, usernameAppServ string,
 	}
 }
 
+// BuildGroupAppInfo - build GroupAppInfo
+func BuildGroupAppInfo(appType chatbotpb.ChatAppType, usernameAppServ string,
+	groupid string, groupname string) *chatbotpb.GroupAppInfo {
+
+	return &chatbotpb.GroupAppInfo{
+		App:             appType,
+		UsernameAppServ: usernameAppServ,
+		Groupid:         groupid,
+		Groupname:       groupname,
+	}
+}
+
 // BuildTextChatMsg - build ChatMsg
 func BuildTextChatMsg(msg string, uai *chatbotpb.UserAppInfo, token string,
 	sessionid string) *chatbotpb.ChatMsg {
