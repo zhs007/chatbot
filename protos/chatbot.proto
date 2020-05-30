@@ -49,9 +49,13 @@ message NoteNode {
     string name = 1;
     repeated string keys = 2;
     int64 noteIndex = 3;
-    string forwardAppMsgID = 4;
+    string forwardAppMsgID = 4 [deprecated = true];
     string text = 5;
-    UserAppInfo uai = 6;
+    UserAppInfo uai = 6 [deprecated = true];
+    string sendAppMsgID = 7;
+    UserAppInfo sendUai = 8;
+    string destAppMsgID = 9;
+    UserAppInfo destUai = 10;    
 }
 
 // AppGroupInfo - app group info

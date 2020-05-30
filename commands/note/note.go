@@ -2,6 +2,7 @@ package chatbotcmdnote
 
 import (
 	"context"
+	"strconv"
 	"strings"
 
 	chatbotdb "github.com/zhs007/chatbot/db"
@@ -35,6 +36,8 @@ const (
 	NoteModeKeys NoteMode = 5
 	// NoteModeRemoveKeys - remove keys
 	NoteModeRemoveKeys NoteMode = 6
+	// NoteModeRemoveMsg - remove msg
+	NoteModeRemoveMsg NoteMode = 7
 )
 
 // ParseNoteMode - string => NoteMode
@@ -51,6 +54,8 @@ func ParseNoteMode(str string) NoteMode {
 		return NoteModeKeys
 	} else if str == "rmkeys" {
 		return NoteModeRemoveKeys
+	} else if str == "rmmsg" {
+		return NoteModeRemoveMsg
 	}
 
 	return NoteModeNone
@@ -67,6 +72,7 @@ type cmdNote struct {
 	isRunning bool
 	keys      []string
 	noteName  string
+	mode      NoteMode
 }
 
 // onNew - run command
@@ -171,9 +177,10 @@ func (cmd *cmdNote) onForward(ctx context.Context, serv *chatbot.Serv, params pa
 	cmd.isRunning = true
 	cmd.keys = params.keys
 	cmd.noteName = params.name
+	cmd.mode = NoteModeForward
 
 	msg := &chatbotpb.ChatMsg{
-		Msg: "note starts ...",
+		Msg: "note forward starts ...",
 		Uai: chat.Uai,
 	}
 
@@ -224,19 +231,31 @@ func (cmd *cmdNote) onSearch(ctx context.Context, serv *chatbot.Serv, params par
 		}
 
 		if nn != nil {
-			msg := &chatbotpb.ChatMsg{
-				Uai: chat.Uai,
-				Forward: &chatbotpb.ForwardData{
-					Uai:      nn.Uai,
-					AppMsgID: nn.ForwardAppMsgID,
-				},
-			}
+			if nn.SendAppMsgID == "" {
+				msg := &chatbotpb.ChatMsg{
+					Uai: chat.Uai,
+					Forward: &chatbotpb.ForwardData{
+						Uai:      nn.Uai,
+						AppMsgID: nn.ForwardAppMsgID,
+					},
+				}
 
-			if msg.Forward.Uai == nil {
-				msg.Forward.Uai = chat.Uai
-			}
+				if msg.Forward.Uai == nil {
+					msg.Forward.Uai = chat.Uai
+				}
 
-			lstmsg = append(lstmsg, msg)
+				lstmsg = append(lstmsg, msg)
+			} else {
+				msg := &chatbotpb.ChatMsg{
+					Uai: chat.Uai,
+					Forward: &chatbotpb.ForwardData{
+						Uai:      nn.SendUai,
+						AppMsgID: nn.SendAppMsgID,
+					},
+				}
+
+				lstmsg = append(lstmsg, msg)
+			}
 		}
 	}
 
@@ -331,6 +350,33 @@ func (cmd *cmdNote) onRemoveKeys(ctx context.Context, serv *chatbot.Serv, params
 	return []*chatbotpb.ChatMsg{msg}, nil
 }
 
+// onRemoveMsg - run command
+func (cmd *cmdNote) onRemoveMsg(ctx context.Context, serv *chatbot.Serv, params paramsCmd,
+	chat *chatbotpb.ChatMsg, ui *chatbotpb.UserInfo, ud proto.Message,
+	scs chatbotpb.ChatBotService_SendChatServer) (bool, []*chatbotpb.ChatMsg, error) {
+
+	if !chatbotdb.IsValidNoteName(params.name) {
+		msg := &chatbotpb.ChatMsg{
+			Msg: "Please input a valid name for note, it consists only of lowercase letters and numbers.",
+			Uai: chat.Uai,
+		}
+
+		return true, []*chatbotpb.ChatMsg{msg}, nil
+	}
+
+	cmd.isRunning = true
+	cmd.keys = params.keys
+	cmd.noteName = params.name
+	cmd.mode = NoteModeRemoveMsg
+
+	msg := &chatbotpb.ChatMsg{
+		Msg: "note remove msg starts ...",
+		Uai: chat.Uai,
+	}
+
+	return false, []*chatbotpb.ChatMsg{msg}, nil
+}
+
 // RunCommand - run command
 func (cmd *cmdNote) RunCommand(ctx context.Context, serv *chatbot.Serv, params interface{},
 	chat *chatbotpb.ChatMsg, ui *chatbotpb.UserInfo, ud proto.Message,
@@ -384,17 +430,17 @@ func (cmd *cmdNote) RunCommand(ctx context.Context, serv *chatbot.Serv, params i
 		return true, lst, err
 	}
 
+	if cp.mode == NoteModeRemoveMsg {
+		return cmd.onRemoveMsg(ctx, serv, cp, chat, ui, ud, scs)
+	}
+
 	return true, nil, ErrCmdInvalidNoteMode
 }
 
-// OnMessage - get message
-func (cmd *cmdNote) OnMessage(ctx context.Context, serv *chatbot.Serv, chat *chatbotpb.ChatMsg,
+// OnMsgForward - get message
+func (cmd *cmdNote) OnMsgForward(ctx context.Context, serv *chatbot.Serv, chat *chatbotpb.ChatMsg,
 	ui *chatbotpb.UserInfo, ud proto.Message,
 	scs chatbotpb.ChatBotService_SendChatServer) (bool, []*chatbotpb.ChatMsg, error) {
-
-	if !cmd.isRunning {
-		return true, nil, chatbotbase.ErrCmdItsNotMine
-	}
 
 	if chat.Forward == nil {
 		msg := &chatbotpb.ChatMsg{
@@ -411,11 +457,13 @@ func (cmd *cmdNote) OnMessage(ctx context.Context, serv *chatbot.Serv, chat *cha
 	}
 
 	err := serv.MgrUser.UpdNoteNode(ctx, &chatbotpb.NoteNode{
-		Keys:            cmd.keys,
-		Name:            cmd.noteName,
-		ForwardAppMsgID: chat.AppMsgID,
-		Text:            text,
-		Uai:             chat.Uai,
+		Keys:         cmd.keys,
+		Name:         cmd.noteName,
+		Text:         text,
+		SendAppMsgID: chat.AppMsgID,
+		SendUai:      chat.Uai,
+		DestAppMsgID: chat.Forward.AppMsgID,
+		DestUai:      chat.Forward.Uai,
 	})
 	if err != nil {
 		chatbotbase.Error("cmdNote.OnMessage:UpdNoteNode",
@@ -426,13 +474,97 @@ func (cmd *cmdNote) OnMessage(ctx context.Context, serv *chatbot.Serv, chat *cha
 
 	msg := &chatbotpb.ChatMsg{
 		Uai: chat.Uai,
-		Forward: &chatbotpb.ForwardData{
-			Uai:      chat.Uai,
-			AppMsgID: chat.AppMsgID,
-		},
+		Msg: "I get a forward message, it's " + chat.AppMsgID + ".",
+		// Forward: &chatbotpb.ForwardData{
+		// 	Uai:      chat.Uai,
+		// 	AppMsgID: chat.AppMsgID,
+		// },
 	}
 
 	return false, []*chatbotpb.ChatMsg{msg}, nil
+}
+
+// OnMsgRemoveMsg - get message
+func (cmd *cmdNote) OnMsgRemoveMsg(ctx context.Context, serv *chatbot.Serv, chat *chatbotpb.ChatMsg,
+	ui *chatbotpb.UserInfo, ud proto.Message,
+	scs chatbotpb.ChatBotService_SendChatServer) (bool, []*chatbotpb.ChatMsg, error) {
+
+	if chat.Forward == nil {
+		msg := &chatbotpb.ChatMsg{
+			Msg: "note end.",
+			Uai: chat.Uai,
+		}
+
+		return true, []*chatbotpb.ChatMsg{msg}, chatbotbase.ErrCmdItsNotMine
+	}
+
+	ni, err := serv.MgrUser.GetNoteInfo(ctx, cmd.noteName)
+	if err != nil {
+		chatbotbase.Error("cmdNote.OnMsgRemoveMsg:GetNoteInfo",
+			zap.Error(err))
+
+		return true, nil, err
+	}
+
+	if ni == nil {
+		msg := &chatbotpb.ChatMsg{
+			Msg: "note end.",
+			Uai: chat.Uai,
+		}
+
+		return true, []*chatbotpb.ChatMsg{msg}, ErrCmdInvalidNoteName
+	}
+
+	nums := 0
+
+	for i := int64(0); i < ni.NoteNums; i++ {
+		nn, err := serv.MgrUser.GetNoteNode(ctx, cmd.noteName, i)
+		if err != nil {
+			chatbotbase.Warn("cmdNote.OnMsgRemoveMsg:GetNoteNode",
+				zap.String("name", cmd.noteName),
+				zap.Int64("index", i),
+				zap.Error(err))
+		}
+
+		if nn != nil &&
+			nn.SendAppMsgID == chat.Forward.AppMsgID &&
+			nn.SendUai != nil &&
+			nn.SendUai.Appuid == chat.Forward.Uai.Appuid {
+
+			nums++
+
+			ni = chatbotdb.RemoveNoteNode(ni, i)
+
+			serv.MgrUser.DelNoteNode(ctx, cmd.noteName, i)
+		}
+	}
+
+	msg := &chatbotpb.ChatMsg{
+		Uai: chat.Uai,
+		Msg: "I remove some forward messages (" + strconv.Itoa(nums) + "), it's " + chat.AppMsgID + ".",
+	}
+
+	return false, []*chatbotpb.ChatMsg{msg}, nil
+}
+
+// OnMessage - get message
+func (cmd *cmdNote) OnMessage(ctx context.Context, serv *chatbot.Serv, chat *chatbotpb.ChatMsg,
+	ui *chatbotpb.UserInfo, ud proto.Message,
+	scs chatbotpb.ChatBotService_SendChatServer) (bool, []*chatbotpb.ChatMsg, error) {
+
+	if !cmd.isRunning {
+		return true, nil, chatbotbase.ErrCmdItsNotMine
+	}
+
+	if cmd.mode == NoteModeForward {
+		return cmd.OnMsgForward(ctx, serv, chat, ui, ud, scs)
+	}
+
+	if cmd.mode == NoteModeRemoveMsg {
+		return cmd.OnMsgRemoveMsg(ctx, serv, chat, ui, ud, scs)
+	}
+
+	return true, nil, chatbotbase.ErrCmdItsNotMine
 }
 
 // ParseCommandLine - parse command line
