@@ -31,6 +31,8 @@ const (
 	NoteModeInfo NoteMode = 3
 	// NoteModeSearch - search note with key
 	NoteModeSearch NoteMode = 4
+	// NoteModeKeys - show keys
+	NoteModeKeys NoteMode = 5
 )
 
 // ParseNoteMode - string => NoteMode
@@ -43,6 +45,8 @@ func ParseNoteMode(str string) NoteMode {
 		return NoteModeInfo
 	} else if str == "search" {
 		return NoteModeSearch
+	} else if str == "keys" {
+		return NoteModeKeys
 	}
 
 	return NoteModeNone
@@ -235,6 +239,49 @@ func (cmd *cmdNote) onSearch(ctx context.Context, serv *chatbot.Serv, params par
 	return lstmsg, nil
 }
 
+// onKeys - run command
+func (cmd *cmdNote) onKeys(ctx context.Context, serv *chatbot.Serv, params paramsCmd,
+	chat *chatbotpb.ChatMsg, ui *chatbotpb.UserInfo, ud proto.Message,
+	scs chatbotpb.ChatBotService_SendChatServer) ([]*chatbotpb.ChatMsg, error) {
+
+	if !chatbotdb.IsValidNoteName(params.name) {
+		msg := &chatbotpb.ChatMsg{
+			Msg: "Please input a valid name for note, it consists only of lowercase letters and numbers.",
+			Uai: chat.Uai,
+		}
+
+		return []*chatbotpb.ChatMsg{msg}, nil
+	}
+
+	params.name = strings.ToLower(params.name)
+
+	ni, err := serv.MgrUser.GetNoteInfo(ctx, params.name)
+	if err != nil {
+		chatbotbase.Error("cmdNote.onSearch:GetNoteInfo",
+			zap.Error(err))
+
+		return nil, err
+	}
+
+	if ni == nil {
+		msg := &chatbotpb.ChatMsg{
+			Msg: "Sorry, I can't find the note (" + params.name + ")",
+			Uai: chat.Uai,
+		}
+
+		return []*chatbotpb.ChatMsg{msg}, nil
+	}
+
+	str, err := chatbotbase.JSONFormat(ni.Keys)
+
+	msg := &chatbotpb.ChatMsg{
+		Msg: str,
+		Uai: chat.Uai,
+	}
+
+	return []*chatbotpb.ChatMsg{msg}, nil
+}
+
 // RunCommand - run command
 func (cmd *cmdNote) RunCommand(ctx context.Context, serv *chatbot.Serv, params interface{},
 	chat *chatbotpb.ChatMsg, ui *chatbotpb.UserInfo, ud proto.Message,
@@ -275,6 +322,11 @@ func (cmd *cmdNote) RunCommand(ctx context.Context, serv *chatbot.Serv, params i
 
 	if cp.mode == NoteModeSearch {
 		lst, err := cmd.onSearch(ctx, serv, cp, chat, ui, ud, scs)
+		return true, lst, err
+	}
+
+	if cp.mode == NoteModeKeys {
+		lst, err := cmd.onKeys(ctx, serv, cp, chat, ui, ud, scs)
 		return true, lst, err
 	}
 
