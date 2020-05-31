@@ -20,19 +20,20 @@ func procRegexpNode(rn *RegexpNode, chat *chatbotpb.ChatMsg) (*chatbotpb.ChatMsg
 			str := rn.Prefix
 
 			ss := chat.Msg[arr[0][2]:arr[0][3]]
-
-			if rn.Mode == "paramarray" {
-				strarr := strings.Fields(ss)
-				for _, v := range strarr {
-					str += rn.ParamArrayPrefix
-					str += v
+			if ss != "" {
+				if rn.Mode == "paramarray" {
+					strarr := strings.Fields(ss)
+					for _, v := range strarr {
+						str += rn.ParamArrayPrefix
+						str += v
+					}
+				} else if rn.Mode == "nodata" {
 				}
-			} else if rn.Mode == "nodata" {
+
+				chat.Msg = str
+
+				return chat, nil
 			}
-
-			chat.Msg = str
-
-			return chat, nil
 		}
 
 	}
