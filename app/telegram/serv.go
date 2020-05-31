@@ -143,7 +143,7 @@ func (serv *Serv) buildChatMsg(msg *tgbotapi.Message) (*chatbotpb.ChatMsg, error
 		cmsg = chatbot.BuildTextChatMsg(str, uai, serv.cfg.Token, serv.client.SessionID)
 	}
 
-	if msg.Chat.IsGroup() {
+	if msg.Chat.IsGroup() || msg.Chat.IsSuperGroup() {
 		gai := chatbot.BuildGroupAppInfo(chatbotpb.ChatAppType_CAT_TELEGRAM,
 			serv.cfg.Username, chatbotbase.ID642Str(msg.Chat.ID), msg.Chat.Title)
 
