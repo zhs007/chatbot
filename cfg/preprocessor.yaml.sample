@@ -3,7 +3,7 @@ lstregexp:
     prefix: 'note -m search -n comic '
     mode: paramarray
     paramarrayprefix: ' -k '     
-  - pattern: 找(.*)
+  - pattern: 找+(.*)
     prefix: 'note -m search -n comic '
     mode: paramarray
     paramarrayprefix: ' -k '
