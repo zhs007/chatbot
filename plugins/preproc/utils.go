@@ -1,8 +1,7 @@
 package chatbotproprocplugin
 
 import (
-	"strings"
-
+	chatbot "github.com/zhs007/chatbot"
 	chatbotbase "github.com/zhs007/chatbot/base"
 	chatbotpb "github.com/zhs007/chatbot/chatbotpb"
 	"go.uber.org/zap"
@@ -22,11 +21,19 @@ func procRegexpNode(rn *RegexpNode, chat *chatbotpb.ChatMsg) (*chatbotpb.ChatMsg
 			ss := chat.Msg[arr[0][2]:arr[0][3]]
 			if ss != "" {
 				if rn.Mode == "paramarray" {
-					strarr := strings.Fields(ss)
+					strarr := chatbot.SplitCommandString(ss)
+					if len(strarr) == 0 {
+						return nil, nil
+					}
+
+					// strarr := strings.Fields(ss)
 					for _, v := range strarr {
 						str += rn.ParamArrayPrefix
+						str += "\""
 						str += v
+						str += "\""
 					}
+
 				} else if rn.Mode == "nodata" {
 				}
 
