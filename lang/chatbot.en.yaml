@@ -34,3 +34,6 @@ notesearch001:
 notesearch002:
   description: in command/note/search
   other: If you don’t receive it, you need to send a private chat to me (it's like "/start").
+notesearchnone:
+  description: in command/note/search
+  other: I can't find any records for you.

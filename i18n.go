@@ -4,6 +4,7 @@ import (
 	"io/ioutil"
 	"os"
 	"path"
+	"sort"
 	"strings"
 	"sync"
 
@@ -139,6 +140,8 @@ func (mgr *TextMgr) FindKeys(prefix string) []string {
 			keys = append(keys, v)
 		}
 	}
+
+	sort.Strings(keys)
 
 	return keys
 }

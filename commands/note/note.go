@@ -232,8 +232,8 @@ func (cmd *cmdNote) onSearch(ctx context.Context, serv *chatbot.Serv, params par
 	lsti64 := chatbotdb.SearchKeys(ni, params.keys)
 	var lstmsg []*chatbotpb.ChatMsg
 
-	if chat.Gai != nil {
-		lstmsg0, err := serv.BuildChatMsgWithLang(chat, ui, "notesearch", nil)
+	if len(lsti64) == 0 {
+		lstmsg0, err := serv.BuildChatMsgWithLang(chat, ui, "notesearchnone", nil)
 		if err != nil {
 			chatbotbase.Error("cmdNote.onSearch:BuildChatMsgWithLang",
 				zap.Error(err))
@@ -241,18 +241,17 @@ func (cmd *cmdNote) onSearch(ctx context.Context, serv *chatbot.Serv, params par
 
 		lstmsg = append(lstmsg, lstmsg0...)
 
-		// msg0 := &chatbotpb.ChatMsg{
-		// 	Msg: "The message is too big, I will send you private chats.",
-		// 	Uai: chat.Uai,
-		// }
+		return lstmsg, nil
+	}
 
-		// msg1 := &chatbotpb.ChatMsg{
-		// 	Msg: "If you don’t receive it, you need to send a private chat to me and send /start",
-		// 	Uai: chat.Uai,
-		// }
+	if chat.Gai != nil {
+		lstmsg0, err := serv.BuildChatMsgWithLang(chat, ui, "notesearch0", nil)
+		if err != nil {
+			chatbotbase.Error("cmdNote.onSearch:BuildChatMsgWithLang",
+				zap.Error(err))
+		}
 
-		// lstmsg = append(lstmsg, msg0)
-		// lstmsg = append(lstmsg, msg1)
+		lstmsg = append(lstmsg, lstmsg0...)
 	}
 
 	for _, v := range lsti64 {
