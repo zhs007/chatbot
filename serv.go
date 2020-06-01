@@ -483,3 +483,46 @@ func (serv *Serv) SendCtrlResult(ctx context.Context, msg *chatbotpb.AppCtrlResu
 func (serv *Serv) PushChatMsgs(token string, lst []*chatbotpb.ChatMsg) {
 	serv.mapChatMsgs.addChatMsgs(token, lst)
 }
+
+// BuildChatMsgWithLang -
+func (serv *Serv) BuildChatMsgWithLang(chat *chatbotpb.ChatMsg, ui *chatbotpb.UserInfo, lst []string,
+	params map[string]interface{}) ([]*chatbotpb.ChatMsg, error) {
+
+	lang := serv.GetChatMsgLang(chat)
+
+	bpm, err := serv.BuildBasicParamsMap(chat, ui, lang)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		for k, v := range params {
+			bpm[k] = v
+		}
+	}
+
+	locale, err := serv.MgrText.GetLocalizer(lang)
+	if err != nil {
+		return nil, err
+	}
+
+	var msgs []*chatbotpb.ChatMsg
+	for _, v := range lst {
+		txt, err := locale.Localize(&i18n.LocalizeConfig{
+			MessageID:    v,
+			TemplateData: bpm,
+		})
+		if err != nil {
+			return nil, err
+		}
+
+		msgtxt := &chatbotpb.ChatMsg{
+			Msg: txt,
+			Uai: chat.Uai,
+		}
+
+		msgs = append(msgs, msgtxt)
+	}
+
+	return msgs, nil
+}

@@ -4,7 +4,6 @@ import (
 	"context"
 
 	"github.com/golang/protobuf/proto"
-	"github.com/nicksnyder/go-i18n/v2/i18n"
 	"github.com/zhs007/chatbot"
 	chatbotbase "github.com/zhs007/chatbot/base"
 	chatbotpb "github.com/zhs007/chatbot/chatbotpb"
@@ -31,35 +30,40 @@ func (cmd *cmdStart) RunCommand(ctx context.Context, serv *chatbot.Serv, params 
 		return true, nil, nil
 	}
 
-	lang := serv.GetChatMsgLang(chat)
-
-	mParams, err := serv.BuildBasicParamsMap(chat, ui, lang)
+	lst, err := serv.BuildChatMsgWithLang(chat, ui, lststart, nil)
 	if err != nil {
 		return true, nil, err
 	}
 
-	locale, err := serv.MgrText.GetLocalizer(lang)
-	if err != nil {
-		return true, nil, err
-	}
+	// lang := serv.GetChatMsgLang(chat)
 
-	var lst []*chatbotpb.ChatMsg
-	for _, v := range lststart {
-		txt, err := locale.Localize(&i18n.LocalizeConfig{
-			MessageID:    v,
-			TemplateData: mParams,
-		})
-		if err != nil {
-			return true, nil, err
-		}
+	// mParams, err := serv.BuildBasicParamsMap(chat, ui, lang)
+	// if err != nil {
+	// 	return true, nil, err
+	// }
 
-		msgtxt := &chatbotpb.ChatMsg{
-			Msg: txt,
-			Uai: chat.Uai,
-		}
+	// locale, err := serv.MgrText.GetLocalizer(lang)
+	// if err != nil {
+	// 	return true, nil, err
+	// }
 
-		lst = append(lst, msgtxt)
-	}
+	// var lst []*chatbotpb.ChatMsg
+	// for _, v := range lststart {
+	// 	txt, err := locale.Localize(&i18n.LocalizeConfig{
+	// 		MessageID:    v,
+	// 		TemplateData: mParams,
+	// 	})
+	// 	if err != nil {
+	// 		return true, nil, err
+	// 	}
+
+	// 	msgtxt := &chatbotpb.ChatMsg{
+	// 		Msg: txt,
+	// 		Uai: chat.Uai,
+	// 	}
+
+	// 	lst = append(lst, msgtxt)
+	// }
 
 	return true, lst, nil
 }
