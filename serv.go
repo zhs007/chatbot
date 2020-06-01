@@ -485,7 +485,52 @@ func (serv *Serv) PushChatMsgs(token string, lst []*chatbotpb.ChatMsg) {
 }
 
 // BuildChatMsgWithLang -
-func (serv *Serv) BuildChatMsgWithLang(chat *chatbotpb.ChatMsg, ui *chatbotpb.UserInfo, lst []string,
+func (serv *Serv) BuildChatMsgWithLang(chat *chatbotpb.ChatMsg, ui *chatbotpb.UserInfo, prefix string,
+	params map[string]interface{}) ([]*chatbotpb.ChatMsg, error) {
+
+	lst := serv.MgrText.FindKeys(prefix)
+
+	lang := serv.GetChatMsgLang(chat)
+
+	bpm, err := serv.BuildBasicParamsMap(chat, ui, lang)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		for k, v := range params {
+			bpm[k] = v
+		}
+	}
+
+	locale, err := serv.MgrText.GetLocalizer(lang)
+	if err != nil {
+		return nil, err
+	}
+
+	var msgs []*chatbotpb.ChatMsg
+	for _, v := range lst {
+		txt, err := locale.Localize(&i18n.LocalizeConfig{
+			MessageID:    v,
+			TemplateData: bpm,
+		})
+		if err != nil {
+			return nil, err
+		}
+
+		msgtxt := &chatbotpb.ChatMsg{
+			Msg: txt,
+			Uai: chat.Uai,
+		}
+
+		msgs = append(msgs, msgtxt)
+	}
+
+	return msgs, nil
+}
+
+// BuildChatMsgWithLangEx -
+func (serv *Serv) BuildChatMsgWithLangEx(chat *chatbotpb.ChatMsg, ui *chatbotpb.UserInfo, lst []string,
 	params map[string]interface{}) ([]*chatbotpb.ChatMsg, error) {
 
 	lang := serv.GetChatMsgLang(chat)
@@ -526,3 +571,8 @@ func (serv *Serv) BuildChatMsgWithLang(chat *chatbotpb.ChatMsg, ui *chatbotpb.Us
 
 	return msgs, nil
 }
+
+// // GetStringArrayWithLang -
+// func (serv *Serv) GetStringArrayWithLang(lang string) ([]string, error) {
+
+// }

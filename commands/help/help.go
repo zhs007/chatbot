@@ -31,7 +31,7 @@ func (cmd *cmdHelp) RunCommand(ctx context.Context, serv *chatbot.Serv, params i
 		return true, nil, nil
 	}
 
-	lst, err := serv.BuildChatMsgWithLang(chat, ui, lsthelp, nil)
+	lst, err := serv.BuildChatMsgWithLangEx(chat, ui, lsthelp, nil)
 	if err != nil {
 		return true, nil, err
 	}
