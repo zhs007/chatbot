@@ -34,3 +34,6 @@ notesearch001:
 notesearch002:
   description: in command/note/search
   other: 如果你收不到，你需要先向我发一个私聊消息，类似 "/start" 这样的。
+notesearchnone:
+  description: in command/note/search
+  other: 我找不到任何的相关记录。
