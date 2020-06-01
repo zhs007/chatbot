@@ -2,6 +2,7 @@ package chatbot
 
 import (
 	"io/ioutil"
+	"os"
 	"path"
 	"strings"
 	"sync"
@@ -18,8 +19,37 @@ import (
 // TextMgr - text manager
 type TextMgr struct {
 	bundle *i18n.Bundle
-	mapL   sync.Map
+	mapL   sync.Map // map[lang]*i18n.Localizer
 	lang   string
+	keys   []string
+}
+
+func loadLangKeys(fn string) ([]string, error) {
+	fi, err := os.Open(fn)
+	if err != nil {
+		return nil, err
+	}
+
+	defer fi.Close()
+	fd, err := ioutil.ReadAll(fi)
+	if err != nil {
+		return nil, err
+	}
+
+	mapkeys := make(map[string]interface{})
+
+	err = yaml.Unmarshal(fd, &mapkeys)
+	if err != nil {
+		return nil, err
+	}
+
+	var keys []string
+
+	for k := range mapkeys {
+		keys = append(keys, k)
+	}
+
+	return keys, nil
 }
 
 // NewTextMgr - new TextMgr
@@ -37,6 +67,11 @@ func NewTextMgr(cfg *Config) (*TextMgr, error) {
 		return nil, err
 	}
 
+	mgr := &TextMgr{
+		bundle: b,
+		lang:   cfg.Language,
+	}
+
 	for _, fi := range dir {
 		if !fi.IsDir() {
 			ok := strings.HasSuffix(fi.Name(), ".yaml")
@@ -46,14 +81,20 @@ func NewTextMgr(cfg *Config) (*TextMgr, error) {
 				if err != nil {
 					return nil, err
 				}
+
+				if mgr.keys == nil {
+					arr, err := loadLangKeys(fn)
+					if err != nil {
+						return nil, err
+					}
+
+					mgr.keys = arr
+				}
 			}
 		}
 	}
 
-	return &TextMgr{
-		bundle: b,
-		lang:   cfg.Language,
-	}, nil
+	return mgr, nil
 }
 
 // GetLocalizer - get Localizer
@@ -87,4 +128,17 @@ func (mgr *TextMgr) GetLocalizer(lang string) (*i18n.Localizer, error) {
 	}
 
 	return l, nil
+}
+
+// FindKeys - find keys
+func (mgr *TextMgr) FindKeys(prefix string) []string {
+	var keys []string
+
+	for _, v := range mgr.keys {
+		if strings.Index(v, prefix) == 0 {
+			keys = append(keys, v)
+		}
+	}
+
+	return keys
 }

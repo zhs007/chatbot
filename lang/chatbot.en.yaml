@@ -28,3 +28,9 @@ yousaid:
 igetfile:
   description: in debug
   other: I get a {{.FileType}} file ({{.FileName}}), the file size is {{.FileSize}}, the file hash is "{{.FileHash}}".
+notesearch001:
+  description: in command/note/search
+  other: The message is too big, I will send you private chats.
+notesearch002:
+  description: in command/note/search
+  other: If you don’t receive it, you need to send a private chat to me (it's like "/start").

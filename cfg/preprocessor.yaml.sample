@@ -1,13 +1,25 @@
 lstregexp:
-  - pattern: 找漫画(.*)
+  - pattern: 找漫画(.+)
     prefix: 'note -m search -n comic '
     mode: paramarray
     paramarrayprefix: ' -k '     
-  - pattern: 找+(.*)
+  - pattern: 找+(.+)
     prefix: 'note -m search -n comic '
     mode: paramarray
     paramarrayprefix: ' -k '
+  - pattern: 看漫画(.+)
+    prefix: 'note -m search -n comic '
+    mode: paramarray
+    paramarrayprefix: ' -k '     
+  - pattern: 看+(.+)
+    prefix: 'note -m search -n comic '
+    mode: paramarray
+    paramarrayprefix: ' -k '    
   - pattern: .*(漫画列表)
     prefix: 'note -m keys -n comic'
     mode: nodata
     paramarrayprefix:    
+  - pattern: 记录(.+)
+    prefix: 'note -m forward -n comic '
+    mode: paramarray
+    paramarrayprefix: ' -k '        
