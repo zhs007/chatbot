@@ -82,7 +82,7 @@ func NewTextMgr(cfg *Config) (*TextMgr, error) {
 					return nil, err
 				}
 
-				if mgr.keys != nil {
+				if mgr.keys == nil {
 					arr, err := loadLangKeys(fn)
 					if err != nil {
 						return nil, err

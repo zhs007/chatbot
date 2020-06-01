@@ -28,3 +28,9 @@ yousaid:
 igetfile:
   description: in debug
   other: 我收到了一个 {{.FileType}} 文件 ({{.FileName}})，文件大小是 {{.FileSize}}，文件Hash是 "{{.FileHash}}"。
+notesearch001:
+  description: in command/note/search
+  other: 我将私聊发给你。
+notesearch002:
+  description: in command/note/search
+  other: 如果你收不到，你需要先向我发一个私聊消息，类似 "/start" 这样的。

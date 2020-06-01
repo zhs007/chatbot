@@ -233,18 +233,26 @@ func (cmd *cmdNote) onSearch(ctx context.Context, serv *chatbot.Serv, params par
 	var lstmsg []*chatbotpb.ChatMsg
 
 	if chat.Gai != nil {
-		msg0 := &chatbotpb.ChatMsg{
-			Msg: "The message is too big, I will send you private chats.",
-			Uai: chat.Uai,
+		lstmsg0, err := serv.BuildChatMsgWithLang(chat, ui, "notesearch", nil)
+		if err != nil {
+			chatbotbase.Error("cmdNote.onSearch:BuildChatMsgWithLang",
+				zap.Error(err))
 		}
 
-		msg1 := &chatbotpb.ChatMsg{
-			Msg: "If you don’t receive it, you need to send a private chat to me and send /start",
-			Uai: chat.Uai,
-		}
+		lstmsg = append(lstmsg, lstmsg0...)
 
-		lstmsg = append(lstmsg, msg0)
-		lstmsg = append(lstmsg, msg1)
+		// msg0 := &chatbotpb.ChatMsg{
+		// 	Msg: "The message is too big, I will send you private chats.",
+		// 	Uai: chat.Uai,
+		// }
+
+		// msg1 := &chatbotpb.ChatMsg{
+		// 	Msg: "If you don’t receive it, you need to send a private chat to me and send /start",
+		// 	Uai: chat.Uai,
+		// }
+
+		// lstmsg = append(lstmsg, msg0)
+		// lstmsg = append(lstmsg, msg1)
 	}
 
 	for _, v := range lsti64 {
