@@ -12,7 +12,7 @@ func Test_loadLangKeys(t *testing.T) {
 		t.Fatalf("Test_loadLangKeys Err %v", err)
 	}
 
-	if len(arr) != 10 {
+	if len(arr) != 12 {
 		t.Fatalf("Test_loadLangKeys len %v", len(arr))
 	}
 
@@ -27,6 +27,8 @@ func Test_loadLangKeys(t *testing.T) {
 		"igetit",
 		"yousaid",
 		"igetfile",
+		"notesearch001",
+		"notesearch002",
 	}
 
 	for _, v := range arr {
