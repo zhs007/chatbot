@@ -2,6 +2,7 @@ package chatbotcmdnote
 
 import (
 	"context"
+	"sort"
 	"strconv"
 	"strings"
 
@@ -328,7 +329,9 @@ func (cmd *cmdNote) onKeys(ctx context.Context, serv *chatbot.Serv, params param
 		return []*chatbotpb.ChatMsg{msg}, nil
 	}
 
-	str, err := chatbotbase.JSONFormat(ni.Keys)
+	keys := sort.StringSlice(ni.Keys)
+
+	str, err := chatbotbase.JSONFormat(keys)
 
 	msg := &chatbotpb.ChatMsg{
 		Msg: str,
