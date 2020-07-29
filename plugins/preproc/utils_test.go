@@ -1,4 +1,4 @@
-package chatbotproprocplugin
+package chatbotpreprocplugin
 
 import (
 	"regexp"

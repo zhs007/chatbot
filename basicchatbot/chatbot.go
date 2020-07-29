@@ -8,6 +8,7 @@ import (
 	chatbotcmdplugin "github.com/zhs007/chatbot/plugins/cmd"
 	chatbotdebugplugin "github.com/zhs007/chatbot/plugins/debug"
 	chatbotfileplugin "github.com/zhs007/chatbot/plugins/file"
+	chatbotnotekeywordplugin "github.com/zhs007/chatbot/plugins/notekeyword"
 	chatbotpreprocplugin "github.com/zhs007/chatbot/plugins/preproc"
 )
 
@@ -24,6 +25,11 @@ func InitBasicChatBot(cfg chatbot.Config) error {
 	}
 
 	err = chatbotfileplugin.RegisterPlugin()
+	if err != nil {
+		return err
+	}
+
+	err = chatbotnotekeywordplugin.RegisterPlugin()
 	if err != nil {
 		return err
 	}

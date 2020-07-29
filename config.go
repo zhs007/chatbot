@@ -54,6 +54,7 @@ type Config struct {
 	// plugin config
 
 	Preprocessor string
+	NoteKeyword  string
 
 	//------------------------------------------------------------------
 	// telegram
