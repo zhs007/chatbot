@@ -12,6 +12,7 @@ dbpath: ./data
 dbengine: leveldb
 
 pluginspreprocess:
+  - notekeyword
   - preprocessor
 
 plugins:

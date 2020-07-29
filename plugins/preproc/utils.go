@@ -1,4 +1,4 @@
-package chatbotproprocplugin
+package chatbotpreprocplugin
 
 import (
 	chatbot "github.com/zhs007/chatbot"
@@ -10,7 +10,7 @@ import (
 func procRegexpNode(rn *RegexpNode, chat *chatbotpb.ChatMsg) (*chatbotpb.ChatMsg, error) {
 	arr := rn.r.FindAllStringSubmatchIndex(chat.Msg, -1)
 	if len(arr) > 0 {
-		chatbotbase.Debug("chatbotproprocplugin.procRegexpNode:FindAllStringSubmatchIndex",
+		chatbotbase.Debug("chatbotpreprocplugin.procRegexpNode:FindAllStringSubmatchIndex",
 			zap.String("pattern", rn.Pattern),
 			zap.String("msg", chat.Msg),
 			chatbotbase.JSON("ret", arr))

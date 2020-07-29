@@ -1,4 +1,4 @@
-package chatbotproprocplugin
+package chatbotpreprocplugin
 
 import (
 	"io/ioutil"
@@ -49,7 +49,7 @@ func LoadConfig(fn string) (*Config, error) {
 	for _, v := range cfg.LstRegexp {
 		r, err := regexp.Compile(v.Pattern)
 		if err != nil {
-			chatbotbase.Error("chatbotproprocplugin.LoadConfig:Compile",
+			chatbotbase.Error("chatbotpreprocplugin.LoadConfig:Compile",
 				zap.String("pattern", v.Pattern),
 				zap.Error(err))
 

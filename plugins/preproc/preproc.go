@@ -1,4 +1,4 @@
-package chatbotproprocplugin
+package chatbotpreprocplugin
 
 import (
 	"context"
@@ -49,7 +49,7 @@ func (pp *preprocPlugin) GetPluginName() string {
 func RegisterPlugin(fn string) error {
 	cfg, err := LoadConfig(fn)
 	if err != nil {
-		chatbotbase.Error("chatbotproprocplugin.RegisterPlugin:LoadConfig",
+		chatbotbase.Error("chatbotpreprocplugin.RegisterPlugin:LoadConfig",
 			zap.String("fn", fn),
 			zap.Error(err))
 
