@@ -124,6 +124,10 @@ docker run -d \
 
 ### 版本更新
 
+##### v0.3
+
+- 支持channel、group等。
+
 ##### v0.2
 
 - 支持QQ。
