@@ -7,6 +7,7 @@ import (
 	chatbot "github.com/zhs007/chatbot"
 	chatbotbase "github.com/zhs007/chatbot/base"
 	chatbotpb "github.com/zhs007/chatbot/chatbotpb"
+	"go.uber.org/zap"
 )
 
 type cmdPlugin struct {
@@ -61,15 +62,20 @@ func (cp *cmdPlugin) OnMessage(ctx context.Context, serv *chatbot.Serv, chat *ch
 		if err != chatbotbase.ErrCmdNoCmd &&
 			err != chatbotbase.ErrCmdEmptyCmd {
 
+			chatbotbase.Error("cmdPlugin.OnMessage:MultiParseInChat",
+				zap.Error(err))
+
 			return nil, err
 		}
 
 		return nil, chatbotbase.ErrPluginItsNotMine
 	}
 
+	rlst := []*chatbotpb.ChatMsg{}
+
 	for _, v := range lst {
 		if v.Cmd != "" {
-			isend, lst, err := serv.Cmds.RunInChat(ctx, v.Cmd, serv, v.Params, chat, ui, ud, scs)
+			isend, clst, err := serv.Cmds.RunInChat(ctx, v.Cmd, serv, v.Params, chat, ui, ud, scs)
 			if err != nil {
 				if err != chatbotbase.ErrCmdNoCmd {
 					return nil, err
@@ -83,7 +89,7 @@ func (cp *cmdPlugin) OnMessage(ctx context.Context, serv *chatbot.Serv, chat *ch
 			}
 			// cp.activeCmd =
 
-			return lst, nil
+			rlst = append(rlst, clst...)
 		}
 	}
 
@@ -137,7 +143,7 @@ func (cp *cmdPlugin) OnMessage(ctx context.Context, serv *chatbot.Serv, chat *ch
 	// 	return lst, nil
 	// }
 
-	return nil, nil
+	return rlst, nil
 }
 
 // OnStart - on start
