@@ -56,7 +56,7 @@ func (cp *cmdPlugin) OnMessage(ctx context.Context, serv *chatbot.Serv, chat *ch
 		}
 	}
 
-	cmd, params, err := serv.Cmds.ParseInChat(chat)
+	lst, err := serv.Cmds.MultiParseInChat(chat)
 	if err != nil {
 		if err != chatbotbase.ErrCmdNoCmd &&
 			err != chatbotbase.ErrCmdEmptyCmd {
@@ -67,23 +67,54 @@ func (cp *cmdPlugin) OnMessage(ctx context.Context, serv *chatbot.Serv, chat *ch
 		return nil, chatbotbase.ErrPluginItsNotMine
 	}
 
-	if cmd != "" {
-		isend, lst, err := serv.Cmds.RunInChat(ctx, cmd, serv, params, chat, ui, ud, scs)
-		if err != nil {
-			if err != chatbotbase.ErrCmdNoCmd {
-				return nil, err
+	for _, v := range lst {
+		if v.Cmd != "" {
+			isend, lst, err := serv.Cmds.RunInChat(ctx, v.Cmd, serv, v.Params, chat, ui, ud, scs)
+			if err != nil {
+				if err != chatbotbase.ErrCmdNoCmd {
+					return nil, err
+				}
+
+				return nil, chatbotbase.ErrPluginItsNotMine
 			}
 
-			return nil, chatbotbase.ErrPluginItsNotMine
-		}
+			if !isend {
+				cp.activeCmd = v.Cmd
+			}
+			// cp.activeCmd =
 
-		if !isend {
-			cp.activeCmd = cmd
+			return lst, nil
 		}
-		// cp.activeCmd =
-
-		return lst, nil
 	}
+
+	// cmd, params, err := serv.Cmds.ParseInChat(chat)
+	// if err != nil {
+	// 	if err != chatbotbase.ErrCmdNoCmd &&
+	// 		err != chatbotbase.ErrCmdEmptyCmd {
+
+	// 		return nil, err
+	// 	}
+
+	// 	return nil, chatbotbase.ErrPluginItsNotMine
+	// }
+
+	// if cmd != "" {
+	// 	isend, lst, err := serv.Cmds.RunInChat(ctx, cmd, serv, params, chat, ui, ud, scs)
+	// 	if err != nil {
+	// 		if err != chatbotbase.ErrCmdNoCmd {
+	// 			return nil, err
+	// 		}
+
+	// 		return nil, chatbotbase.ErrPluginItsNotMine
+	// 	}
+
+	// 	if !isend {
+	// 		cp.activeCmd = cmd
+	// 	}
+	// 	// cp.activeCmd =
+
+	// 	return lst, nil
+	// }
 
 	// if cp.activeCmd != "" {
 	// 	isend, lst, err := serv.Cmds.OnMessage(ctx, cmd, serv, chat, ui, ud, scs)
