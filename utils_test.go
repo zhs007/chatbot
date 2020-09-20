@@ -46,6 +46,10 @@ func Test_SplitMultiCommandString(t *testing.T) {
 
 	arrok := []strarr{
 		strarr{
+			src:  "reqtask techinasia -m jobs",
+			dest: []string{"reqtask techinasia -m jobs"},
+		},
+		strarr{
 			src:  "reqtask techinasia -m jobs\n\r\n\n\r\n",
 			dest: []string{"reqtask techinasia -m jobs"},
 		},

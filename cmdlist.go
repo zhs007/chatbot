@@ -78,7 +78,11 @@ func (cmds *CommondsList) MultiParseInChat(chat *chatbotpb.ChatMsg) ([]*CommandD
 		}
 	}
 
-	return lstcmds, chatbotbase.ErrCmdNoCmd
+	if len(lstcmds) <= 0 {
+		return nil, chatbotbase.ErrCmdEmptyCmd
+	}
+
+	return lstcmds, nil
 }
 
 // ParseInChat - parse in chat
