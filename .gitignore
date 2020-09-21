@@ -17,3 +17,4 @@ samples/telegrambot/data
 samples/telegrambot/config.yaml
 data
 cfg/*.yaml
+__debug_bin
