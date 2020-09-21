@@ -126,6 +126,7 @@ docker run -d \
 
 ##### v0.6
 
+- 支持多行``command``，不影响老版本``command``扩展的用法。
 - ``logger``模块调整，支持重设logger，兼容性更强。
 
 ##### v0.5

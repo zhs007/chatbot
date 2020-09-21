@@ -7,7 +7,6 @@ import (
 	chatbot "github.com/zhs007/chatbot"
 	chatbotbase "github.com/zhs007/chatbot/base"
 	"github.com/zhs007/chatbot/basicchatbot"
-	"go.uber.org/zap/zapcore"
 )
 
 func main() {
@@ -18,7 +17,7 @@ func main() {
 		return
 	}
 
-	chatbotbase.InitLogger(zapcore.InfoLevel, true, "./")
+	chatbotbase.InitLogger("chatbot", chatbotbase.VERSION, "info", true, "./")
 
 	err = basicchatbot.InitBasicChatBot(*cfg)
 	if err != nil {

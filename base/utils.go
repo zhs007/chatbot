@@ -11,19 +11,7 @@ import (
 	"time"
 
 	jsoniter "github.com/json-iterator/go"
-	"go.uber.org/zap"
 )
-
-// JSON - make json to field
-func JSON(key string, obj interface{}) zap.Field {
-	json := jsoniter.ConfigCompatibleWithStandardLibrary
-	s, err := json.Marshal(obj)
-	if err != nil {
-		return zap.Error(err)
-	}
-
-	return zap.String(key, string(s))
-}
 
 // BuildLogSubFilename -
 func BuildLogSubFilename(appName string, version string) string {
