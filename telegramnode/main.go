@@ -17,7 +17,7 @@ func main() {
 		return
 	}
 
-	chatbotbase.InitLogger(chatbotbase.ParseLogLevel(cfg.LogLevel), true, "./logs")
+	chatbotbase.InitLogger("telegramnode", chatbotbase.VERSION, cfg.LogLevel, true, "./logs")
 
 	chatbotbase.Info("telegram start...",
 		zap.String("version", chatbotbase.VERSION))

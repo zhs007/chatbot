@@ -6,11 +6,10 @@ import (
 
 	chatbotcoolq "github.com/zhs007/chatbot/app/coolq"
 	chatbotbase "github.com/zhs007/chatbot/base"
-	"go.uber.org/zap/zapcore"
 )
 
 func main() {
-	chatbotbase.InitLogger(zapcore.InfoLevel, true, "./logs")
+	chatbotbase.InitLogger("coolqnode", chatbotbase.VERSION, "info", true, "./logs")
 
 	cfg, err := chatbotcoolq.LoadConfig("./cfg/coolq.yaml")
 	if err != nil {

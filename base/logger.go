@@ -16,17 +16,12 @@ var logger *zap.Logger
 var onceLogger sync.Once
 var logPath string
 
-// var curtime int64
 var panicFile *os.File
 var logSubName string
 
-func init() {
-	logSubName = "chatbotcore"
-}
-
 func initPanicFile() error {
 	file, err := os.OpenFile(
-		path.Join(logPath, BuildLogFilename("panic", logSubName)),
+		path.Join(logPath, buildLogFilename("panic", logSubName)),
 		os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
 	if err != nil {
 		Warn("initPanicFile:OpenFile",
@@ -47,13 +42,21 @@ func initPanicFile() error {
 	return nil
 }
 
-func initLogger(level zapcore.Level, isConsole bool, logpath string) (*zap.Logger, error) {
+// buildLogSubFilename -
+func buildLogSubFilename(appName string, version string) string {
+	return fmt.Sprintf("%v.%v.%v", appName, version, FormatNow(gTime))
+}
 
-	// logSubName = subName
+// buildLogFilename -
+func buildLogFilename(logtype string, subname string) string {
+	return fmt.Sprintf("%v.%v.log", subname, logtype)
+}
 
-	// curtime = time.Now().Unix()
-
+func initLogger(appName string, appVersion string, strLevel string, isConsole bool, logpath string) (*zap.Logger, error) {
+	logSubName = buildLogSubFilename(appName, appVersion)
 	logPath = logpath
+
+	level := ParseLogLevel(strLevel)
 
 	loglevel := zap.LevelEnablerFunc(func(lvl zapcore.Level) bool {
 		return lvl >= level
@@ -72,11 +75,16 @@ func initLogger(level zapcore.Level, isConsole bool, logpath string) (*zap.Logge
 		return cl, nil
 	}
 
+	pwd, err := os.Getwd()
+	if err != nil {
+		return nil, err
+	}
+
 	cfg := &zap.Config{}
 
 	cfg.Level = zap.NewAtomicLevelAt(level)
-	cfg.OutputPaths = []string{path.Join(logpath, BuildLogFilename("output", logSubName))}
-	cfg.ErrorOutputPaths = []string{path.Join(logpath, BuildLogFilename("error", logSubName))}
+	cfg.OutputPaths = []string{"stdout", path.Join(pwd, logpath, buildLogFilename("output", logSubName))}
+	cfg.ErrorOutputPaths = []string{"stderr", path.Join(pwd, logpath, buildLogFilename("error", logSubName))}
 	cfg.Encoding = "json"
 	cfg.EncoderConfig = zapcore.EncoderConfig{
 		TimeKey:     "T",
@@ -100,11 +108,11 @@ func initLogger(level zapcore.Level, isConsole bool, logpath string) (*zap.Logge
 }
 
 // InitLogger - initializes a thread-safe singleton logger
-func InitLogger(level zapcore.Level, isConsole bool, logpath string) {
+func InitLogger(logname string, appVersion string, level string, isConsole bool, logpath string) {
 
 	// once ensures the singleton is initialized only once
 	onceLogger.Do(func() {
-		cl, err := initLogger(level, isConsole, logpath)
+		cl, err := initLogger(logname, appVersion, level, isConsole, logpath)
 		if err != nil {
 			fmt.Printf("initLogger error! %v \n", err)
 
@@ -181,9 +189,9 @@ func ClearLogs() error {
 			return err
 		}
 
-		panicfile := BuildLogFilename("panic", logSubName)
-		outputfile := BuildLogFilename("output", logSubName)
-		errorfile := BuildLogFilename("error", logSubName)
+		panicfile := buildLogFilename("panic", logSubName)
+		outputfile := buildLogFilename("output", logSubName)
+		errorfile := buildLogFilename("error", logSubName)
 
 		for _, v := range lst {
 			cfn := filepath.Base(v)
@@ -194,4 +202,18 @@ func ClearLogs() error {
 	}
 
 	return nil
+}
+
+// GetLogger - get zap.Logger
+func GetLogger() *zap.Logger {
+	return logger
+}
+
+// SetLogger - set zap.Logger, return last zap.Logger
+func SetLogger(curLogger *zap.Logger) *zap.Logger {
+	ll := logger
+
+	logger = curLogger
+
+	return ll
 }

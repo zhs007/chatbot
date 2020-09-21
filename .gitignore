@@ -18,3 +18,4 @@ samples/telegrambot/config.yaml
 data
 cfg/*.yaml
 __debug_bin
+base/*.log
