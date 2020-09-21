@@ -124,6 +124,10 @@ docker run -d \
 
 ### 版本更新
 
+##### v0.6
+
+- ``logger``模块调整，支持重设logger，兼容性更强。
+
 ##### v0.5
 
 - ``golang``升级到``1.13`` 。
@@ -137,6 +141,7 @@ docker run -d \
 
 - ``grpc``、``protobuf``版本更新，``protos`` 结构调整，支持 ``go_package``。
 - 代码结构小幅调整，直接 ``go get -u`` 无法正确升级，需要显示升级。
+- 支持channel、group等。
 
 ##### v0.2
 
